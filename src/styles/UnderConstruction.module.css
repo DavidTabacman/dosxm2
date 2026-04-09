@@ -1,0 +1,102 @@
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Animated gradient mesh background.
+   Browsers without @property support see a static gradient — intentional graceful degradation. */
+.background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    conic-gradient(
+      from var(--gradient-angle) at 30% 40%,
+      hsl(var(--gradient-hue-1), 70%, var(--gradient-l1)),
+      hsl(var(--gradient-hue-2), 60%, var(--gradient-l2)),
+      hsl(var(--gradient-hue-1), 70%, var(--gradient-l1))
+    ),
+    radial-gradient(
+      ellipse at 70% 60%,
+      hsl(var(--gradient-hue-2), 80%, 30%) 0%,
+      transparent 70%
+    );
+  background-blend-mode: overlay;
+  animation: meshRotate 12s ease-in-out infinite;
+}
+
+@keyframes meshRotate {
+  0% {
+    --gradient-angle: 0deg;
+    --gradient-hue-1: 220;
+    --gradient-hue-2: 280;
+  }
+  33% {
+    --gradient-angle: 120deg;
+    --gradient-hue-1: 240;
+    --gradient-hue-2: 300;
+  }
+  66% {
+    --gradient-angle: 240deg;
+    --gradient-hue-1: 200;
+    --gradient-hue-2: 260;
+  }
+  100% {
+    --gradient-angle: 360deg;
+    --gradient-hue-1: 220;
+    --gradient-hue-2: 280;
+  }
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+  width: 90vw;
+  padding: 3rem 2.5rem;
+  border-radius: 24px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px var(--glass-shadow);
+  text-align: center;
+}
+
+.headline {
+  color: var(--text-hero);
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.subtext {
+  color: var(--text-sub);
+  font-size: clamp(0.95rem, 2.5vw, 1.125rem);
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .card {
+    max-width: 480px;
+    padding: 2.5rem 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .background {
+    animation: none;
+  }
+}

@@ -1,12 +1,44 @@
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --gradient-hue-1 {
+  syntax: "<number>";
+  initial-value: 220;
+  inherits: false;
+}
+
+@property --gradient-hue-2 {
+  syntax: "<number>";
+  initial-value: 280;
+  inherits: false;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --glass-bg: hsla(0, 0%, 100%, 0.1);
+  --glass-border: hsla(0, 0%, 100%, 0.18);
+  --glass-shadow: hsla(0, 0%, 0%, 0.2);
+  --text-hero: #ffffff;
+  --text-sub: hsla(0, 0%, 100%, 0.75);
+  --gradient-l1: 50%;
+  --gradient-l2: 40%;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --glass-bg: hsla(0, 0%, 100%, 0.05);
+    --glass-border: hsla(0, 0%, 100%, 0.1);
+    --glass-shadow: hsla(0, 0%, 0%, 0.4);
+    --text-hero: #ffffff;
+    --text-sub: hsla(0, 0%, 100%, 0.65);
+    --gradient-l1: 30%;
+    --gradient-l2: 20%;
   }
 }
 
@@ -19,7 +51,7 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
