@@ -18,21 +18,45 @@ export default function AnimatedText({
   delayMs = 0,
   staggerMs = 40,
 }: AnimatedTextProps) {
-  const characters = text.split("");
+  const words = text.split(" ");
+  let charIndex = 0;
 
   return createElement(
     tag,
     { className, id },
     <span className={styles.srOnly}>{text}</span>,
-    ...characters.map((char, i) => (
-      <span
-        key={i}
-        aria-hidden="true"
-        className={styles.char}
-        style={{ animationDelay: `${delayMs + i * staggerMs}ms` }}
-      >
-        {char === " " ? "\u00A0" : char}
-      </span>
-    ))
+    ...words.flatMap((word, wordIdx) => {
+      const wordSpan = (
+        <span key={`w${wordIdx}`} className={styles.word} aria-hidden="true">
+          {word.split("").map((char) => {
+            const idx = charIndex++;
+            return (
+              <span
+                key={idx}
+                className={styles.char}
+                style={{ animationDelay: `${delayMs + idx * staggerMs}ms` }}
+              >
+                {char}
+              </span>
+            );
+          })}
+        </span>
+      );
+      charIndex++; // count the space
+      if (wordIdx < words.length - 1) {
+        return [
+          wordSpan,
+          <span
+            key={`s${wordIdx}`}
+            aria-hidden="true"
+            className={styles.char}
+            style={{ animationDelay: `${delayMs + (charIndex - 1) * staggerMs}ms` }}
+          >
+            {"\u00A0"}
+          </span>,
+        ];
+      }
+      return [wordSpan];
+    })
   );
 }

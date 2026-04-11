@@ -15,7 +15,7 @@ const poppins = Poppins({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <div className={`${montserrat.variable} ${poppins.variable}`}>
+    <div className={`${montserrat.className} ${montserrat.variable} ${poppins.variable}`}>
       <Component {...pageProps} />
     </div>
   );
