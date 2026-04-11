@@ -1,20 +1,21 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Montserrat, Poppins } from "next/font/google";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const montserrat = Montserrat({
+  variable: "--font-primary",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const poppins = Poppins({
+  variable: "--font-secondary",
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <div className={`${geistSans.variable} ${geistMono.variable}`}>
+    <div className={`${montserrat.variable} ${poppins.variable}`}>
       <Component {...pageProps} />
     </div>
   );

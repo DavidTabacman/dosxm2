@@ -16,9 +16,7 @@ describe("Under Construction Page", () => {
   test("renders subtext", () => {
     const { container } = render(<Home />);
     const subtext = container.querySelector("p");
-    expect(subtext?.textContent).toBe(
-      "Estamos creando algo especial. Muy pronto."
-    );
+    expect(subtext?.textContent).toContain("Menos propiedades");
   });
 
   test("has exactly one h1", () => {

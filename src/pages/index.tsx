@@ -1,15 +1,16 @@
 import Head from "next/head";
 import AnimatedText from "@/components/AnimatedText";
+import CTAButton from "@/components/CTAButton";
 import styles from "@/styles/UnderConstruction.module.css";
 
 export default function Home() {
   return (
     <>
       <Head>
-        <title>Estamos preparando algo grande</title>
+        <title>DOS XM2 — Estamos preparando algo grande</title>
         <meta
           name="description"
-          content="Estamos creando algo especial. Muy pronto."
+          content="Menos propiedades, mas dedicacion. El doble de esfuerzo en la mitad del tiempo. Muy pronto."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta httpEquiv="content-language" content="es" />
@@ -27,8 +28,12 @@ export default function Home() {
             staggerMs={40}
           />
           <p className={styles.subtext}>
-            Estamos creando algo especial. Muy pronto.
+            Menos propiedades, mas dedicacion. El doble de esfuerzo en la mitad
+            del tiempo. Muy pronto.
           </p>
+          <div className={styles.ctaWrapper}>
+            <CTAButton text="Hablamos?" href="mailto:info@dosxm2.com" />
+          </div>
         </section>
       </main>
     </>

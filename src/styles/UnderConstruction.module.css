@@ -32,23 +32,23 @@
 @keyframes meshRotate {
   0% {
     --gradient-angle: 0deg;
-    --gradient-hue-1: 220;
-    --gradient-hue-2: 280;
+    --gradient-hue-1: 145;
+    --gradient-hue-2: 160;
   }
   33% {
     --gradient-angle: 120deg;
-    --gradient-hue-1: 240;
-    --gradient-hue-2: 300;
+    --gradient-hue-1: 155;
+    --gradient-hue-2: 170;
   }
   66% {
     --gradient-angle: 240deg;
-    --gradient-hue-1: 200;
-    --gradient-hue-2: 260;
+    --gradient-hue-1: 135;
+    --gradient-hue-2: 150;
   }
   100% {
     --gradient-angle: 360deg;
-    --gradient-hue-1: 220;
-    --gradient-hue-2: 280;
+    --gradient-hue-1: 145;
+    --gradient-hue-2: 160;
   }
 }
 
@@ -57,8 +57,8 @@
   z-index: 1;
   max-width: 560px;
   width: 90vw;
-  padding: 3rem 2.5rem;
-  border-radius: 24px;
+  padding: var(--space-12) var(--space-10);
+  border-radius: var(--radius-lg);
   background: var(--glass-bg);
   backdrop-filter: blur(20px) saturate(1.4);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
@@ -70,28 +70,34 @@
 .headline {
   color: var(--text-hero);
   font-size: clamp(1.5rem, 5vw, 2.5rem);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.02em;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-4);
 }
 
 .subtext {
   color: var(--text-sub);
   font-size: clamp(0.95rem, 2.5vw, 1.125rem);
   line-height: 1.6;
+  margin-bottom: var(--space-8);
+}
+
+.ctaWrapper {
+  display: flex;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
   .card {
     max-width: 480px;
-    padding: 2.5rem 2rem;
+    padding: var(--space-10) var(--space-8);
   }
 }
 
 @media (max-width: 600px) {
   .card {
-    padding: 1.5rem 1.25rem;
+    padding: var(--space-6) var(--space-6);
   }
 }
 

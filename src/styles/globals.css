@@ -6,39 +6,88 @@
 
 @property --gradient-hue-1 {
   syntax: "<number>";
-  initial-value: 220;
+  initial-value: 145;
   inherits: false;
 }
 
 @property --gradient-hue-2 {
   syntax: "<number>";
-  initial-value: 280;
+  initial-value: 160;
   inherits: false;
 }
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Glass morphism */
   --glass-bg: hsla(0, 0%, 100%, 0.1);
   --glass-border: hsla(0, 0%, 100%, 0.18);
   --glass-shadow: hsla(0, 0%, 0%, 0.2);
+
+  /* Text on dark/gradient backgrounds */
   --text-hero: #ffffff;
   --text-sub: hsla(0, 0%, 100%, 0.75);
-  --gradient-l1: 50%;
-  --gradient-l2: 40%;
+
+  /* Gradient lightness */
+  --gradient-l1: 40%;
+  --gradient-l2: 35%;
+
+  /* Brand accent — green (trust & distinction) */
+  --color-accent: #2E7D32;
+  --color-accent-light: #81C784;
+  --color-accent-dark: #1B5E20;
+
+  /* Neutral scale */
+  --color-neutral-100: #F3F4F6;
+  --color-neutral-200: #E8E4D9;
+  --color-neutral-300: #D1D5DB;
+  --color-neutral-500: #6B7280;
+  --color-neutral-900: #171717;
+
+  /* Spacing scale (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* Border radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+
     --glass-bg: hsla(0, 0%, 100%, 0.05);
     --glass-border: hsla(0, 0%, 100%, 0.1);
     --glass-shadow: hsla(0, 0%, 0%, 0.4);
+
     --text-hero: #ffffff;
     --text-sub: hsla(0, 0%, 100%, 0.65);
-    --gradient-l1: 30%;
+
+    --gradient-l1: 25%;
     --gradient-l2: 20%;
+
+    /* Brand accent — dark mode */
+    --color-accent: #4CAF50;
+    --color-accent-light: #A5D6A7;
+    --color-accent-dark: #2E7D32;
+
+    /* Neutral scale — dark mode */
+    --color-neutral-100: #1A1A1A;
+    --color-neutral-200: #2A2A2A;
+    --color-neutral-300: #3A3A3A;
+    --color-neutral-500: #9CA3AF;
+    --color-neutral-900: #EDEDED;
   }
 }
 
@@ -51,7 +100,7 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-primary), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
