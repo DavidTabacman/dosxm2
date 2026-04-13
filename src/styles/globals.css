@@ -21,9 +21,9 @@
   --foreground: #171717;
 
   /* Card */
-  --glass-bg: #E8E4D9;
-  --glass-border: hsla(30, 10%, 70%, 0.5);
-  --glass-shadow: hsla(30, 10%, 30%, 0.12);
+  --glass-bg: linear-gradient(to bottom, #756D60 0%, #F5F0E8 55%);
+  --glass-border: hsla(30, 10%, 50%, 0.25);
+  --glass-shadow: hsla(30, 10%, 25%, 0.15);
 
   /* Text on card */
   --text-hero: #2A2A2A;
