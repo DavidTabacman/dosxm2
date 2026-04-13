@@ -11,7 +11,7 @@ export default function Home() {
         <title>DOSXM2 — Estamos preparando algo grande</title>
         <meta
           name="description"
-          content="Menos propiedades, mas dedicacion. El doble de esfuerzo en la mitad del tiempo. Muy pronto."
+          content="Menos propiedades, más dedicación. El doble de esfuerzo en la mitad del tiempo. Muy pronto."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta httpEquiv="content-language" content="es" />
@@ -39,7 +39,7 @@ export default function Home() {
             staggerMs={40}
           />
           <p className={styles.subtext}>
-            Menos propiedades, mas dedicacion. El doble de esfuerzo en la mitad
+            Menos propiedades, más dedicación. El doble de esfuerzo en la mitad
             del tiempo. Muy pronto.
           </p>
           <div className={styles.ctaWrapper}>
