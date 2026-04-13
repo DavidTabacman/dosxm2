@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Image from "next/image";
 import AnimatedText from "@/components/AnimatedText";
 import CTAButton from "@/components/CTAButton";
 import styles from "@/styles/UnderConstruction.module.css";
@@ -19,6 +20,14 @@ export default function Home() {
       <main className={styles.page}>
         <div className={styles.background} aria-hidden="true" />
         <section className={styles.card} aria-labelledby="headline">
+          <Image
+            src="/Nuevo Logo sin fondo.png"
+            alt="DOS XM2 — Dos por metro cuadrado"
+            width={360}
+            height={180}
+            className={styles.logo}
+            priority
+          />
           <AnimatedText
             id="headline"
             text="Estamos preparando algo grande"
