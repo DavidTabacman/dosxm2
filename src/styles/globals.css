@@ -21,13 +21,13 @@
   --foreground: #171717;
 
   /* Card */
-  --glass-bg: #171717;
-  --glass-border: hsla(0, 0%, 100%, 0.08);
-  --glass-shadow: hsla(0, 0%, 0%, 0.3);
+  --glass-bg: #E8E4D9;
+  --glass-border: hsla(30, 10%, 70%, 0.5);
+  --glass-shadow: hsla(30, 10%, 30%, 0.12);
 
   /* Text on card */
-  --text-hero: #ffffff;
-  --text-sub: hsla(0, 0%, 100%, 0.7);
+  --text-hero: #2A2A2A;
+  --text-sub: hsla(0, 0%, 15%, 0.7);
 
   /* Gradient lightness */
   --gradient-l1: 92%;
