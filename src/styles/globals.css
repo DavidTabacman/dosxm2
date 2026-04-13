@@ -6,13 +6,13 @@
 
 @property --gradient-hue-1 {
   syntax: "<number>";
-  initial-value: 35;
+  initial-value: 55;
   inherits: false;
 }
 
 @property --gradient-hue-2 {
   syntax: "<number>";
-  initial-value: 25;
+  initial-value: 45;
   inherits: false;
 }
 
@@ -21,7 +21,7 @@
   --foreground: #171717;
 
   /* Glass morphism */
-  --glass-bg: hsla(0, 0%, 100%, 0.7);
+  --glass-bg: hsla(0, 0%, 100%, 0.88);
   --glass-border: hsla(0, 0%, 0%, 0.08);
   --glass-shadow: hsla(0, 0%, 0%, 0.08);
 
@@ -30,8 +30,8 @@
   --text-sub: hsla(0, 0%, 10%, 0.7);
 
   /* Gradient lightness */
-  --gradient-l1: 88%;
-  --gradient-l2: 82%;
+  --gradient-l1: 92%;
+  --gradient-l2: 87%;
 
   /* Brand accent — green (trust & distinction) */
   --color-accent: #2E7D32;

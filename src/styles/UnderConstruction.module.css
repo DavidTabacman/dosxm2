@@ -16,13 +16,13 @@
   background:
     conic-gradient(
       from var(--gradient-angle) at 30% 40%,
-      hsl(var(--gradient-hue-1), 15%, var(--gradient-l1)),
-      hsl(var(--gradient-hue-2), 10%, var(--gradient-l2)),
-      hsl(var(--gradient-hue-1), 15%, var(--gradient-l1))
+      hsl(var(--gradient-hue-1), 8%, var(--gradient-l1)),
+      hsl(var(--gradient-hue-2), 5%, var(--gradient-l2)),
+      hsl(var(--gradient-hue-1), 8%, var(--gradient-l1))
     ),
     radial-gradient(
       ellipse at 70% 60%,
-      hsl(var(--gradient-hue-2), 8%, 75%) 0%,
+      hsl(var(--gradient-hue-2), 4%, 75%) 0%,
       transparent 70%
     );
   background-blend-mode: overlay;
@@ -32,23 +32,23 @@
 @keyframes meshRotate {
   0% {
     --gradient-angle: 0deg;
-    --gradient-hue-1: 35;
-    --gradient-hue-2: 25;
+    --gradient-hue-1: 55;
+    --gradient-hue-2: 45;
   }
   33% {
     --gradient-angle: 120deg;
-    --gradient-hue-1: 40;
-    --gradient-hue-2: 30;
+    --gradient-hue-1: 60;
+    --gradient-hue-2: 50;
   }
   66% {
     --gradient-angle: 240deg;
-    --gradient-hue-1: 30;
-    --gradient-hue-2: 20;
+    --gradient-hue-1: 50;
+    --gradient-hue-2: 40;
   }
   100% {
     --gradient-angle: 360deg;
-    --gradient-hue-1: 35;
-    --gradient-hue-2: 25;
+    --gradient-hue-1: 55;
+    --gradient-hue-2: 45;
   }
 }
 
