@@ -6,13 +6,13 @@
 
 @property --gradient-hue-1 {
   syntax: "<number>";
-  initial-value: 145;
+  initial-value: 35;
   inherits: false;
 }
 
 @property --gradient-hue-2 {
   syntax: "<number>";
-  initial-value: 160;
+  initial-value: 25;
   inherits: false;
 }
 
@@ -21,17 +21,17 @@
   --foreground: #171717;
 
   /* Glass morphism */
-  --glass-bg: hsla(0, 0%, 100%, 0.1);
-  --glass-border: hsla(0, 0%, 100%, 0.18);
-  --glass-shadow: hsla(0, 0%, 0%, 0.2);
+  --glass-bg: hsla(0, 0%, 100%, 0.7);
+  --glass-border: hsla(0, 0%, 0%, 0.08);
+  --glass-shadow: hsla(0, 0%, 0%, 0.08);
 
-  /* Text on dark/gradient backgrounds */
-  --text-hero: #ffffff;
-  --text-sub: hsla(0, 0%, 100%, 0.75);
+  /* Text on neutral backgrounds */
+  --text-hero: #171717;
+  --text-sub: hsla(0, 0%, 10%, 0.7);
 
   /* Gradient lightness */
-  --gradient-l1: 40%;
-  --gradient-l2: 35%;
+  --gradient-l1: 88%;
+  --gradient-l2: 82%;
 
   /* Brand accent — green (trust & distinction) */
   --color-accent: #2E7D32;
@@ -67,15 +67,15 @@
     --background: #0a0a0a;
     --foreground: #ededed;
 
-    --glass-bg: hsla(0, 0%, 100%, 0.05);
-    --glass-border: hsla(0, 0%, 100%, 0.1);
+    --glass-bg: hsla(0, 0%, 100%, 0.08);
+    --glass-border: hsla(0, 0%, 100%, 0.12);
     --glass-shadow: hsla(0, 0%, 0%, 0.4);
 
     --text-hero: #ffffff;
     --text-sub: hsla(0, 0%, 100%, 0.65);
 
-    --gradient-l1: 25%;
-    --gradient-l2: 20%;
+    --gradient-l1: 15%;
+    --gradient-l2: 12%;
 
     /* Brand accent — dark mode */
     --color-accent: #4CAF50;

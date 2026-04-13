@@ -16,13 +16,13 @@
   background:
     conic-gradient(
       from var(--gradient-angle) at 30% 40%,
-      hsl(var(--gradient-hue-1), 70%, var(--gradient-l1)),
-      hsl(var(--gradient-hue-2), 60%, var(--gradient-l2)),
-      hsl(var(--gradient-hue-1), 70%, var(--gradient-l1))
+      hsl(var(--gradient-hue-1), 15%, var(--gradient-l1)),
+      hsl(var(--gradient-hue-2), 10%, var(--gradient-l2)),
+      hsl(var(--gradient-hue-1), 15%, var(--gradient-l1))
     ),
     radial-gradient(
       ellipse at 70% 60%,
-      hsl(var(--gradient-hue-2), 80%, 30%) 0%,
+      hsl(var(--gradient-hue-2), 8%, 75%) 0%,
       transparent 70%
     );
   background-blend-mode: overlay;
@@ -32,23 +32,23 @@
 @keyframes meshRotate {
   0% {
     --gradient-angle: 0deg;
-    --gradient-hue-1: 145;
-    --gradient-hue-2: 160;
+    --gradient-hue-1: 35;
+    --gradient-hue-2: 25;
   }
   33% {
     --gradient-angle: 120deg;
-    --gradient-hue-1: 155;
-    --gradient-hue-2: 170;
+    --gradient-hue-1: 40;
+    --gradient-hue-2: 30;
   }
   66% {
     --gradient-angle: 240deg;
-    --gradient-hue-1: 135;
-    --gradient-hue-2: 150;
+    --gradient-hue-1: 30;
+    --gradient-hue-2: 20;
   }
   100% {
     --gradient-angle: 360deg;
-    --gradient-hue-1: 145;
-    --gradient-hue-2: 160;
+    --gradient-hue-1: 35;
+    --gradient-hue-2: 25;
   }
 }
 
@@ -60,8 +60,8 @@
   padding: var(--space-12) var(--space-10);
   border-radius: var(--radius-lg);
   background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(20px) saturate(1.1);
+  -webkit-backdrop-filter: blur(20px) saturate(1.1);
   border: 1px solid var(--glass-border);
   box-shadow: 0 8px 32px var(--glass-shadow);
   text-align: center;
@@ -92,6 +92,7 @@
 .ctaWrapper {
   display: flex;
   justify-content: center;
+  gap: var(--space-4);
 }
 
 @media (max-width: 768px) {

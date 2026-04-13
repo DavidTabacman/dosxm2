@@ -41,7 +41,8 @@ export default function Home() {
             del tiempo. Muy pronto.
           </p>
           <div className={styles.ctaWrapper}>
-            <CTAButton text="Hablamos?" href="mailto:info@dosxm2.com" />
+            <CTAButton text="Instagram" href="https://www.instagram.com/dosxm2/" />
+            <CTAButton text="TikTok" href="https://www.tiktok.com/@dosxm2" variant="outline" />
           </div>
         </section>
       </main>

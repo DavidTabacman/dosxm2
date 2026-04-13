@@ -16,8 +16,13 @@ export default function CTAButton({
   const className = `${styles.cta} ${styles[variant]}`;
 
   if (href) {
+    const isExternal = href.startsWith("http");
     return (
-      <a href={href} className={className}>
+      <a
+        href={href}
+        className={className}
+        {...(isExternal && { target: "_blank", rel: "noopener noreferrer" })}
+      >
         {text}
       </a>
     );
