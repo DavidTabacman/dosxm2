@@ -20,14 +20,14 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  /* Glass morphism */
-  --glass-bg: hsla(0, 0%, 100%, 0.88);
-  --glass-border: hsla(0, 0%, 0%, 0.08);
-  --glass-shadow: hsla(0, 0%, 0%, 0.08);
+  /* Card */
+  --glass-bg: #171717;
+  --glass-border: hsla(0, 0%, 100%, 0.08);
+  --glass-shadow: hsla(0, 0%, 0%, 0.3);
 
-  /* Text on neutral backgrounds */
-  --text-hero: #171717;
-  --text-sub: hsla(0, 0%, 10%, 0.7);
+  /* Text on card */
+  --text-hero: #ffffff;
+  --text-sub: hsla(0, 0%, 100%, 0.7);
 
   /* Gradient lightness */
   --gradient-l1: 92%;
