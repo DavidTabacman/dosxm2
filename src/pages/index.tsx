@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>DOS XM2 — Estamos preparando algo grande</title>
+        <title>DOSXM2 — Estamos preparando algo grande</title>
         <meta
           name="description"
           content="Menos propiedades, mas dedicacion. El doble de esfuerzo en la mitad del tiempo. Muy pronto."
@@ -24,7 +24,7 @@ export default function Home() {
         <section className={styles.card} aria-labelledby="headline">
           <Image
             src="/Nuevo Logo sin fondo.png"
-            alt="DOS XM2 — Dos por metro cuadrado"
+            alt="DOSXM2 — Dos por metro cuadrado"
             width={360}
             height={180}
             className={styles.logo}
