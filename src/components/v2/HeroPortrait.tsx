@@ -27,7 +27,7 @@ export default function HeroPortrait() {
           <div className={styles.portraits}>
             <video
               className={styles.portrait}
-              src="https://videos.pexels.com/video-files/4625518/4625518-uhd_2560_1440_24fps.mp4"
+              src="https://assets.mixkit.co/videos/4623/4623-720.mp4"
               poster="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face"
               loop
               muted
@@ -38,7 +38,7 @@ export default function HeroPortrait() {
             />
             <video
               className={styles.portrait}
-              src="https://videos.pexels.com/video-files/4623581/4623581-uhd_2560_1440_24fps.mp4"
+              src="https://assets.mixkit.co/videos/4625/4625-720.mp4"
               poster="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face"
               loop
               muted

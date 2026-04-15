@@ -19,7 +19,7 @@ export default function HeroSplit() {
       >
         <video
           className={styles.panelBg}
-          src="https://videos.pexels.com/video-files/3773486/3773486-uhd_2560_1440_30fps.mp4"
+          src="https://assets.mixkit.co/videos/4814/4814-720.mp4"
           poster="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&h=800&fit=crop"
           loop
           muted
@@ -47,7 +47,7 @@ export default function HeroSplit() {
       >
         <video
           className={styles.panelBg}
-          src="https://videos.pexels.com/video-files/3773381/3773381-uhd_2560_1440_30fps.mp4"
+          src="https://assets.mixkit.co/videos/4818/4818-720.mp4"
           poster="https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop"
           loop
           muted
