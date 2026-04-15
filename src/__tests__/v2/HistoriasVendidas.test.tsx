@@ -33,10 +33,8 @@ describe("V2 HistoriasVendidas", () => {
     const { container } = render(<HistoriasVendidas />);
     const firstCard = container.querySelector("[role='button']")!;
 
-    // Before click - story text exists on back but card is not flipped
     fireEvent.click(firstCard);
 
-    // After click - story should be visible
     expect(container.textContent).toContain(
       "Ana necesitaba vender rápido para mudarse a Londres"
     );
@@ -47,7 +45,6 @@ describe("V2 HistoriasVendidas", () => {
     const firstCard = container.querySelector("[role='button']")!;
 
     fireEvent.keyDown(firstCard, { key: "Enter" });
-    // Card should toggle — aria-label changes
     expect(firstCard.getAttribute("aria-label")).toContain("Volver a la foto");
   });
 
@@ -70,5 +67,16 @@ describe("V2 HistoriasVendidas", () => {
   test("renders section label 'Historias Vendidas'", () => {
     const { container } = render(<HistoriasVendidas />);
     expect(container.textContent).toContain("Historias Vendidas");
+  });
+
+  test("property images have descriptive alt text with barrio and Madrid", () => {
+    const { container } = render(<HistoriasVendidas />);
+    const images = container.querySelectorAll("img[data-asset-type='property-lifestyle']");
+    expect(images.length).toBe(5);
+    images.forEach((img) => {
+      const alt = img.getAttribute("alt") ?? "";
+      expect(alt).toContain("barrio de");
+      expect(alt).toContain("Madrid");
+    });
   });
 });

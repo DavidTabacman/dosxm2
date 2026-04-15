@@ -22,10 +22,10 @@ describe("V2 HeroPortrait", () => {
     expect(portraits).toHaveLength(2);
   });
 
-  test("portraits have meaningful aria-labels", () => {
+  test("portraits have descriptive aria-labels", () => {
     const { container } = render(<HeroPortrait />);
     const portraits = container.querySelectorAll("video[data-asset-type='portrait']");
-    expect(portraits[0].getAttribute("aria-label")).toContain("Fundador 1");
-    expect(portraits[1].getAttribute("aria-label")).toContain("Fundador 2");
+    expect(portraits[0].getAttribute("aria-label")).toContain("cofundador");
+    expect(portraits[1].getAttribute("aria-label")).toContain("cofundador");
   });
 });

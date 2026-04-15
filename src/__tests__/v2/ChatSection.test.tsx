@@ -1,5 +1,5 @@
 import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
-import { render } from "@testing-library/react";
+import { render, act } from "@testing-library/react";
 import ChatSection from "@/components/v2/ChatSection";
 
 describe("V2 ChatSection", () => {
@@ -26,5 +26,19 @@ describe("V2 ChatSection", () => {
     const { container } = render(<ChatSection />);
     const section = container.querySelector("section");
     expect(section).not.toBeNull();
+  });
+
+  test("avatar images have descriptive alt text", () => {
+    const { container } = render(<ChatSection />);
+
+    // Advance timers to reveal all messages
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    const avatars = container.querySelectorAll("img[data-asset-type='portrait']");
+    avatars.forEach((img) => {
+      expect(img.getAttribute("alt")).toContain("cofundador");
+    });
   });
 });

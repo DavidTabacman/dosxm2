@@ -13,3 +13,14 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: () => false,
   }),
 });
+
+// Mock HTMLMediaElement.play() — jsdom does not implement it
+Object.defineProperty(HTMLMediaElement.prototype, "play", {
+  writable: true,
+  value: () => Promise.resolve(),
+});
+
+Object.defineProperty(HTMLMediaElement.prototype, "pause", {
+  writable: true,
+  value: () => {},
+});

@@ -49,14 +49,25 @@ function ChatBubble({
   const [state, setState] = useState<"hidden" | "typing" | "visible">("hidden");
 
   useEffect(() => {
-    if (!sectionVisible) return;
+    if (!sectionVisible) {
+      console.log(`[V2-ChatSection] ⏸️ Bubble #${index} "${message.text.slice(0, 30)}..." — waiting for section visibility`);
+      return;
+    }
+
+    console.log(`[V2-ChatSection] 🎬 Bubble #${index} — animation starting (typing in ${index * REVEAL_DELAY}ms, visible in ${index * REVEAL_DELAY + TYPING_DELAY}ms)`);
 
     const typingTimeout = setTimeout(
-      () => setState("typing"),
+      () => {
+        setState("typing");
+        console.log(`[V2-ChatSection] ⌨️ Bubble #${index} — typing dots shown`);
+      },
       index * REVEAL_DELAY
     );
     const visibleTimeout = setTimeout(
-      () => setState("visible"),
+      () => {
+        setState("visible");
+        console.log(`[V2-ChatSection] ✅ Bubble #${index} — message revealed`);
+      },
       index * REVEAL_DELAY + TYPING_DELAY
     );
 
@@ -64,7 +75,7 @@ function ChatBubble({
       clearTimeout(typingTimeout);
       clearTimeout(visibleTimeout);
     };
-  }, [sectionVisible, index]);
+  }, [sectionVisible, index]); // message.text is static, no need in deps
 
   if (state === "hidden") return null;
 
@@ -78,8 +89,11 @@ function ChatBubble({
       <img
         className={styles.avatar}
         src={message.avatar}
-        alt={isRight ? "Fundador 2" : "Fundador 1"}
+        alt="Retrato de cofundador de DOSXM2"
         data-asset-type="portrait"
+        onError={(e) => {
+          console.error(`[V2-ChatSection] ❌ Avatar load FAILED for bubble #${index} — src: ${e.currentTarget.src}. Reason: image URL unreachable or CORS blocked`);
+        }}
       />
       {state === "typing" ? (
         <div className={styles.typing} aria-label="Escribiendo...">

@@ -22,9 +22,19 @@ export default function HeroPortrait() {
 
   // Delay FAB appearance to avoid flash on initial load
   useEffect(() => {
-    const id = setTimeout(() => setMounted(true), 100);
+    console.log(`[V2-HeroPortrait] 🎬 Component mounted — entrance animations started (heading: 100ms, subheading: 250ms, portraits: 500ms)`);
+    const id = setTimeout(() => {
+      setMounted(true);
+      console.log(`[V2-HeroPortrait] ⏱️ Mount delay complete (100ms) — FAB system armed`);
+    }, 100);
     return () => clearTimeout(id);
   }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      console.log(`[V2-HeroPortrait] ${heroVisible ? "👁️ Hero visible — portraits in hero mode" : "📌 Hero out of viewport — FAB mode active (portraits docked to corner)"}`);
+    }
+  }, [heroVisible, mounted]);
 
   const showFab = mounted && !heroVisible;
 
@@ -47,7 +57,7 @@ export default function HeroPortrait() {
               muted
               autoPlay
               playsInline
-              aria-label="Fundador 1 de DOSXM2"
+              aria-label="Retrato de cofundador de DOSXM2"
               data-asset-type="portrait"
               {...videoDebug("V2-Portrait-1")}
             />
@@ -59,7 +69,7 @@ export default function HeroPortrait() {
               muted
               autoPlay
               playsInline
-              aria-label="Fundador 2 de DOSXM2"
+              aria-label="Retrato de cofundador de DOSXM2"
               data-asset-type="portrait"
               {...videoDebug("V2-Portrait-2")}
             />
@@ -76,15 +86,17 @@ export default function HeroPortrait() {
             <img
               className={styles.portrait}
               src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=96&h=96&fit=crop&crop=face"
-              alt="Fundador 1"
+              alt="Retrato de cofundador de DOSXM2"
               data-asset-type="portrait"
+              onError={(e) => console.error(`[V2-HeroPortrait] ❌ FAB image 1 load FAILED — src: ${e.currentTarget.src}. Reason: image URL unreachable or CORS blocked`)}
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className={styles.portrait}
               src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=96&h=96&fit=crop&crop=face"
-              alt="Fundador 2"
+              alt="Retrato de cofundador de DOSXM2"
               data-asset-type="portrait"
+              onError={(e) => console.error(`[V2-HeroPortrait] ❌ FAB image 2 load FAILED — src: ${e.currentTarget.src}. Reason: image URL unreachable or CORS blocked`)}
             />
           </div>
         </>

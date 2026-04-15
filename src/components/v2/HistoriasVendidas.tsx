@@ -56,33 +56,72 @@ function FlipCard({
   aspect: string;
   story: string;
 }) {
-  const [flipped, setFlipped] = useState(false);
+  const [flipState, setFlipState] = useState<"none" | "flipped" | "unflipping">("none");
   const [ref, isVisible] = useIntersectionObserver({ threshold: 0.2 });
+  const isFlipped = flipState === "flipped";
+
+  function handleFlip() {
+    setFlipState((prev) => {
+      const next = prev === "flipped" ? "unflipping" : "flipped";
+      console.log(`[V2-HistoriasVendidas] 🔄 Card "${zona}" — flip ${prev} → ${next}`);
+      return next;
+    });
+  }
+
+  function handleAnimationEnd() {
+    if (flipState === "unflipping") {
+      console.log(`[V2-HistoriasVendidas] ✅ Card "${zona}" — unflip animation complete, resetting to "none"`);
+      setFlipState("none");
+    } else if (flipState === "flipped") {
+      console.log(`[V2-HistoriasVendidas] ✅ Card "${zona}" — flip-to-back animation complete`);
+    }
+  }
+
+  const flipClass =
+    flipState === "flipped"
+      ? styles.flipped
+      : flipState === "unflipping"
+        ? styles.unflipping
+        : "";
 
   return (
     <div
-      className={`${styles.card} ${flipped ? styles.flipped : ""} ${isVisible ? styles.inView : ""}`}
+      className={`${styles.card} ${flipClass} ${isVisible ? styles.inView : ""}`}
       ref={ref}
-      onClick={() => setFlipped(!flipped)}
+      onClick={handleFlip}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          setFlipped(!flipped);
+          handleFlip();
         }
       }}
       role="button"
       tabIndex={0}
-      aria-label={`${zona} — ${flipped ? "Volver a la foto" : "Ver historia"}`}
+      aria-label={`${zona} — ${isFlipped ? "Volver a la foto" : "Ver historia"}`}
     >
-      <div className={styles.cardInner} style={{ aspectRatio: aspect }}>
+      <div
+        className={styles.cardInner}
+        style={{ aspectRatio: aspect }}
+        onAnimationEnd={handleAnimationEnd}
+      >
         <div className={styles.cardFront}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             className={styles.cardImage}
             src={image}
-            alt={`Propiedad en ${zona}`}
+            alt={`Propiedad vendida en el barrio de ${zona}, Madrid`}
             data-asset-type="property-lifestyle"
             loading="lazy"
+            onError={(e) => {
+              const img = e.currentTarget;
+              console.error(`[V2-HistoriasVendidas] ❌ Image load FAILED for "${zona}" — src: ${img.src}, naturalWidth: ${img.naturalWidth}. Reason: image URL may be unreachable, CORS blocked, or Unsplash rate-limited`);
+            }}
+            onLoad={(e) => {
+              const img = e.currentTarget;
+              if (img.naturalWidth === 0) {
+                console.warn(`[V2-HistoriasVendidas] ⚠️ Image loaded with 0 width for "${zona}" — src: ${img.src}. Reason: possible broken image or decode failure`);
+              }
+            }}
           />
           <div className={styles.cardFrontOverlay}>
             <span className={styles.zona}>{zona}</span>
