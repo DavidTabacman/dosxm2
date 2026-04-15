@@ -5,7 +5,7 @@
 
 /* Desktop scroll-jacking: tall section for scroll travel */
 .sectionDesktop {
-  height: 300vh;
+  height: 250vh;
   padding: 0;
 }
 

@@ -222,7 +222,7 @@ export default function HistoriasVendidas() {
         const progress = Math.max(0, Math.min(1, (vh - rect.top) / (vh + rect.height)));
 
         const currentScrollableWidth = track.scrollWidth - viewportEl.clientWidth;
-        const adjustedProgress = Math.max(0, Math.min(1, (progress - 0.15) / 0.7));
+        const adjustedProgress = Math.max(0, Math.min(1, (progress - 0.05) / 0.9));
         const translateX = -adjustedProgress * currentScrollableWidth;
 
         // Direct DOM mutation — no setState, no re-render
