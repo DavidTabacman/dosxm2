@@ -6,11 +6,9 @@ import styles from "./ElDiferencial.module.css";
 export default function ElDiferencial() {
   const sectionRef = useRef<HTMLElement>(null);
   const [textRef, textVisible] = useIntersectionObserver({ threshold: 0.3 });
-  const progress = useScrollProgress(sectionRef);
 
-  // Different parallax speeds for each portrait
-  const offset1 = progress * -30;
-  const offset2 = progress * -60;
+  // Sets --scroll-progress on sectionRef via direct DOM mutation (zero re-renders)
+  useScrollProgress(sectionRef);
 
   return (
     <section className={styles.section} ref={sectionRef}>
@@ -28,8 +26,7 @@ export default function ElDiferencial() {
         </div>
 
         <div className={styles.portraitColumn}>
-          {/* Parallax on wrapper, hover scale on img — prevents inline transform from blocking CSS hover */}
-          <div className={styles.portraitWrapper} style={{ transform: `translateY(${offset1}px)` }}>
+          <div className={styles.portraitWrapper1}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className={styles.portrait1}
@@ -39,7 +36,7 @@ export default function ElDiferencial() {
               loading="lazy"
             />
           </div>
-          <div className={styles.portraitWrapper} style={{ transform: `translateY(${offset2}px)` }}>
+          <div className={styles.portraitWrapper2}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className={styles.portrait2}

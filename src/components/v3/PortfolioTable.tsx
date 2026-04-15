@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
-import { useScrollProgress } from "../shared/useScrollProgress";
 import styles from "./PortfolioTable.module.css";
 
 const STORIES = [
@@ -86,9 +85,10 @@ function StoryCard({
 export default function HistoriasVendidas() {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const progress = useScrollProgress(sectionRef);
+  const [progress, setProgress] = useState(0);
   const [isDesktop, setIsDesktop] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -102,6 +102,32 @@ export default function HistoriasVendidas() {
     mql.addEventListener("change", handler);
     return () => mql.removeEventListener("change", handler);
   }, []);
+
+  // Local scroll progress (needs JS value for scroll-jacking math)
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || reducedMotion) return;
+
+    function update() {
+      const rect = el!.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const raw = (vh - rect.top) / (vh + rect.height);
+      setProgress(Math.max(0, Math.min(1, raw)));
+    }
+
+    function handleScroll() {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(update);
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    update();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [reducedMotion]);
 
   const useScrollJacking = isDesktop && !reducedMotion;
 

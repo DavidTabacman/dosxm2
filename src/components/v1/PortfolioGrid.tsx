@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
 import { useVideoPlayback } from "../shared/useVideoPlayback";
 import VideoPlayPause from "../shared/VideoPlayPause";
@@ -59,10 +59,10 @@ function PropertyCard({
   const videoElRef = useRef<HTMLVideoElement>(null);
   const { ref: playbackRef, hasError } = useVideoPlayback(`Portfolio-${zona}`);
 
-  const setVideoRef = (node: HTMLVideoElement | null) => {
+  const setVideoRef = useCallback((node: HTMLVideoElement | null) => {
     videoElRef.current = node;
     playbackRef(node);
-  };
+  }, [playbackRef]);
 
   return (
     <div

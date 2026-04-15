@@ -65,14 +65,20 @@
   position: relative;
 }
 
-/* Wrapper carries parallax transform (inline style) */
-.portraitWrapper {
+/* Wrappers carry parallax via CSS calc — no inline style, no re-renders */
+.portraitWrapper1,
+.portraitWrapper2 {
   width: 48%;
   will-change: transform;
 }
 
-.portraitWrapper:last-child {
+.portraitWrapper1 {
+  transform: translateY(calc(var(--scroll-progress, 0) * -30px));
+}
+
+.portraitWrapper2 {
   margin-top: 3rem;
+  transform: translateY(calc(var(--scroll-progress, 0) * -60px));
 }
 
 /* Image gets hover scale (no inline transform conflict) */
@@ -95,11 +101,12 @@
     justify-content: center;
   }
 
-  .portraitWrapper {
+  .portraitWrapper1,
+  .portraitWrapper2 {
     width: 44%;
   }
 
-  .portraitWrapper:last-child {
+  .portraitWrapper2 {
     margin-top: 2rem;
   }
 }
@@ -111,7 +118,8 @@
     transition: none;
   }
 
-  .portraitWrapper {
+  .portraitWrapper1,
+  .portraitWrapper2 {
     transform: none !important;
   }
 

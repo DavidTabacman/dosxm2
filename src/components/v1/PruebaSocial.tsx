@@ -24,11 +24,11 @@ const TESTIMONIALS = [
 function QuoteCard({
   quote,
   author,
-  parallaxOffset,
+  index,
 }: {
   quote: string;
   author: string;
-  parallaxOffset: number;
+  index: number;
 }) {
   const [ref, isVisible] = useIntersectionObserver({ threshold: 0.3 });
 
@@ -36,7 +36,7 @@ function QuoteCard({
     <blockquote
       className={`${styles.quote} ${isVisible ? styles.inView : ""}`}
       ref={ref}
-      style={{ transform: `translateY(${isVisible ? parallaxOffset : 30}px)` }}
+      style={{ "--parallax-factor": -(index + 1) * 35 } as React.CSSProperties}
     >
       <p className={styles.quoteText}>&ldquo;{quote}&rdquo;</p>
       <footer className={styles.quoteAuthor}>&mdash; {author}</footer>
@@ -46,7 +46,9 @@ function QuoteCard({
 
 export default function PruebaSocial() {
   const sectionRef = useRef<HTMLElement>(null);
-  const progress = useScrollProgress(sectionRef);
+
+  // Sets --scroll-progress on sectionRef via direct DOM mutation (zero re-renders)
+  useScrollProgress(sectionRef);
 
   return (
     <section className={styles.section} ref={sectionRef}>
@@ -58,7 +60,7 @@ export default function PruebaSocial() {
             key={t.author}
             quote={t.quote}
             author={t.author}
-            parallaxOffset={progress * -(i + 1) * 35}
+            index={i}
           />
         ))}
       </div>

@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
- * Robust video autoplay hook with retry logic and IntersectionObserver-based
- * play/pause for off-screen videos. Follows MDN/Chrome autoplay best practices.
- *
- * Logs only on actual errors — no lifecycle noise.
+ * Robust video autoplay hook with:
+ * - AbortController-based listener cleanup (no leaks on ref re-calls)
+ * - play() concurrency guard (prevents AbortError cascades)
+ * - IntersectionObserver-based off-screen pause/resume
  */
 export function useVideoPlayback(label?: string): {
   ref: (node: HTMLVideoElement | null) => void;
@@ -16,56 +16,59 @@ export function useVideoPlayback(label?: string): {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const playPendingRef = useRef(false);
 
   const tag = label || "video";
 
-  // Attempt to play with a single muted retry on NotAllowedError
-  const attemptPlay = useCallback(async (video: HTMLVideoElement) => {
-    // Skip if already playing (avoids AbortError from racing with HTML autoplay attribute)
-    if (!video.paused) {
-      setIsPlaying(true);
-      return;
+  // Guarded play — prevents concurrent play() calls
+  const safePlay = useCallback(async (video: HTMLVideoElement): Promise<boolean> => {
+    if (playPendingRef.current || !video.paused) {
+      return !video.paused;
     }
 
+    playPendingRef.current = true;
     try {
       await video.play();
-      setIsPlaying(true);
+      return true;
     } catch (error) {
       if (error instanceof DOMException) {
         if (error.name === "NotAllowedError") {
-          console.warn(`[VideoPlayback:${tag}] Autoplay blocked by browser policy. Retrying muted.`);
+          console.warn(`[VideoPlayback:${tag}] Autoplay blocked. Retrying muted.`);
           video.muted = true;
           try {
             await video.play();
-            setIsPlaying(true);
+            return true;
           } catch (retryError) {
-            const retryMsg = retryError instanceof DOMException
+            const msg = retryError instanceof DOMException
               ? `${retryError.name}: ${retryError.message}`
               : String(retryError);
-            console.error(`[VideoPlayback:${tag}] Muted retry FAILED — ${retryMsg}. Falling back to poster.`);
+            console.error(`[VideoPlayback:${tag}] Muted retry FAILED — ${msg}`);
             setHasError(true);
+            return false;
           }
         } else if (error.name === "AbortError") {
-          // Play interrupted by new load — retry once after short delay
-          retryTimerRef.current = setTimeout(() => {
-            video.play()
-              .then(() => setIsPlaying(true))
-              .catch(() => {});
-          }, 100);
+          // Interrupted — not a real failure, will retry via IO
+          return false;
         } else {
-          console.error(`[VideoPlayback:${tag}] Unexpected error — ${error.name}: ${error.message}. Falling back to poster.`);
+          console.error(`[VideoPlayback:${tag}] Play error — ${error.name}: ${error.message}`);
           setHasError(true);
+          return false;
         }
-      } else {
-        console.error(`[VideoPlayback:${tag}] Non-DOM error during play() —`, error);
-        setHasError(true);
       }
+      console.error(`[VideoPlayback:${tag}] Non-DOM play error —`, error);
+      setHasError(true);
+      return false;
+    } finally {
+      playPendingRef.current = false;
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tag]);
 
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
+      abortRef.current?.abort();
       observerRef.current?.disconnect();
       if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
     };
@@ -73,9 +76,17 @@ export function useVideoPlayback(label?: string): {
 
   const ref = useCallback(
     (node: HTMLVideoElement | null) => {
-      // Cleanup previous
+      // === CLEANUP previous node ===
+      // AbortController removes ALL event listeners at once
+      abortRef.current?.abort();
+      abortRef.current = null;
       observerRef.current?.disconnect();
-      if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+      observerRef.current = null;
+      if (retryTimerRef.current) {
+        clearTimeout(retryTimerRef.current);
+        retryTimerRef.current = null;
+      }
+      playPendingRef.current = false;
 
       if (!node) {
         videoRef.current = null;
@@ -84,44 +95,44 @@ export function useVideoPlayback(label?: string): {
 
       videoRef.current = node;
 
-      // Listen for errors on the video element
-      const handleError = () => {
-        const v = node;
-        const err = v.error;
+      // === SETUP new node ===
+      const abort = new AbortController();
+      const { signal } = abort;
+      abortRef.current = abort;
+
+      // Event listeners — all removed when abort.abort() is called
+      node.addEventListener("error", () => {
+        const err = node.error;
         console.error(
           `[VideoPlayback:${tag}] Video error — ` +
-          `code: ${err?.code ?? "?"}, ` +
-          `message: "${err?.message ?? "unknown"}", ` +
-          `networkState: ${v.networkState} (${["EMPTY","IDLE","LOADING","NO_SOURCE"][v.networkState] ?? "?"}), ` +
-          `src: ${v.src?.slice(-60)}`
+          `code: ${err?.code ?? "?"}, message: "${err?.message ?? "unknown"}", ` +
+          `networkState: ${node.networkState}, src: ${node.src?.slice(-60)}`
         );
         setHasError(true);
-      };
+      }, { signal });
 
-      const handleStalled = () => {
-        console.error(`[VideoPlayback:${tag}] Network stalled — networkState: ${node.networkState}, src: ${node.src?.slice(-40)}`);
-      };
+      node.addEventListener("playing", () => setIsPlaying(true), { signal });
+      node.addEventListener("pause", () => setIsPlaying(false), { signal });
 
-      node.addEventListener("error", handleError);
-      node.addEventListener("playing", () => setIsPlaying(true));
-      node.addEventListener("pause", () => setIsPlaying(false));
-      node.addEventListener("stalled", handleStalled);
+      node.addEventListener("stalled", () => {
+        console.error(`[VideoPlayback:${tag}] Network stalled — src: ${node.src?.slice(-40)}`);
+      }, { signal });
 
-      // Attempt initial play
-      attemptPlay(node);
+      // Initial play attempt
+      safePlay(node).then((ok) => {
+        if (ok) setIsPlaying(true);
+        else if (!node.paused) setIsPlaying(true);
+      });
 
       // IntersectionObserver: pause off-screen, resume on-screen
       if (typeof IntersectionObserver !== "undefined") {
         const observer = new IntersectionObserver(
           ([entry]) => {
+            if (signal.aborted) return; // Skip if node was cleaned up
             if (entry.isIntersecting) {
-              node.play()
-                .then(() => setIsPlaying(true))
-                .catch((err) => {
-                  if (err instanceof DOMException && err.name !== "AbortError") {
-                    console.error(`[VideoPlayback:${tag}] Resume failed — ${err.name}: ${err.message}`);
-                  }
-                });
+              safePlay(node).then((ok) => {
+                if (ok) setIsPlaying(true);
+              });
             } else {
               node.pause();
             }
@@ -132,7 +143,7 @@ export function useVideoPlayback(label?: string): {
         observerRef.current = observer;
       }
     },
-    [attemptPlay, tag]
+    [safePlay, tag]
   );
 
   return { ref, hasError, isPlaying };

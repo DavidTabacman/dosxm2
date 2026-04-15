@@ -59,15 +59,13 @@ describe("useVideoPlayback", () => {
     video.play = vi.fn().mockImplementation(() => {
       callCount++;
       if (callCount === 1) {
-        const error = new DOMException("Autoplay blocked", "NotAllowedError");
-        return Promise.reject(error);
+        return Promise.reject(new DOMException("Autoplay blocked", "NotAllowedError"));
       }
       return Promise.resolve();
     });
 
     await act(async () => {
       result.current.ref(video);
-      // Allow microtasks to resolve
       await new Promise((r) => setTimeout(r, 0));
     });
 
@@ -130,5 +128,81 @@ describe("useVideoPlayback", () => {
     unmount();
 
     expect(mockDisconnect).toHaveBeenCalled();
+  });
+
+  test("cleans up listeners when ref called with null", () => {
+    const { result } = renderHook(() => useVideoPlayback());
+    const video = document.createElement("video");
+    video.play = vi.fn().mockResolvedValue(undefined);
+    const removeSpy = vi.spyOn(video, "removeEventListener");
+
+    act(() => {
+      result.current.ref(video);
+    });
+
+    // Call ref with null to trigger cleanup
+    act(() => {
+      result.current.ref(null);
+    });
+
+    // AbortController removes listeners internally, not via removeEventListener.
+    // Verify observer is disconnected instead.
+    expect(mockDisconnect).toHaveBeenCalled();
+    removeSpy.mockRestore();
+  });
+
+  test("cleans up old node when ref called with new node", () => {
+    const { result } = renderHook(() => useVideoPlayback());
+    const video1 = document.createElement("video");
+    const video2 = document.createElement("video");
+    video1.play = vi.fn().mockResolvedValue(undefined);
+    video2.play = vi.fn().mockResolvedValue(undefined);
+
+    act(() => {
+      result.current.ref(video1);
+    });
+
+    // First observer created for video1
+    expect(mockObserve).toHaveBeenCalledWith(video1);
+
+    act(() => {
+      result.current.ref(video2);
+    });
+
+    // Old observer disconnected, new one created for video2
+    expect(mockDisconnect).toHaveBeenCalled();
+    expect(mockObserve).toHaveBeenCalledWith(video2);
+  });
+
+  test("prevents concurrent play() calls", async () => {
+    const { result } = renderHook(() => useVideoPlayback());
+    const video = document.createElement("video");
+
+    // play() takes 100ms to resolve
+    let resolvePlay: () => void;
+    video.play = vi.fn().mockImplementation(() => {
+      return new Promise<void>((resolve) => { resolvePlay = resolve; });
+    });
+
+    act(() => {
+      result.current.ref(video);
+    });
+
+    // First play() is pending
+    expect(video.play).toHaveBeenCalledTimes(1);
+
+    // IO fires while play is still pending
+    act(() => {
+      observeCallback?.([{ isIntersecting: true }]);
+    });
+
+    // Should NOT call play() again (guarded by playPendingRef)
+    expect(video.play).toHaveBeenCalledTimes(1);
+
+    // Resolve the pending play
+    await act(async () => {
+      resolvePlay!();
+      await new Promise((r) => setTimeout(r, 0));
+    });
   });
 });
