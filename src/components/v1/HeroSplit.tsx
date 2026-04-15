@@ -33,17 +33,6 @@ export default function HeroSplit() {
   // Clamp divider between 30% and 70%
   const dividerPos = 30 + x * 40;
 
-  // Log split reveal state for debugging
-  if (typeof window !== "undefined") {
-    console.log(
-      `[HeroSplit] 🎞️ Split Reveal — dividerPos: ${dividerPos.toFixed(1)}% | ` +
-      `mouseX: ${x.toFixed(3)} | ` +
-      `leftVideo: ${leftError ? "❌ ERROR (poster fallback)" : "✅ OK"} | ` +
-      `rightVideo: ${rightError ? "❌ ERROR (poster fallback)" : "✅ OK"} | ` +
-      `leftInView: ${leftInView} | rightVisible: ${rightVisible}`
-    );
-  }
-
   // Combine refs for left video: playback + element ref + inView
   const setLeftVideoRef = (node: HTMLVideoElement | null) => {
     leftVideoElRef.current = node;

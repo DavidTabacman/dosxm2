@@ -59,13 +59,6 @@ function PropertyCard({
   const videoElRef = useRef<HTMLVideoElement>(null);
   const { ref: playbackRef, hasError } = useVideoPlayback(`Portfolio-${zona}`);
 
-  if (hasError) {
-    console.warn(
-      `[PortfolioGrid] ⚠️ Card "${zona}" video failed — showing poster fallback. ` +
-      `Video src: ${video.slice(-40)}`
-    );
-  }
-
   const setVideoRef = (node: HTMLVideoElement | null) => {
     videoElRef.current = node;
     playbackRef(node);

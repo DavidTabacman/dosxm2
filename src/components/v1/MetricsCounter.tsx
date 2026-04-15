@@ -38,14 +38,6 @@ function Metric({
 export default function MetricsCounter() {
   const [ref, isVisible] = useIntersectionObserver({ threshold: 0.3 });
 
-  if (typeof window !== "undefined") {
-    console.log(
-      `[V1-MetricsCounter] 📊 isVisible: ${isVisible} | ` +
-      `targets: ${METRICS.map((m) => `${m.value}${m.suffix}`).join(", ")} | ` +
-      `reveal animation: ${isVisible ? "✅ triggered" : "⏸️ waiting"}`
-    );
-  }
-
   return (
     <section className={styles.section} ref={ref}>
       <div className={`${styles.grid} ${isVisible ? styles.revealed : ""}`}>

@@ -16,35 +16,19 @@ export default function CustomCursor() {
   const visibleRef = useRef(false);
 
   useEffect(() => {
-    // SSR guard
-    if (typeof window === "undefined") {
-      console.log("[CustomCursor] ⚠️ SSR environment detected — skipping initialization");
-      return;
-    }
+    if (typeof window === "undefined") return;
 
-    // Hide on touch devices
     const isTouch = window.matchMedia("(pointer: coarse)").matches || "ontouchstart" in window;
-    if (isTouch) {
-      console.log("[CustomCursor] 📱 Touch device detected — cursor disabled. Reason: pointer: coarse or ontouchstart present");
-      return;
-    }
+    if (isTouch) return;
 
     const ring = ringRef.current;
     const dot = dotRef.current;
     if (!ring || !dot) {
-      console.error("[CustomCursor] ❌ Ring or dot ref is null — cursor elements not mounted. This may indicate a rendering issue.");
+      console.error("[CustomCursor] Ring or dot ref is null — cursor elements not mounted.");
       return;
     }
 
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    if (reducedMotion) {
-      console.log("[CustomCursor] ♿ prefers-reduced-motion active — trailing lerp disabled, snapping to position");
-    }
-
-    console.log("[CustomCursor] ✅ Initialized — ring + dot mounted, mouse listeners active");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function lerp(a: number, b: number, t: number) {
       return a + (b - a) * t;
@@ -52,20 +36,11 @@ export default function CustomCursor() {
 
     function animate() {
       if (reducedMotion) {
-        // No trailing — snap to position
         current.current.x = target.current.x;
         current.current.y = target.current.y;
       } else {
-        current.current.x = lerp(
-          current.current.x,
-          target.current.x,
-          0.15
-        );
-        current.current.y = lerp(
-          current.current.y,
-          target.current.y,
-          0.15
-        );
+        current.current.x = lerp(current.current.x, target.current.x, 0.15);
+        current.current.y = lerp(current.current.y, target.current.y, 0.15);
       }
 
       if (ring) {
@@ -86,27 +61,19 @@ export default function CustomCursor() {
         visibleRef.current = true;
         ring!.style.opacity = "1";
         dot!.style.opacity = "1";
-        console.log("[CustomCursor] 👆 First mouse movement detected — cursor now visible");
       }
     }
 
     function onMouseOver(e: MouseEvent) {
       const el = (e.target as HTMLElement).closest("[data-cursor]");
       if (el && ring) {
-        const cursorState = el.getAttribute("data-cursor") || "hover";
-        ring.dataset.state = cursorState;
-        console.log(`[CustomCursor] 🎯 Cursor state changed to "${cursorState}" — target: <${el.tagName.toLowerCase()}>`);
+        ring.dataset.state = el.getAttribute("data-cursor") || "hover";
       }
     }
 
     function onMouseOut(e: MouseEvent) {
-      const el = (e.relatedTarget as HTMLElement | null)?.closest?.(
-        "[data-cursor]"
-      );
+      const el = (e.relatedTarget as HTMLElement | null)?.closest?.("[data-cursor]");
       if (!el && ring) {
-        if (ring.dataset.state) {
-          console.log(`[CustomCursor] 🎯 Cursor state reset to "default" — left data-cursor zone`);
-        }
         ring.dataset.state = "";
       }
     }
@@ -115,7 +82,6 @@ export default function CustomCursor() {
       visibleRef.current = false;
       if (ring) ring.style.opacity = "0";
       if (dot) dot.style.opacity = "0";
-      console.log("[CustomCursor] 🚫 Mouse left viewport — cursor hidden");
     }
 
     document.addEventListener("mousemove", onMouseMove);
@@ -129,16 +95,11 @@ export default function CustomCursor() {
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseover", onMouseOver);
       document.removeEventListener("mouseout", onMouseOut);
-      document.documentElement.removeEventListener(
-        "mouseleave",
-        onMouseLeave
-      );
+      document.documentElement.removeEventListener("mouseleave", onMouseLeave);
       cancelAnimationFrame(rafRef.current);
-      console.log("[CustomCursor] 🧹 Cleanup — listeners removed, animation stopped");
     };
   }, []);
 
-  // Don't render on touch devices (SSR safe — renders initially, hides via CSS)
   return (
     <>
       <div ref={ringRef} className={styles.ring} aria-hidden="true" />

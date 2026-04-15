@@ -27,13 +27,6 @@ export default function Valorador() {
     setValues((prev) => ({ ...prev, [name]: value }));
   }
 
-  if (typeof window !== "undefined") {
-    console.log(
-      `[V1-Valorador] 📋 Form state — revealed: ${isRevealed} | submitted: ${submitted} | ` +
-      `fieldsPopulated: ${Object.entries(values).filter(([, v]) => v.length > 0).length}/${FIELDS.length}`
-    );
-  }
-
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     console.log(`[V1-Valorador] ✅ Form submitted — fields: ${JSON.stringify(values)}`);
