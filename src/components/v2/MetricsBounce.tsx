@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useSectionReveal } from "../shared/useSectionReveal";
 import { useCountUp } from "../shared/useCountUp";
 import styles from "./MetricsBounce.module.css";
@@ -49,36 +49,12 @@ function MetricCircle({
 
 export default function MetricsBounce() {
   const [ref, isRevealed] = useSectionReveal(0.3);
-  const [forceShow, setForceShow] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Timeout fallback: if IntersectionObserver doesn't fire within 3s, force-show
   useEffect(() => {
-    timeoutRef.current = setTimeout(() => {
-      setForceShow(true);
-      console.warn(`[V2-MetricsBounce] ⏰ Timeout fallback triggered — IntersectionObserver did not fire within 3s. Forcing animation. Reason: observer may have failed silently (element not in viewport, zero-height edge case, or browser timing issue)`);
-    }, 3000);
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
-
-  // Clear timeout once observer fires — prevents false warning
-  useEffect(() => {
-    if (isRevealed && timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-      console.log(`[V2-MetricsBounce] 👁️ Section revealed via IntersectionObserver — starting count-up for targets: 45 días, 68%, 35+`);
+    if (isRevealed) {
+      console.log(`[V2-MetricsBounce] 👁️ Section revealed — starting count-up for targets: 45 días, 68%, 35+`);
     }
   }, [isRevealed]);
-
-  const animate = isRevealed || forceShow;
-
-  useEffect(() => {
-    if (!animate) {
-      console.log(`[V2-MetricsBounce] ⏸️ Waiting — isRevealed: ${isRevealed}, forceShow: ${forceShow}`);
-    }
-  }, [animate, isRevealed, forceShow]);
 
   return (
     <section className={styles.section} ref={ref}>
@@ -89,7 +65,7 @@ export default function MetricsBounce() {
             value={m.value}
             suffix={m.suffix}
             label={m.label}
-            animate={animate}
+            animate={isRevealed}
             index={i}
           />
         ))}

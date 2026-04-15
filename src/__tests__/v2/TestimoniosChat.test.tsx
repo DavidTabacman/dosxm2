@@ -2,10 +2,10 @@ import { expect, test, describe, vi } from "vitest";
 import { render, act } from "@testing-library/react";
 import TestimoniosChat from "@/components/v2/TestimoniosChat";
 
-// Mock IntersectionObserver to immediately report visible
-vi.mock("@/components/shared/useIntersectionObserver", () => ({
-  useIntersectionObserver: () => {
-    const ref = { current: null };
+// Mock useSectionReveal to immediately report revealed
+vi.mock("@/components/shared/useSectionReveal", () => ({
+  useSectionReveal: () => {
+    const ref = () => {};
     return [ref, true];
   },
 }));

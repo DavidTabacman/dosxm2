@@ -14,6 +14,9 @@ Object.defineProperty(window, "matchMedia", {
   }),
 });
 
+// Mock window.scrollTo — jsdom does not implement it
+window.scrollTo = () => {};
+
 // Mock HTMLMediaElement.play() — jsdom does not implement it
 Object.defineProperty(HTMLMediaElement.prototype, "play", {
   writable: true,

@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
 import styles from "./ChatSection.module.css";
 
 const AVATAR_1 = "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&h=80&fit=crop&crop=face";
-const AVATAR_2 = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face";
+const AVATAR_2 = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face";
 
 interface Message {
   text: string;
@@ -47,12 +47,11 @@ function ChatBubble({
   sectionVisible: boolean;
 }) {
   const [state, setState] = useState<"hidden" | "typing" | "visible">("hidden");
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (!sectionVisible) {
-      console.log(`[V2-ChatSection] ⏸️ Bubble #${index} "${message.text.slice(0, 30)}..." — waiting for section visibility`);
-      return;
-    }
+    if (!sectionVisible || hasAnimated.current) return;
+    hasAnimated.current = true;
 
     console.log(`[V2-ChatSection] 🎬 Bubble #${index} — animation starting (typing in ${index * REVEAL_DELAY}ms, visible in ${index * REVEAL_DELAY + TYPING_DELAY}ms)`);
 
@@ -75,7 +74,7 @@ function ChatBubble({
       clearTimeout(typingTimeout);
       clearTimeout(visibleTimeout);
     };
-  }, [sectionVisible, index]); // message.text is static, no need in deps
+  }, [sectionVisible, index]);
 
   if (state === "hidden") return null;
 

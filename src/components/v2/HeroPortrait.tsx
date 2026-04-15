@@ -63,8 +63,8 @@ export default function HeroPortrait() {
             />
             <video
               className={styles.portrait}
-              src="https://assets.mixkit.co/videos/4625/4625-720.mp4"
-              poster="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face"
+              src="https://assets.mixkit.co/videos/4535/4535-720.mp4"
+              poster="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
               loop
               muted
               autoPlay
@@ -93,7 +93,7 @@ export default function HeroPortrait() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className={styles.portrait}
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=96&h=96&fit=crop&crop=face"
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&crop=face"
               alt="Retrato de cofundador de DOSXM2"
               data-asset-type="portrait"
               onError={(e) => console.error(`[V2-HeroPortrait] ❌ FAB image 2 load FAILED — src: ${e.currentTarget.src}. Reason: image URL unreachable or CORS blocked`)}

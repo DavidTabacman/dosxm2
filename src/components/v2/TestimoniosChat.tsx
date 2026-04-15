@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useIntersectionObserver } from "../shared/useIntersectionObserver";
+import { useSectionReveal } from "../shared/useSectionReveal";
 import styles from "./TestimoniosChat.module.css";
 
 const TESTIMONIALS = [
@@ -44,10 +44,7 @@ function ChatBubble({
   const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (!sectionVisible || hasAnimated.current) {
-      if (!sectionVisible) console.log(`[V2-TestimoniosChat] ⏸️ Bubble #${index} "${sender}" — waiting for section to become visible`);
-      return;
-    }
+    if (!sectionVisible || hasAnimated.current) return;
     hasAnimated.current = true;
     console.log(`[V2-TestimoniosChat] 🎬 Bubble #${index} "${sender}" — animation starting (typing in ${index * 1200}ms, visible in ${index * 1200 + TYPING_DELAY}ms)`);
 
@@ -92,7 +89,7 @@ function ChatBubble({
 }
 
 export default function TestimoniosChat() {
-  const [ref, isVisible] = useIntersectionObserver({ threshold: 0.2 });
+  const [ref, isVisible] = useSectionReveal(0.2);
 
   return (
     <section className={styles.section} ref={ref}>

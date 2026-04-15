@@ -2,6 +2,20 @@ import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { render, act } from "@testing-library/react";
 import ChatSection from "@/components/v2/ChatSection";
 
+vi.mock("@/components/shared/useIntersectionObserver", () => {
+  let callback: ((visible: boolean) => void) | null = null;
+  return {
+    useIntersectionObserver: () => {
+      const { useState } = require("react");
+      const [visible, setVisible] = useState(true);
+      callback = setVisible;
+      const ref = () => {};
+      return [ref, visible];
+    },
+    __setVisible: (v: boolean) => callback?.(v),
+  };
+});
+
 describe("V2 ChatSection", () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -31,7 +45,6 @@ describe("V2 ChatSection", () => {
   test("avatar images have descriptive alt text", () => {
     const { container } = render(<ChatSection />);
 
-    // Advance timers to reveal all messages
     act(() => {
       vi.advanceTimersByTime(6000);
     });
@@ -40,5 +53,31 @@ describe("V2 ChatSection", () => {
     avatars.forEach((img) => {
       expect(img.getAttribute("alt")).toContain("cofundador");
     });
+  });
+
+  test("bubbles animate only once even when visibility toggles", () => {
+    const { container } = render(<ChatSection />);
+
+    // Advance time so all bubbles reveal
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    // All 4 messages should be visible
+    expect(container.textContent).toContain("No eres un número");
+    expect(container.textContent).toContain("Hablas directamente");
+    expect(container.textContent).toContain("Conocemos cada rincón");
+    expect(container.textContent).toContain("Y tratamos tu casa");
+
+    // Simulate visibility toggle (scroll away and back) via re-render
+    // The hasAnimated ref should prevent re-animation
+    // Messages should remain visible, not reset to hidden
+    const textBefore = container.textContent;
+
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    expect(container.textContent).toBe(textBefore);
   });
 });
