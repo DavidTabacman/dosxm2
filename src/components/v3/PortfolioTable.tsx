@@ -1,4 +1,6 @@
+import { useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
+import { useScrollProgress } from "../shared/useScrollProgress";
 import styles from "./PortfolioTable.module.css";
 
 const STORIES = [
@@ -44,16 +46,20 @@ function StoryCard({
   dias,
   story,
   image,
+  forceActive,
 }: {
   zona: string;
   dias: number;
   story: string;
   image: string;
+  forceActive?: boolean;
 }) {
-  const [ref, isActive] = useIntersectionObserver({
+  const [ref, isIntersecting] = useIntersectionObserver({
     threshold: 0.6,
     rootMargin: "0px",
   });
+
+  const isActive = forceActive || isIntersecting;
 
   return (
     <div
@@ -78,19 +84,74 @@ function StoryCard({
 }
 
 export default function HistoriasVendidas() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const progress = useScrollProgress(sectionRef);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const motionMql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(motionMql.matches);
+
+    const mql = window.matchMedia("(min-width: 769px)");
+    setIsDesktop(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
+
+  const useScrollJacking = isDesktop && !reducedMotion;
+
+  // Calculate horizontal translate and active card index
+  let translateX = 0;
+  let activeCardIndex = -1;
+
+  if (useScrollJacking && trackRef.current) {
+    const track = trackRef.current;
+    const viewportEl = track.parentElement;
+    if (viewportEl) {
+      const scrollableWidth = track.scrollWidth - viewportEl.clientWidth;
+      // Map progress: horizontal scroll happens roughly in the middle range
+      const adjustedProgress = Math.max(0, Math.min(1, (progress - 0.15) / 0.7));
+      translateX = -adjustedProgress * scrollableWidth;
+
+      // Determine which card is centered
+      const cardWidth = track.scrollWidth / STORIES.length;
+      const centerOffset = viewportEl.clientWidth / 2;
+      const scrollPos = adjustedProgress * scrollableWidth;
+      activeCardIndex = Math.round((scrollPos + centerOffset - cardWidth / 2) / cardWidth);
+      activeCardIndex = Math.max(0, Math.min(STORIES.length - 1, activeCardIndex));
+    }
+  }
+
   return (
-    <section className={styles.section}>
-      <h2 className={styles.heading}>Historias Vendidas</h2>
-      <div className={styles.track}>
-        {STORIES.map((s) => (
-          <StoryCard
-            key={s.zona}
-            zona={s.zona}
-            dias={s.dias}
-            story={s.story}
-            image={s.image}
-          />
-        ))}
+    <section
+      className={`${styles.section} ${useScrollJacking ? styles.sectionDesktop : ""}`}
+      ref={sectionRef}
+    >
+      <div className={useScrollJacking ? styles.stickyContainer : undefined}>
+        <h2 className={styles.heading}>Historias Vendidas</h2>
+        <div className={styles.trackViewport}>
+          <div
+            className={`${styles.track} ${useScrollJacking ? styles.trackDesktop : ""}`}
+            ref={trackRef}
+            style={useScrollJacking ? { transform: `translateX(${translateX}px)` } : undefined}
+          >
+            {STORIES.map((s, i) => (
+              <StoryCard
+                key={s.zona}
+                zona={s.zona}
+                dias={s.dias}
+                story={s.story}
+                image={s.image}
+                forceActive={useScrollJacking ? i === activeCardIndex : undefined}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

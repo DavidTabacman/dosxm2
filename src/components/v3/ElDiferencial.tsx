@@ -1,12 +1,15 @@
+import { useEffect, useState } from "react";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
 import styles from "./ElDiferencial.module.css";
 
 export default function ElDiferencial() {
   const [sectionRef, isVisible] = useIntersectionObserver({ threshold: 0.2 });
+  const [hasRevealed, setHasRevealed] = useState(false);
+  useEffect(() => { if (isVisible) setHasRevealed(true); }, [isVisible]);
 
   return (
     <section
-      className={`${styles.section} ${isVisible ? styles.revealed : ""}`}
+      className={`${styles.section} ${hasRevealed ? styles.revealed : ""}`}
       ref={sectionRef}
     >
       <div className={styles.grid}>

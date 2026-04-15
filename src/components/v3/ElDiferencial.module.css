@@ -50,6 +50,20 @@
   transition-delay: 0.3s;
 }
 
+/* Hide content behind reveal blocks until animation fires */
+.textBlock > *:not(.revealBlock),
+.imageBlock > *:not(.revealBlock),
+.secondImageBlock > *:not(.revealBlock) {
+  opacity: 0;
+  transition: opacity 0.01s 0.4s;
+}
+
+.section.revealed .textBlock > *:not(.revealBlock),
+.section.revealed .imageBlock > *:not(.revealBlock),
+.section.revealed .secondImageBlock > *:not(.revealBlock) {
+  opacity: 1;
+}
+
 .sectionLabel {
   font-family: var(--font-v3-sans), system-ui, sans-serif;
   font-size: 0.75rem;
@@ -102,6 +116,13 @@
 @media (prefers-reduced-motion: reduce) {
   .revealBlock {
     transform: scaleX(0);
+    transition: none;
+  }
+
+  .textBlock > *:not(.revealBlock),
+  .imageBlock > *:not(.revealBlock),
+  .secondImageBlock > *:not(.revealBlock) {
+    opacity: 1;
     transition: none;
   }
 }

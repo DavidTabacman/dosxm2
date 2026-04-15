@@ -1,7 +1,20 @@
 .hero {
-  --scroll-progress: 0;
+  --morph-scale: 1;
+  --morph-radius: 0px;
+  --morph-x: 0px;
+  --morph-y: 0px;
+  --text-opacity: 1;
+  --gradient-opacity: 0;
 
   position: relative;
+  height: 200vh;
+  overflow: visible;
+}
+
+/* Sticky frame keeps the visual pinned while section scrolls */
+.stickyFrame {
+  position: sticky;
+  top: 0;
   height: 100vh;
   overflow: hidden;
 }
@@ -9,8 +22,10 @@
 .imageWrapper {
   position: absolute;
   inset: 0;
-  transform: scale(calc(1 - var(--scroll-progress) * 0.15));
-  will-change: transform;
+  transform: scale(var(--morph-scale)) translate(var(--morph-x), var(--morph-y));
+  border-radius: var(--morph-radius);
+  overflow: hidden;
+  will-change: transform, border-radius;
 }
 
 .image {
@@ -28,7 +43,8 @@
   justify-content: center;
   text-align: center;
   padding: 2rem;
-  opacity: calc(1 - var(--scroll-progress) * 1.5);
+  opacity: var(--text-opacity);
+  pointer-events: none;
 }
 
 .heading {
@@ -52,7 +68,7 @@
 }
 
 /* Bottom gradient that blends into next section */
-.hero::after {
+.stickyFrame::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -61,12 +77,21 @@
   height: 30vh;
   background: linear-gradient(to bottom, transparent, var(--v3-bg));
   pointer-events: none;
-  opacity: var(--scroll-progress);
+  opacity: var(--gradient-opacity);
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hero {
+    height: 100vh;
+  }
+
+  .stickyFrame {
+    position: relative;
+  }
+
   .imageWrapper {
     transform: none;
+    border-radius: 0;
     will-change: auto;
   }
 
@@ -74,7 +99,7 @@
     opacity: 1;
   }
 
-  .hero::after {
+  .stickyFrame::after {
     opacity: 0;
   }
 }

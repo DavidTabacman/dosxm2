@@ -3,6 +3,23 @@
   overflow: hidden;
 }
 
+/* Desktop scroll-jacking: tall section for scroll travel */
+.sectionDesktop {
+  height: 300vh;
+  padding: 0;
+}
+
+/* Sticky container pins content while section scrolls */
+.stickyContainer {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
 .heading {
   font-family: var(--font-v3-serif), Georgia, serif;
   font-size: clamp(2rem, 5vw, 3.5rem);
@@ -10,6 +27,11 @@
   text-align: center;
   margin: 0 0 3rem;
   padding: 0 clamp(1.5rem, 5vw, 4rem);
+}
+
+.trackViewport {
+  overflow: hidden;
+  width: 100%;
 }
 
 /* Horizontal scroll track */
@@ -26,6 +48,13 @@
 
 .track::-webkit-scrollbar {
   display: none;
+}
+
+/* Desktop: JS-driven horizontal movement, no native scroll */
+.trackDesktop {
+  overflow: visible;
+  scroll-snap-type: none;
+  will-change: transform;
 }
 
 /* Card */

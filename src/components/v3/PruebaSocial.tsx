@@ -1,14 +1,17 @@
+import { useEffect, useState } from "react";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
 import styles from "./PruebaSocial.module.css";
 
 export default function PruebaSocial() {
-  const [ref, isVisible] = useIntersectionObserver({ threshold: 0.2 });
+  const [ref, isVisible] = useIntersectionObserver({ threshold: 0.1 });
+  const [hasStarted, setHasStarted] = useState(false);
+  useEffect(() => { if (isVisible) setHasStarted(true); }, [isVisible]);
 
   return (
     <section className={styles.section} ref={ref}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        className={`${styles.bgImage} ${isVisible ? styles.bgImageActive : ""}`}
+        className={`${styles.bgImage} ${hasStarted ? styles.bgImageActive : ""}`}
         src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1920&h=1080&fit=crop"
         alt=""
         aria-hidden="true"

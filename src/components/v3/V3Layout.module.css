@@ -4,6 +4,8 @@
   --v3-accent: #8b5a2b;
   --v3-accent-light: #b8860b;
   --v3-bg-overlay: rgba(28, 28, 28, 0.6);
+  --v3-muted: rgba(28, 28, 28, 0.5);
+  --v3-border: rgba(28, 28, 28, 0.15);
 
   background: var(--v3-bg);
   color: var(--v3-text);

@@ -34,7 +34,7 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(28, 28, 28, 0.65);
+  background: var(--v3-bg-overlay);
 }
 
 .content {
