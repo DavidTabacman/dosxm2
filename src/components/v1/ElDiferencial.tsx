@@ -1,0 +1,53 @@
+import { useRef } from "react";
+import { useIntersectionObserver } from "../shared/useIntersectionObserver";
+import { useScrollProgress } from "../shared/useScrollProgress";
+import styles from "./ElDiferencial.module.css";
+
+export default function ElDiferencial() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [textRef, textVisible] = useIntersectionObserver({ threshold: 0.3 });
+  const progress = useScrollProgress(sectionRef);
+
+  // Different parallax speeds for each portrait
+  const offset1 = progress * -30;
+  const offset2 = progress * -60;
+
+  return (
+    <section className={styles.section} ref={sectionRef}>
+      <div className={styles.grid}>
+        <div
+          className={`${styles.textColumn} ${textVisible ? styles.inView : ""}`}
+          ref={textRef}
+        >
+          <div className={styles.sectionLabel}>El Diferencial</div>
+          <h2 className={styles.heading}>Dos visiones. Un objetivo.</h2>
+          <p className={styles.body}>
+            No somos una franquicia. No somos un algoritmo. Somos dos expertos
+            dedicados a maximizar el valor de tu propiedad en Madrid.
+          </p>
+        </div>
+
+        <div className={styles.portraitColumn}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className={styles.portrait1}
+            src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&h=800&fit=crop&crop=face"
+            alt="Fundador 1 de DOSXM2"
+            data-asset-type="portrait"
+            loading="lazy"
+            style={{ transform: `translateY(${offset1}px)` }}
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className={styles.portrait2}
+            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&h=800&fit=crop&crop=face"
+            alt="Fundador 2 de DOSXM2"
+            data-asset-type="portrait"
+            loading="lazy"
+            style={{ transform: `translateY(${offset2}px)` }}
+          />
+        </div>
+      </div>
+    </section>
+  );
+}

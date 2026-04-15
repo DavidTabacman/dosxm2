@@ -1,163 +1,96 @@
 .section {
-  border-bottom: 1px solid var(--v3-border);
-  padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 3rem);
-}
-
-.sectionLabel {
-  font-family: var(--font-v3-mono), monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  color: #999;
-  margin-bottom: 2rem;
-  text-transform: uppercase;
+  padding: clamp(4rem, 8vw, 6rem) 0;
+  overflow: hidden;
 }
 
 .heading {
-  font-family: var(--font-v3-sans), system-ui, sans-serif;
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  font-weight: 700;
-  text-transform: uppercase;
-  margin: 0 0 2rem;
+  font-family: var(--font-v3-serif), Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  text-align: center;
+  margin: 0 0 3rem;
+  padding: 0 clamp(1.5rem, 5vw, 4rem);
 }
 
-/* Desktop table */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: var(--font-v3-mono), monospace;
-  font-size: clamp(0.75rem, 1.4vw, 0.875rem);
-}
-
-.table th,
-.table td {
-  text-align: left;
-  padding: 1rem 1.25rem;
-  border: 1px solid var(--v3-border);
-}
-
-.table th {
-  font-weight: 600;
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #999;
-  background: var(--v3-bg-alt);
-}
-
-.tableRow {
-  position: relative;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.tableRow:hover {
-  background: var(--v3-bg-alt);
-}
-
-.resultado {
-  color: var(--v3-accent);
-  font-weight: 600;
-}
-
-/* Hover image (desktop) */
-.hoverImage {
-  position: fixed;
-  pointer-events: none;
-  width: 320px;
-  height: 220px;
-  object-fit: cover;
-  border: 1px solid var(--v3-border);
-  z-index: 100;
-  opacity: 0;
-  transition: opacity 0.2s;
-  transform: translate(-50%, -110%);
-}
-
-.hoverImage.visible {
-  opacity: 1;
-}
-
-/* Mobile accordion */
-.mobileList {
-  display: none;
-}
-
-.accordionItem {
-  border: 1px solid var(--v3-border);
-  margin-bottom: -1px;
-}
-
-.accordionSummary {
-  padding: 1rem;
-  cursor: pointer;
-  font-family: var(--font-v3-mono), monospace;
-  font-size: 0.875rem;
+/* Horizontal scroll track */
+.track {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  list-style: none;
+  gap: 2rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 10vw;
+  padding: 0 10vw;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
 
-.accordionSummary::-webkit-details-marker {
+.track::-webkit-scrollbar {
   display: none;
 }
 
-.accordionSummary::after {
-  content: "+";
-  font-size: 1.25rem;
-  color: var(--v3-accent);
-  transition: transform 0.2s;
+/* Card */
+.card {
+  flex: 0 0 min(80vw, 550px);
+  scroll-snap-align: center;
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-.accordionItem[open] .accordionSummary::after {
-  content: "−";
-}
-
-.accordionContent {
-  padding: 0 1rem 1rem;
-  border-top: 1px solid var(--v3-bg-alt);
-}
-
-.accordionImage {
+.cardImage {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 4 / 5;
   object-fit: cover;
-  border: 1px solid var(--v3-border);
-  margin-bottom: 0.75rem;
+  display: block;
 }
 
-.accordionData {
-  font-family: var(--font-v3-mono), monospace;
-  font-size: 0.75rem;
-  color: #666;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.25rem 1rem;
+.cardOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-.accordionData dt {
-  color: #999;
+.cardActive .cardOverlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cardZona {
+  font-family: var(--font-v3-serif), Georgia, serif;
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 600;
+}
+
+.cardDias {
+  font-family: var(--font-v3-sans), system-ui, sans-serif;
+  font-size: 0.8125rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
 }
 
-.accordionData dd {
-  margin: 0;
+.cardStory {
+  font-family: var(--font-v3-sans), system-ui, sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  margin: 0.5rem 0 0;
+  opacity: 0.9;
 }
 
-/* Responsive swap */
-@media (max-width: 768px) {
-  .desktopTable {
-    display: none;
-  }
-
-  .mobileList {
-    display: block;
-  }
-}
-
-@media (min-width: 769px) {
-  .mobileList {
-    display: none;
+@media (prefers-reduced-motion: reduce) {
+  .cardOverlay {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

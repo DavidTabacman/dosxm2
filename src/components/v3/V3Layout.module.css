@@ -1,21 +1,12 @@
 .root {
-  --v3-bg: #ffffff;
-  --v3-bg-alt: #e5e5e5;
-  --v3-text: #000000;
-  --v3-accent: #0047ff;
-  --v3-border: #000000;
-  --v3-success: #00c853;
+  --v3-bg: #faf9f6;
+  --v3-text: #1c1c1c;
+  --v3-accent: #8b5a2b;
+  --v3-accent-light: #b8860b;
+  --v3-bg-overlay: rgba(28, 28, 28, 0.6);
 
   background: var(--v3-bg);
   color: var(--v3-text);
   min-height: 100vh;
   font-family: var(--font-v3-sans), system-ui, sans-serif;
-}
-
-.grid {
-  border-top: 1px solid var(--v3-border);
-}
-
-.section {
-  border-bottom: 1px solid var(--v3-border);
 }

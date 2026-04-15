@@ -1,35 +1,41 @@
 import Head from "next/head";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import V3Layout from "@/components/v3/V3Layout";
-import HeroTerminal from "@/components/v3/HeroTerminal";
+import HeroImmersive from "@/components/v3/HeroImmersive";
+import ElDiferencial from "@/components/v3/ElDiferencial";
 import LiveMetrics from "@/components/v3/LiveMetrics";
-import PortfolioTable from "@/components/v3/PortfolioTable";
+import HistoriasVendidas from "@/components/v3/PortfolioTable";
+import PruebaSocial from "@/components/v3/PruebaSocial";
+import Valorador from "@/components/v3/Valorador";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-v3-sans",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-v3-serif",
   subsets: ["latin"],
+  weight: ["400", "600", "700"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-v3-mono",
+const inter = Inter({
+  variable: "--font-v3-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
 });
 
 export default function V3Page() {
   return (
     <>
       <Head>
-        <title>DOSXM2 — La Transparencia Radical</title>
+        <title>DOSXM2 — El Viaje Inmersivo</title>
         <meta
           name="description"
-          content="Vendemos tu casa como si fuese la nuestra. Datos reales, transparencia total."
+          content="Tu casa. Nuestra dedicación. El poder de dos expertos trabajando para ti."
         />
       </Head>
-      <V3Layout fontClassName={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
-        <HeroTerminal />
+      <V3Layout fontClassName={`${cormorant.variable} ${inter.variable}`}>
+        <HeroImmersive />
+        <ElDiferencial />
         <LiveMetrics />
-        <PortfolioTable />
+        <HistoriasVendidas />
+        <PruebaSocial />
+        <Valorador />
       </V3Layout>
     </>
   );

@@ -3,6 +3,9 @@ import { DM_Sans } from "next/font/google";
 import V2Layout from "@/components/v2/V2Layout";
 import HeroPortrait from "@/components/v2/HeroPortrait";
 import ChatSection from "@/components/v2/ChatSection";
+import MetricsBounce from "@/components/v2/MetricsBounce";
+import HistoriasVendidas from "@/components/v2/HistoriasVendidas";
+import TestimoniosChat from "@/components/v2/TestimoniosChat";
 import ConversationalForm from "@/components/v2/ConversationalForm";
 
 const dmSans = DM_Sans({
@@ -24,6 +27,9 @@ export default function V2Page() {
       <V2Layout fontClassName={dmSans.variable}>
         <HeroPortrait />
         <ChatSection />
+        <MetricsBounce />
+        <HistoriasVendidas />
+        <TestimoniosChat />
         <ConversationalForm />
       </V2Layout>
     </>

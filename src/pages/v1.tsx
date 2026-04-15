@@ -2,8 +2,11 @@ import Head from "next/head";
 import { Playfair_Display, Space_Grotesk } from "next/font/google";
 import V1Layout from "@/components/v1/V1Layout";
 import HeroSplit from "@/components/v1/HeroSplit";
-import PortfolioGrid from "@/components/v1/PortfolioGrid";
+import ElDiferencial from "@/components/v1/ElDiferencial";
 import MetricsCounter from "@/components/v1/MetricsCounter";
+import PortfolioGrid from "@/components/v1/PortfolioGrid";
+import PruebaSocial from "@/components/v1/PruebaSocial";
+import Valorador from "@/components/v1/Valorador";
 
 const playfair = Playfair_Display({
   variable: "--font-v1-serif",
@@ -27,8 +30,11 @@ export default function V1Page() {
       </Head>
       <V1Layout fontClassName={`${playfair.variable} ${spaceGrotesk.variable}`}>
         <HeroSplit />
-        <PortfolioGrid />
+        <ElDiferencial />
         <MetricsCounter />
+        <PortfolioGrid />
+        <PruebaSocial />
+        <Valorador />
       </V1Layout>
     </>
   );

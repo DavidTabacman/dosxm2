@@ -1,0 +1,80 @@
+.hero {
+  --scroll-progress: 0;
+
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.imageWrapper {
+  position: absolute;
+  inset: 0;
+  transform: scale(calc(1 - var(--scroll-progress) * 0.15));
+  will-change: transform;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  opacity: calc(1 - var(--scroll-progress) * 1.5);
+}
+
+.heading {
+  font-family: var(--font-v3-serif), Georgia, serif;
+  font-size: clamp(3rem, 10vw, 7rem);
+  font-weight: 400;
+  color: #ffffff;
+  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.3);
+  margin: 0;
+  line-height: 1;
+}
+
+.subheading {
+  font-family: var(--font-v3-sans), system-ui, sans-serif;
+  font-size: clamp(1rem, 2.2vw, 1.375rem);
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 600px;
+  margin-top: 1.5rem;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+/* Bottom gradient that blends into next section */
+.hero::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30vh;
+  background: linear-gradient(to bottom, transparent, var(--v3-bg));
+  pointer-events: none;
+  opacity: var(--scroll-progress);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .imageWrapper {
+    transform: none;
+    will-change: auto;
+  }
+
+  .overlay {
+    opacity: 1;
+  }
+
+  .hero::after {
+    opacity: 0;
+  }
+}

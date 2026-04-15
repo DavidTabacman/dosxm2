@@ -1,0 +1,70 @@
+.section {
+  background: var(--v1-light);
+  color: var(--v1-text-light);
+  padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 5vw, 3rem);
+}
+
+.sectionLabel {
+  font-family: var(--font-v1-sans), system-ui, sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.4;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.heading {
+  font-family: var(--font-v1-serif), serif;
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 3rem;
+}
+
+.quotes {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.quote {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.quote.inView {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.quoteText {
+  font-family: var(--font-v1-serif), serif;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+}
+
+.quoteAuthor {
+  font-family: var(--font-v1-sans), system-ui, sans-serif;
+  font-size: clamp(0.8125rem, 1.4vw, 0.9375rem);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--v1-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quote {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

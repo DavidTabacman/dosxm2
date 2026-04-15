@@ -9,7 +9,7 @@ interface V3LayoutProps {
 export default function V3Layout({ children, fontClassName }: V3LayoutProps) {
   return (
     <div className={`${styles.root} ${fontClassName}`}>
-      <div className={styles.grid}>{children}</div>
+      {children}
     </div>
   );
 }

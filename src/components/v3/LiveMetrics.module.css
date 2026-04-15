@@ -1,100 +1,36 @@
 .section {
-  border-bottom: 1px solid var(--v3-border);
-  padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 3rem);
+  padding: clamp(6rem, 14vw, 10rem) clamp(1.5rem, 5vw, 4rem);
+  text-align: center;
   background: var(--v3-bg);
 }
 
-.sectionLabel {
-  font-family: var(--font-v3-mono), monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  color: #999;
-  margin-bottom: 2rem;
-  text-transform: uppercase;
+.prose {
+  font-family: var(--font-v3-serif), Georgia, serif;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  line-height: 1.4;
+  max-width: 800px;
+  margin: 0 auto;
+  color: var(--v3-text);
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-}
-
-@media (max-width: 768px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.card {
-  border: 1px solid var(--v3-border);
-  padding: clamp(1.5rem, 3vw, 2.5rem);
-  position: relative;
-}
-
-.card + .card {
-  border-left: none;
-}
-
-@media (max-width: 768px) {
-  .card + .card {
-    border-left: 1px solid var(--v3-border);
-    border-top: none;
-  }
-}
-
-.metricLabel {
-  font-family: var(--font-v3-mono), monospace;
-  font-size: clamp(0.625rem, 1.2vw, 0.75rem);
-  letter-spacing: 0.1em;
-  color: #999;
-  margin-bottom: 0.75rem;
-  text-transform: uppercase;
-}
-
-.metricValue {
-  font-family: var(--font-v3-sans), system-ui, sans-serif;
-  font-size: clamp(2rem, 5vw, 3.5rem);
+.number {
   font-weight: 700;
-  line-height: 1;
-  margin-bottom: 0.5rem;
+  color: var(--v3-accent);
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-.metricUnit {
-  font-family: var(--font-v3-mono), monospace;
-  font-size: clamp(0.75rem, 1.4vw, 0.875rem);
-  color: #666;
-  text-transform: uppercase;
-}
-
-.footer {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--v3-bg-alt);
-}
-
-.statusDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--v3-success);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.timestamp {
-  font-family: var(--font-v3-mono), monospace;
-  font-size: 0.6875rem;
-  color: #999;
-  letter-spacing: 0.05em;
+.numberVisible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .statusDot { animation: none; }
+  .number {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
