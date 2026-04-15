@@ -1,5 +1,4 @@
-import { useRef } from "react";
-import { useMousePosition } from "../shared/useMousePosition";
+import { useCallback, useEffect, useRef } from "react";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
 import { useVideoPlayback } from "../shared/useVideoPlayback";
 import VideoPlayPause from "../shared/VideoPlayPause";
@@ -17,7 +16,6 @@ export default function HeroSplit() {
   const leftVideoElRef = useRef<HTMLVideoElement>(null);
   const rightVideoElRef = useRef<HTMLVideoElement>(null);
 
-  const { x } = useMousePosition(heroRef);
   const [rightRef, rightVisible] = useIntersectionObserver({ threshold: 0.3 });
   const [leftInViewRef, leftInView] = useIntersectionObserver({ threshold: 0.3 });
 
@@ -30,28 +28,51 @@ export default function HeroSplit() {
     hasError: rightError,
   } = useVideoPlayback("HeroSplit-Right");
 
-  // Clamp divider between 30% and 70%
-  const dividerPos = 30 + x * 40;
+  // Direct DOM mutation for mouse tracking — NO useState, NO re-renders
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
 
-  // Combine refs for left video: playback + element ref + inView
-  const setLeftVideoRef = (node: HTMLVideoElement | null) => {
+    // Touch devices: leave at 50%
+    if (typeof window !== "undefined" && "ontouchstart" in window) return;
+
+    let rafId = 0;
+
+    function handleMouseMove(e: MouseEvent) {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const rect = el!.getBoundingClientRect();
+        const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        const dividerPos = 30 + x * 40; // Clamp between 30% and 70%
+        el!.style.setProperty("--divider-pos", `${dividerPos}%`);
+      });
+    }
+
+    el.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      el.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  // Stable combined refs — useCallback prevents re-creation on every render
+  const setLeftVideoRef = useCallback((node: HTMLVideoElement | null) => {
     leftVideoElRef.current = node;
     leftPlaybackRef(node);
     leftInViewRef(node);
-  };
+  }, [leftPlaybackRef, leftInViewRef]);
 
-  // Combine refs for right video: playback + element ref
-  const setRightVideoRef = (node: HTMLVideoElement | null) => {
+  const setRightVideoRef = useCallback((node: HTMLVideoElement | null) => {
     rightVideoElRef.current = node;
     rightPlaybackRef(node);
-  };
+  }, [rightPlaybackRef]);
 
   return (
     <section
       className={styles.hero}
       ref={heroRef}
       data-cursor="split"
-      style={{ "--divider-pos": `${dividerPos}%` } as React.CSSProperties}
+      style={{ "--divider-pos": "50%" } as React.CSSProperties}
     >
       <div className={styles.panelLeft}>
         {leftError ? (

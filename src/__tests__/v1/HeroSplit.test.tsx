@@ -2,10 +2,6 @@ import { expect, test, describe, vi } from "vitest";
 import { render } from "@testing-library/react";
 import HeroSplit from "@/components/v1/HeroSplit";
 
-vi.mock("@/components/shared/useMousePosition", () => ({
-  useMousePosition: () => ({ x: 0.5, y: 0.5 }),
-}));
-
 vi.mock("@/components/shared/useVideoPlayback", () => ({
   useVideoPlayback: () => ({
     ref: () => {},
@@ -45,10 +41,9 @@ describe("V1 HeroSplit", () => {
     expect(divider).not.toBeNull();
   });
 
-  test("sets --divider-pos CSS variable on hero container", () => {
+  test("sets --divider-pos CSS variable on hero container with default 50%", () => {
     const { container } = render(<HeroSplit />);
     const section = container.querySelector("section");
-    // With x=0.5, dividerPos = 30 + 0.5 * 40 = 50
     expect(section?.style.getPropertyValue("--divider-pos")).toBe("50%");
   });
 
@@ -82,7 +77,6 @@ describe("V1 HeroSplit video fallback", () => {
   test("shows poster image when video has error", () => {
     vi.resetModules();
 
-    // Re-mock with hasError = true
     vi.doMock("@/components/shared/useVideoPlayback", () => ({
       useVideoPlayback: () => ({
         ref: () => {},
@@ -90,11 +84,7 @@ describe("V1 HeroSplit video fallback", () => {
         isPlaying: false,
       }),
     }));
-    vi.doMock("@/components/shared/useMousePosition", () => ({
-      useMousePosition: () => ({ x: 0.5, y: 0.5 }),
-    }));
 
-    // Dynamic import to get the re-mocked version
     return import("@/components/v1/HeroSplit").then(({ default: HeroSplitFallback }) => {
       const { container } = render(<HeroSplitFallback />);
       const imgs = container.querySelectorAll("img[aria-hidden='true']");
