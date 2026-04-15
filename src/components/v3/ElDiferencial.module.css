@@ -5,11 +5,11 @@
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 5fr 4fr;
   gap: clamp(2rem, 5vw, 4rem);
   max-width: 1100px;
   margin: 0 auto;
-  align-items: center;
+  align-items: start;
 }
 
 @media (max-width: 768px) {
@@ -64,6 +64,22 @@
   opacity: 1;
 }
 
+
+/* Decorative accent line above section label */
+.textBlock::before {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: var(--v3-accent);
+  margin-bottom: 1.5rem;
+}
+
+/* Image overlaps into text zone for editorial tension */
+.imageBlock {
+  margin-top: 2rem;
+}
+
 .sectionLabel {
   font-family: var(--font-v3-sans), system-ui, sans-serif;
   font-size: 0.75rem;
@@ -103,13 +119,62 @@
 }
 
 .secondImageBlock {
-  max-width: 60%;
-  margin-left: auto;
+  max-width: 55%;
+  margin-left: 15%;
 }
 
 @media (max-width: 768px) {
   .secondImageBlock {
     max-width: 100%;
+    margin-left: 0;
+  }
+}
+
+/* Parallax wrapper — parallax goes on wrapper, hover zoom on image */
+.imageParallax {
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+/* CSS scroll-driven parallax (primary — compositor thread, GPU accelerated) */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .imageParallax {
+      animation: parallaxShift linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% exit 100%;
+    }
+
+    @keyframes parallaxShift {
+      from {
+        transform: translateY(30px);
+      }
+      to {
+        transform: translateY(-30px);
+      }
+    }
+  }
+}
+
+/* JS fallback parallax (for browsers without scroll-driven animations) */
+@supports not (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .imageParallax {
+      transform: translateY(calc((var(--el-diff-scroll, 0.5) - 0.5) * -30px));
+      will-change: transform;
+    }
+  }
+}
+
+/* Image hover zoom — motion-first */
+@media (prefers-reduced-motion: no-preference) {
+  .image {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .imageBlock:hover .image,
+  .secondImageBlock:hover .image {
+    transform: scale(1.04);
   }
 }
 

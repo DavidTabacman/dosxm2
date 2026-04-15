@@ -5,6 +5,8 @@
   --morph-y: 0px;
   --text-opacity: 1;
   --gradient-opacity: 0;
+  --morph-shadow: none;
+  --morph-width: 100%;
 
   position: relative;
   height: 200vh;
@@ -22,10 +24,13 @@
 .imageWrapper {
   position: absolute;
   inset: 0;
+  max-width: var(--morph-width);
+  margin: 0 auto;
   transform: scale(var(--morph-scale)) translate(var(--morph-x), var(--morph-y));
   border-radius: var(--morph-radius);
+  box-shadow: var(--morph-shadow);
   overflow: hidden;
-  will-change: transform, border-radius;
+  will-change: transform, border-radius, box-shadow;
 }
 
 .image {
@@ -93,6 +98,8 @@
   .imageWrapper {
     transform: none;
     border-radius: 0;
+    box-shadow: none;
+    max-width: none;
     will-change: auto;
   }
 

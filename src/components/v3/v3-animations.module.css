@@ -1,0 +1,53 @@
+/* V3 shared entrance animation utilities — motion-first pattern.
+   Base state: visible (safe for reduced-motion + old browsers).
+   Animations are only ADDED inside prefers-reduced-motion: no-preference. */
+
+.revealTarget {
+  opacity: 1;
+  transform: none;
+}
+
+.stagger > * {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .revealTarget {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .revealTargetVisible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .stagger > * {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  .staggerVisible > * {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .staggerVisible > *:nth-child(1) {
+    transition-delay: 0s;
+  }
+
+  .staggerVisible > *:nth-child(2) {
+    transition-delay: 0.1s;
+  }
+
+  .staggerVisible > *:nth-child(3) {
+    transition-delay: 0.15s;
+  }
+
+  .staggerVisible > *:nth-child(4) {
+    transition-delay: 0.2s;
+  }
+}

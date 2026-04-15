@@ -12,3 +12,42 @@
   min-height: 100vh;
   font-family: var(--font-v3-sans), system-ui, sans-serif;
 }
+
+/* Scroll progress indicator */
+.progressBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  height: 2px;
+  width: 100%;
+  background: var(--v3-accent);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  pointer-events: none;
+}
+
+/* CSS-first: scroll-driven animation (84.7% browser support) */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .progressBar {
+      animation: progressGrow auto linear;
+      animation-timeline: scroll(root);
+    }
+
+    @keyframes progressGrow {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progressBar {
+    display: none;
+  }
+}

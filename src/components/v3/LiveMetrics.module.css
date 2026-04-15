@@ -1,20 +1,49 @@
 .section {
   padding: clamp(6rem, 14vw, 10rem) clamp(1.5rem, 5vw, 4rem);
-  text-align: center;
+  text-align: left;
   background: var(--v3-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative large numeral background */
+.section::before {
+  content: "45";
+  position: absolute;
+  top: -0.1em;
+  right: -0.05em;
+  font-family: var(--font-v3-serif), Georgia, serif;
+  font-size: clamp(8rem, 20vw, 15rem);
+  color: rgba(0, 0, 0, 0.04);
+  line-height: 0.85;
+  user-select: none;
+  pointer-events: none;
 }
 
 .prose {
   font-family: var(--font-v3-serif), Georgia, serif;
   font-size: clamp(1.5rem, 4vw, 3rem);
-  line-height: 1.4;
-  max-width: 800px;
-  margin: 0 auto;
+  line-height: 1.05;
+  max-width: 700px;
+  padding-left: clamp(2rem, 10vw, 8rem);
   color: var(--v3-text);
 }
 
+@media (max-width: 768px) {
+  .section {
+    text-align: center;
+  }
+
+  .prose {
+    padding-left: 0;
+    margin: 0 auto;
+    line-height: 1.4;
+  }
+}
+
 .number {
-  font-weight: 700;
+  font-weight: 400;
+  font-style: italic;
   color: var(--v3-accent);
   display: inline-block;
   opacity: 0;

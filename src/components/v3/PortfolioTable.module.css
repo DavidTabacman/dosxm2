@@ -39,7 +39,8 @@
   display: flex;
   gap: 2rem;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
   scroll-padding: 0 10vw;
   padding: 0 10vw;
   -webkit-overflow-scrolling: touch;
@@ -97,7 +98,7 @@
 .cardZona {
   font-family: var(--font-v3-serif), Georgia, serif;
   font-size: clamp(1.25rem, 3vw, 1.75rem);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .cardDias {
@@ -114,6 +115,59 @@
   line-height: 1.5;
   margin: 0.5rem 0 0;
   opacity: 0.9;
+}
+
+/* Accent line that grows on hover */
+.cardOverlay::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--v3-accent-light, #b8860b);
+}
+
+/* Card hover effects — motion-first */
+@media (prefers-reduced-motion: no-preference) {
+  .card {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.4s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  .cardImage {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card:hover .cardImage {
+    transform: scale(1.03);
+  }
+
+  .cardOverlay::before {
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card:hover .cardOverlay::before {
+    width: 100%;
+  }
+}
+
+/* Visually hidden utility for ARIA live region */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

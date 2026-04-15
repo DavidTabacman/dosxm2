@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+// Note: useState still used for isDesktop and reducedMotion (rarely change, re-render OK)
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
+import { useSectionReveal } from "../shared/useSectionReveal";
 import styles from "./PortfolioTable.module.css";
+import anim from "./v3-animations.module.css";
 
 const STORIES = [
   {
@@ -40,30 +43,72 @@ const STORIES = [
   },
 ];
 
+const TILT_THRESHOLD = 10; // max degrees of tilt
+
 function StoryCard({
   zona,
   dias,
   story,
   image,
-  forceActive,
+  index,
+  total,
 }: {
   zona: string;
   dias: number;
   story: string;
   image: string;
-  forceActive?: boolean;
+  index: number;
+  total: number;
 }) {
   const [ref, isIntersecting] = useIntersectionObserver({
     threshold: 0.6,
     rootMargin: "0px",
   });
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  const isActive = forceActive || isIntersecting;
+  const isActive = isIntersecting;
+
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    try {
+      const el = cardRef.current;
+      if (!el || typeof window === "undefined") return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      const rotateY = (TILT_THRESHOLD / 2 - x * TILT_THRESHOLD).toFixed(2);
+      const rotateX = (y * TILT_THRESHOLD - TILT_THRESHOLD / 2).toFixed(2);
+      // Compose with CSS hover lift (translateY -4px) so the tilt doesn't override it
+      el.style.transform = `perspective(${rect.width}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+    } catch (err) {
+      console.error(
+        `[V3-PortfolioTable] ❌ 3D tilt effect FAILED on card "${zona}" — ` +
+        `Reason: ${err instanceof Error ? err.message : String(err)}`
+      );
+    }
+  }
+
+  function handleMouseLeave() {
+    const el = cardRef.current;
+    if (el) el.style.transform = "";
+  }
 
   return (
     <div
       className={`${styles.card} ${isActive ? styles.cardActive : ""}`}
-      ref={ref}
+      ref={(node) => {
+        // Combine refs
+        if (typeof ref === "function") ref(node);
+        (cardRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      }}
+      role="group"
+      aria-roledescription="diapositiva"
+      aria-label={`${index + 1} de ${total}: Propiedad en ${zona}`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -85,34 +130,129 @@ function StoryCard({
 export default function HistoriasVendidas() {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
+  const liveRegionRef = useRef<HTMLDivElement>(null);
   const [isDesktop, setIsDesktop] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const rafRef = useRef<number>(0);
+  const prevActiveRef = useRef(-1);
+  const [headingRef, headingRevealed] = useSectionReveal(0.15);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const motionMql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(motionMql.matches);
+    try {
+      const motionMql = window.matchMedia("(prefers-reduced-motion: reduce)");
+      setReducedMotion(motionMql.matches);
 
-    const mql = window.matchMedia("(min-width: 769px)");
-    setIsDesktop(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
+      const mql = window.matchMedia("(min-width: 769px)");
+      setIsDesktop(mql.matches);
+      const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+      mql.addEventListener("change", handler);
+      return () => mql.removeEventListener("change", handler);
+    } catch (err) {
+      console.error(
+        `[V3-PortfolioTable] ❌ Failed to initialize media queries — ` +
+        `Reason: ${err instanceof Error ? err.message : String(err)}. ` +
+        `Scroll-jacking and motion preferences may not work correctly.`
+      );
+    }
   }, []);
 
-  // Local scroll progress (needs JS value for scroll-jacking math)
+  const useScrollJacking = isDesktop && !reducedMotion;
+
+  // Scroll-jacking: direct DOM mutation (no React re-renders)
   useEffect(() => {
     const el = sectionRef.current;
-    if (!el || reducedMotion) return;
+    const track = trackRef.current;
+
+    if (!useScrollJacking) {
+      if (isDesktop && reducedMotion) {
+        console.log(
+          `[V3-PortfolioTable] ♿ prefers-reduced-motion — scroll-jacking disabled, using native scroll`
+        );
+      }
+      return;
+    }
+
+    if (!el) {
+      console.warn(
+        `[V3-PortfolioTable] ⚠️ sectionRef is null — scroll-jacking won't work. ` +
+        `Reason: section element not mounted or ref not attached.`
+      );
+      return;
+    }
+
+    if (!track) {
+      console.warn(
+        `[V3-PortfolioTable] ⚠️ trackRef is null — scroll-jacking won't work. ` +
+        `Reason: track element not mounted or ref not attached.`
+      );
+      return;
+    }
+
+    const viewportEl = track.parentElement;
+    if (!viewportEl) {
+      console.warn(
+        `[V3-PortfolioTable] ⚠️ track has no parent element — scroll-jacking won't work. ` +
+        `Reason: track element is not nested inside a viewport container.`
+      );
+      return;
+    }
+
+    const scrollableWidth = track.scrollWidth - viewportEl.clientWidth;
+    if (scrollableWidth <= 0) {
+      console.warn(
+        `[V3-PortfolioTable] ⚠️ No scrollable width (${scrollableWidth}px) — ` +
+        `Reason: track.scrollWidth (${track.scrollWidth}) <= viewport.clientWidth (${viewportEl.clientWidth}). ` +
+        `Cards may be too small or container too wide. Scroll-jacking will have no visible effect.`
+      );
+    }
+
+    console.log(
+      `[V3-PortfolioTable] 🎬 Scroll-jacking INITIALIZED — ` +
+      `mode: direct DOM mutation, cards: ${STORIES.length}, ` +
+      `scrollableWidth: ${scrollableWidth}px, sectionHeight: ${el.offsetHeight}px`
+    );
 
     function update() {
-      const rect = el!.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const raw = (vh - rect.top) / (vh + rect.height);
-      setProgress(Math.max(0, Math.min(1, raw)));
+      if (!el || !track || !viewportEl) return;
+      try {
+        const rect = el.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const progress = Math.max(0, Math.min(1, (vh - rect.top) / (vh + rect.height)));
+
+        const currentScrollableWidth = track.scrollWidth - viewportEl.clientWidth;
+        const adjustedProgress = Math.max(0, Math.min(1, (progress - 0.15) / 0.7));
+        const translateX = -adjustedProgress * currentScrollableWidth;
+
+        // Direct DOM mutation — no setState, no re-render
+        track.style.transform = `translateX(${translateX}px)`;
+
+        // Calculate active card
+        const cardWidth = track.scrollWidth / STORIES.length;
+        if (cardWidth === 0) return;
+        const centerOffset = viewportEl.clientWidth / 2;
+        const scrollPos = adjustedProgress * currentScrollableWidth;
+        let activeIndex = Math.round((scrollPos + centerOffset - cardWidth / 2) / cardWidth);
+        activeIndex = Math.max(0, Math.min(STORIES.length - 1, activeIndex));
+
+        // Toggle active class directly on DOM elements
+        const cards = track.children;
+        for (let i = 0; i < cards.length; i++) {
+          cards[i].classList.toggle(styles.cardActive, i === activeIndex);
+        }
+
+        // Update ARIA live region when active card changes
+        if (activeIndex !== prevActiveRef.current && liveRegionRef.current) {
+          liveRegionRef.current.textContent = `Propiedad en ${STORIES[activeIndex].zona}`;
+          prevActiveRef.current = activeIndex;
+        }
+      } catch (err) {
+        console.error(
+          `[V3-PortfolioTable] ❌ Scroll-jacking update FAILED — ` +
+          `Reason: ${err instanceof Error ? err.message : String(err)}`
+        );
+      }
     }
 
     function handleScroll() {
@@ -120,42 +260,21 @@ export default function HistoriasVendidas() {
       rafRef.current = requestAnimationFrame(update);
     }
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    update();
+    try {
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      update();
+    } catch (err) {
+      console.error(
+        `[V3-PortfolioTable] ❌ Failed to attach scroll-jacking listener — ` +
+        `Reason: ${err instanceof Error ? err.message : String(err)}`
+      );
+    }
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
       cancelAnimationFrame(rafRef.current);
     };
-  }, [reducedMotion]);
-
-  const useScrollJacking = isDesktop && !reducedMotion;
-
-  if (typeof window !== "undefined" && progress > 0 && progress < 0.01) {
-    console.log(`[V3-PortfolioTable] 🖥️ isDesktop: ${isDesktop} | reducedMotion: ${reducedMotion} | scrollJacking: ${useScrollJacking}`);
-  }
-
-  // Calculate horizontal translate and active card index
-  let translateX = 0;
-  let activeCardIndex = -1;
-
-  if (useScrollJacking && trackRef.current) {
-    const track = trackRef.current;
-    const viewportEl = track.parentElement;
-    if (viewportEl) {
-      const scrollableWidth = track.scrollWidth - viewportEl.clientWidth;
-      // Map progress: horizontal scroll happens roughly in the middle range
-      const adjustedProgress = Math.max(0, Math.min(1, (progress - 0.15) / 0.7));
-      translateX = -adjustedProgress * scrollableWidth;
-
-      // Determine which card is centered
-      const cardWidth = track.scrollWidth / STORIES.length;
-      const centerOffset = viewportEl.clientWidth / 2;
-      const scrollPos = adjustedProgress * scrollableWidth;
-      activeCardIndex = Math.round((scrollPos + centerOffset - cardWidth / 2) / cardWidth);
-      activeCardIndex = Math.max(0, Math.min(STORIES.length - 1, activeCardIndex));
-    }
-  }
+  }, [useScrollJacking, isDesktop, reducedMotion]);
 
   return (
     <section
@@ -163,12 +282,19 @@ export default function HistoriasVendidas() {
       ref={sectionRef}
     >
       <div className={useScrollJacking ? styles.stickyContainer : undefined}>
-        <h2 className={styles.heading}>Historias Vendidas</h2>
-        <div className={styles.trackViewport}>
+        <h2
+          className={`${styles.heading} ${anim.revealTarget} ${headingRevealed ? anim.revealTargetVisible : ""}`}
+          ref={headingRef}
+        >Historias Vendidas</h2>
+        <div
+          className={styles.trackViewport}
+          role="region"
+          aria-roledescription="carrusel"
+          aria-label="Portfolio de propiedades"
+        >
           <div
             className={`${styles.track} ${useScrollJacking ? styles.trackDesktop : ""}`}
             ref={trackRef}
-            style={useScrollJacking ? { transform: `translateX(${translateX}px)` } : undefined}
           >
             {STORIES.map((s, i) => (
               <StoryCard
@@ -177,11 +303,13 @@ export default function HistoriasVendidas() {
                 dias={s.dias}
                 story={s.story}
                 image={s.image}
-                forceActive={useScrollJacking ? i === activeCardIndex : undefined}
+                index={i}
+                total={STORIES.length}
               />
             ))}
           </div>
         </div>
+        <div aria-live="polite" className={styles.srOnly} ref={liveRegionRef} />
       </div>
     </section>
   );

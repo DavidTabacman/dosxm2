@@ -87,11 +87,61 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: gap 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2px;
 }
 
-.submit:hover {
-  gap: 1rem;
+.submit::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--v3-accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  z-index: -1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .submit {
+    transition: gap 0.3s ease, color 0.3s ease;
+  }
+
+  .submit::before {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .submit:hover {
+    color: var(--v3-bg);
+    gap: 1rem;
+  }
+
+  .submit:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .submit:active {
+    transform: scale(0.97);
+  }
+}
+
+/* Error state — warm tone matching brand */
+.fieldError::after {
+  background: #c0594b;
+}
+
+.fieldError .input {
+  border-bottom-color: #c0594b;
+}
+
+.errorMessage {
+  font-family: var(--font-v3-sans), system-ui, sans-serif;
+  font-size: 0.75rem;
+  color: #c0594b;
+  margin-top: 0.375rem;
+  display: block;
 }
 
 /* Success state */
@@ -106,4 +156,22 @@
   font-family: var(--font-v3-sans), system-ui, sans-serif;
   font-size: 1rem;
   opacity: 0.6;
+}
+
+/* Success entrance animation */
+@keyframes successEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .successSection {
+    animation: successEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
 }
