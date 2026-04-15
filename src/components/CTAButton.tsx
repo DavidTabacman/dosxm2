@@ -21,7 +21,7 @@ export default function CTAButton({
       <a
         href={href}
         className={className}
-        data-cursor="pointer"
+
         {...(isExternal && { target: "_blank", rel: "noopener noreferrer" })}
       >
         {text}

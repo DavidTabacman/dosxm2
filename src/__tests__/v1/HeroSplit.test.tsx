@@ -47,12 +47,6 @@ describe("V1 HeroSplit", () => {
     expect(section?.style.getPropertyValue("--divider-pos")).toBe("50%");
   });
 
-  test("hero section has data-cursor='split' attribute", () => {
-    const { container } = render(<HeroSplit />);
-    const section = container.querySelector("[data-cursor='split']");
-    expect(section).not.toBeNull();
-  });
-
   test("renders VideoPlayPause buttons for accessibility", () => {
     const { container } = render(<HeroSplit />);
     const buttons = container.querySelectorAll("button[aria-label]");

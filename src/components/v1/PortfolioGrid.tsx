@@ -70,7 +70,6 @@ function PropertyCard({
       ref={ref}
       role="group"
       aria-label={`Propiedad en ${zona}`}
-      data-cursor="pointer"
       style={{ "--stagger-index": index % 3 } as React.CSSProperties}
     >
       {hasError ? (

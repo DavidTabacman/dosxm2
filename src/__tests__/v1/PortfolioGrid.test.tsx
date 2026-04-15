@@ -66,12 +66,6 @@ describe("V1 PortfolioGrid", () => {
     });
   });
 
-  test("each card has data-cursor='pointer'", () => {
-    const { container } = render(<PortfolioGrid />);
-    const cards = container.querySelectorAll("[data-cursor='pointer']");
-    expect(cards).toHaveLength(5);
-  });
-
   test("cards have --stagger-index CSS variable", () => {
     const { container } = render(<PortfolioGrid />);
     const cards = container.querySelectorAll("[role='group']");

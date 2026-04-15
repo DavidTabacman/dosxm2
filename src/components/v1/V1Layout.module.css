@@ -10,18 +10,3 @@
   color: var(--v1-text-light);
   background: var(--v1-light);
 }
-
-/* Hide native cursor on desktop with fine pointer (accessibility-safe) */
-@media (any-hover: hover) and (pointer: fine) {
-  .root {
-    cursor: none;
-  }
-
-  .root a,
-  .root button,
-  .root input,
-  .root textarea,
-  .root select {
-    cursor: none;
-  }
-}

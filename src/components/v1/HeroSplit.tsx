@@ -71,7 +71,6 @@ export default function HeroSplit() {
     <section
       className={styles.hero}
       ref={heroRef}
-      data-cursor="split"
       style={{ "--divider-pos": "50%" } as React.CSSProperties}
     >
       <div className={styles.panelLeft}>
