@@ -105,6 +105,10 @@ export default function HistoriasVendidas() {
 
   const useScrollJacking = isDesktop && !reducedMotion;
 
+  if (typeof window !== "undefined" && progress > 0 && progress < 0.01) {
+    console.log(`[V3-PortfolioTable] 🖥️ isDesktop: ${isDesktop} | reducedMotion: ${reducedMotion} | scrollJacking: ${useScrollJacking}`);
+  }
+
   // Calculate horizontal translate and active card index
   let translateX = 0;
   let activeCardIndex = -1;

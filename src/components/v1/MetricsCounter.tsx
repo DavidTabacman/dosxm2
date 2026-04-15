@@ -38,6 +38,10 @@ function Metric({
 export default function MetricsCounter() {
   const [ref, isVisible] = useIntersectionObserver({ threshold: 0.3 });
 
+  if (typeof window !== "undefined") {
+    console.log(`[V1-MetricsCounter] 📊 isVisible: ${isVisible} | targets: 45, 68%, 3.5/5`);
+  }
+
   return (
     <section className={styles.section} ref={ref}>
       <div className={styles.grid}>

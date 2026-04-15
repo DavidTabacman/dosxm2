@@ -2,6 +2,20 @@ import { useEffect, useState } from "react";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
 import styles from "./HeroPortrait.module.css";
 
+function videoDebug(label: string) {
+  return {
+    onLoadStart: () => console.log(`[Video:${label}] 📡 loadstart`),
+    onCanPlay: () => console.log(`[Video:${label}] ✅ canplay`),
+    onPlay: () => console.log(`[Video:${label}] ▶️ play`),
+    onPlaying: () => console.log(`[Video:${label}] 🎬 playing`),
+    onStalled: () => console.log(`[Video:${label}] ⚠️ stalled`),
+    onError: (e: React.SyntheticEvent<HTMLVideoElement>) => {
+      const v = e.currentTarget;
+      console.error(`[Video:${label}] ❌ ERROR — code: ${v.error?.code}, message: "${v.error?.message}", networkState: ${v.networkState}, src: ${v.src}`);
+    },
+  };
+}
+
 export default function HeroPortrait() {
   const [heroRef, heroVisible] = useIntersectionObserver({ threshold: 0.1 });
   const [mounted, setMounted] = useState(false);
@@ -35,6 +49,7 @@ export default function HeroPortrait() {
               playsInline
               aria-label="Fundador 1 de DOSXM2"
               data-asset-type="portrait"
+              {...videoDebug("V2-Portrait-1")}
             />
             <video
               className={styles.portrait}
@@ -46,6 +61,7 @@ export default function HeroPortrait() {
               playsInline
               aria-label="Fundador 2 de DOSXM2"
               data-asset-type="portrait"
+              {...videoDebug("V2-Portrait-2")}
             />
           </div>
         )}

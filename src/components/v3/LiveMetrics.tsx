@@ -12,8 +12,12 @@ export default function LiveMetrics() {
 
   // Sequential fade: second number starts 600ms after section becomes visible
   useEffect(() => {
-    if (!isVisible) return;
-    const id = setTimeout(() => setShowSecond(true), 600);
+    if (!isVisible) {
+      console.log(`[V3-LiveMetrics] ⏸️ Waiting for section visibility | targets: 45 días, 68%`);
+      return;
+    }
+    console.log(`[V3-LiveMetrics] ✅ Section visible! Starting count-up for 45 días. Second count (68%) in 600ms.`);
+    const id = setTimeout(() => { setShowSecond(true); console.log(`[V3-LiveMetrics] 🚀 Second count-up triggered (68%)`); }, 600);
     return () => clearTimeout(id);
   }, [isVisible]);
 

@@ -44,15 +44,19 @@ function ChatBubble({
   const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (!sectionVisible || hasAnimated.current) return;
+    if (!sectionVisible || hasAnimated.current) {
+      if (!sectionVisible) console.log(`[V2-TestimoniosChat] ⏸️ Bubble #${index} "${sender}" — waiting for section to become visible`);
+      return;
+    }
     hasAnimated.current = true;
+    console.log(`[V2-TestimoniosChat] 🎬 Bubble #${index} "${sender}" — animation starting (typing in ${index * 1200}ms, visible in ${index * 1200 + TYPING_DELAY}ms)`);
 
     const typingTimeout = setTimeout(
-      () => setState("typing"),
+      () => { setState("typing"); console.log(`[V2-TestimoniosChat] ⌨️ Bubble #${index} "${sender}" — typing dots shown`); },
       index * 1200
     );
     const visibleTimeout = setTimeout(
-      () => setState("visible"),
+      () => { setState("visible"); console.log(`[V2-TestimoniosChat] ✅ Bubble #${index} "${sender}" — message revealed`); },
       index * 1200 + TYPING_DELAY
     );
 

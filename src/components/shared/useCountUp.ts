@@ -15,8 +15,12 @@ export function useCountUp(
   const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (!trigger || hasAnimated.current) return;
+    if (!trigger || hasAnimated.current) {
+      if (!trigger) console.log(`[useCountUp] ⏸️ Waiting for trigger — target: ${end}${decimals > 0 ? ` (${decimals} decimals)` : ""}`);
+      return;
+    }
     hasAnimated.current = true;
+    console.log(`[useCountUp] 🚀 Animation STARTED — target: ${end}, duration: ${duration}ms, decimals: ${decimals}`);
 
     const start = performance.now();
 
@@ -33,6 +37,8 @@ export function useCountUp(
 
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(tick);
+      } else {
+        console.log(`[useCountUp] ✅ Animation COMPLETE — final value: ${end}`);
       }
     }
 

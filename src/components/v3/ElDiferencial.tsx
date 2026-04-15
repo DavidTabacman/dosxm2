@@ -5,7 +5,14 @@ import styles from "./ElDiferencial.module.css";
 export default function ElDiferencial() {
   const [sectionRef, isVisible] = useIntersectionObserver({ threshold: 0.2 });
   const [hasRevealed, setHasRevealed] = useState(false);
-  useEffect(() => { if (isVisible) setHasRevealed(true); }, [isVisible]);
+  useEffect(() => {
+    if (isVisible) {
+      setHasRevealed(true);
+      console.log(`[V3-ElDiferencial] ✅ Reveal mask animation TRIGGERED`);
+    } else {
+      console.log(`[V3-ElDiferencial] ⏸️ Waiting for section visibility to trigger reveal mask`);
+    }
+  }, [isVisible]);
 
   return (
     <section

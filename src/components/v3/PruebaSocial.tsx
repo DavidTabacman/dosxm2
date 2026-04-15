@@ -5,7 +5,14 @@ import styles from "./PruebaSocial.module.css";
 export default function PruebaSocial() {
   const [ref, isVisible] = useIntersectionObserver({ threshold: 0.1 });
   const [hasStarted, setHasStarted] = useState(false);
-  useEffect(() => { if (isVisible) setHasStarted(true); }, [isVisible]);
+  useEffect(() => {
+    if (isVisible) {
+      setHasStarted(true);
+      console.log(`[V3-PruebaSocial] ✅ Ken Burns animation STARTED`);
+    } else {
+      console.log(`[V3-PruebaSocial] ⏸️ Waiting for section visibility to start Ken Burns`);
+    }
+  }, [isVisible]);
 
   return (
     <section className={styles.section} ref={ref}>

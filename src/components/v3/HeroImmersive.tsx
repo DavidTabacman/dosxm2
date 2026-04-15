@@ -7,10 +7,15 @@ export default function HeroImmersive() {
 
   useEffect(() => {
     const el = sectionRef.current;
-    if (!el) return;
+    if (!el) { console.warn(`[V3-HeroImmersive] ⚠️ sectionRef is null — scroll morph won't work`); return; }
 
     // Respect reduced motion
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      console.log(`[V3-HeroImmersive] ♿ prefers-reduced-motion — scroll morph disabled`);
+      return;
+    }
+
+    console.log(`[V3-HeroImmersive] 🎬 Scroll morph effect INITIALIZED — section height: ${el.offsetHeight}px`);
 
     function update() {
       if (!el) return;

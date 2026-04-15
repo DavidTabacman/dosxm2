@@ -40,6 +40,10 @@ function MetricCircle({
 export default function MetricsBounce() {
   const [ref, isVisible] = useIntersectionObserver({ threshold: 0.3 });
 
+  if (typeof window !== "undefined") {
+    console.log(`[V2-MetricsBounce] 📊 isVisible: ${isVisible} | targets: 45 días, 68%, 35+`);
+  }
+
   return (
     <section className={styles.section} ref={ref}>
       <div className={styles.container}>

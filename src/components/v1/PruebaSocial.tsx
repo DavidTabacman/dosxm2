@@ -48,6 +48,10 @@ export default function PruebaSocial() {
   const sectionRef = useRef<HTMLElement>(null);
   const progress = useScrollProgress(sectionRef);
 
+  if (typeof window !== "undefined" && progress > 0 && progress < 1) {
+    console.log(`[V1-PruebaSocial] 📜 Parallax scroll progress: ${progress.toFixed(3)} | offsets: ${TESTIMONIALS.map((_, i) => (progress * -(i+1) * 20).toFixed(1) + "px").join(", ")}`);
+  }
+
   return (
     <section className={styles.section} ref={sectionRef}>
       <div className={styles.sectionLabel}>Prueba Social</div>

@@ -1,6 +1,20 @@
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
 import styles from "./PortfolioGrid.module.css";
 
+function videoDebug(label: string) {
+  return {
+    onLoadStart: () => console.log(`[Video:${label}] 📡 loadstart`),
+    onCanPlay: () => console.log(`[Video:${label}] ✅ canplay`),
+    onPlay: () => console.log(`[Video:${label}] ▶️ play`),
+    onPlaying: () => console.log(`[Video:${label}] 🎬 playing`),
+    onStalled: () => console.log(`[Video:${label}] ⚠️ stalled`),
+    onError: (e: React.SyntheticEvent<HTMLVideoElement>) => {
+      const v = e.currentTarget;
+      console.error(`[Video:${label}] ❌ ERROR — code: ${v.error?.code}, message: "${v.error?.message}", networkState: ${v.networkState}, src: ${v.src}`);
+    },
+  };
+}
+
 const PROPERTIES = [
   {
     id: 1,
@@ -66,6 +80,7 @@ function PropertyCard({
         autoPlay
         playsInline
         data-asset-type="video"
+        {...videoDebug(`V1-Portfolio-${zona}`)}
       />
       <span className={styles.videoLabel} aria-hidden="true">
         Video Tour
