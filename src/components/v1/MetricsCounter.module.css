@@ -1,0 +1,51 @@
+.section {
+  background: var(--v1-dark);
+  color: var(--v1-text-dark);
+  padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 3rem);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.value {
+  font-family: var(--font-v1-serif), serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--v1-accent);
+}
+
+.label {
+  font-family: var(--font-v1-sans), system-ui, sans-serif;
+  font-size: clamp(0.875rem, 1.6vw, 1rem);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.7;
+}
+
+.divider {
+  width: 40px;
+  height: 2px;
+  background: var(--v1-accent);
+  opacity: 0.4;
+}

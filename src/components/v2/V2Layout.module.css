@@ -1,0 +1,12 @@
+.root {
+  --v2-bg: #fffbf5;
+  --v2-bg-alt: #f0ebe1;
+  --v2-text: #2d2d2d;
+  --v2-accent: #e86a58;
+  --v2-accent-light: #fdf0ee;
+
+  background: var(--v2-bg);
+  color: var(--v2-text);
+  min-height: 100vh;
+  font-family: var(--font-v2-sans), system-ui, sans-serif;
+}

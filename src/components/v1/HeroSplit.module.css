@@ -1,0 +1,143 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Desktop: side-by-side split */
+@media (min-width: 769px) {
+  .hero {
+    flex-direction: row;
+  }
+}
+
+/* Mobile: stacked */
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+  }
+}
+
+.panelLeft,
+.panelRight {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(2rem, 6vw, 5rem);
+  transition: flex-basis 0.1s ease-out;
+}
+
+.panelLeft {
+  background: var(--v1-dark);
+  color: var(--v1-text-dark);
+}
+
+.panelRight {
+  background: var(--v1-light);
+  color: var(--v1-text-light);
+}
+
+@media (min-width: 769px) {
+  .panelLeft,
+  .panelRight {
+    flex-basis: 50%;
+    min-height: 100vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .panelLeft,
+  .panelRight {
+    min-height: 50vh;
+    padding: clamp(3rem, 8vw, 5rem) clamp(1.5rem, 5vw, 3rem);
+  }
+}
+
+.headingLeft {
+  font-family: var(--font-v1-serif), serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.headingRight {
+  font-family: var(--font-v1-serif), serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.subheading {
+  font-family: var(--font-v1-sans), system-ui, sans-serif;
+  font-size: clamp(0.875rem, 1.8vw, 1.125rem);
+  margin-top: 1.5rem;
+  opacity: 0.8;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+/* Divider line (desktop only) */
+.divider {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .divider {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--v1-accent);
+    z-index: 10;
+    pointer-events: none;
+    transition: left 0.08s ease-out;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  }
+}
+
+/* Background images behind panels */
+.panelBg {
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  opacity: 0.15;
+}
+
+.panelLeft .panelBg {
+  opacity: 0.2;
+}
+
+/* Scroll reveal for mobile only */
+@media (max-width: 768px) {
+  .panelRight.mobileHidden {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+
+  .panelRight.mobileVisible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panelRight.mobileHidden {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .divider {
+    left: 50% !important;
+    transition: none;
+  }
+}
