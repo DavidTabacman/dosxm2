@@ -22,6 +22,13 @@ export function useVideoPlayback(label?: string): {
 
   // Attempt to play with a single muted retry on NotAllowedError
   const attemptPlay = useCallback(async (video: HTMLVideoElement) => {
+    // Skip if already playing (avoids AbortError from racing with HTML autoplay attribute)
+    if (!video.paused) {
+      console.log(`[VideoPlayback:${tag}] ✅ Already playing — skipping manual play()`);
+      setIsPlaying(true);
+      return;
+    }
+
     console.log(`[VideoPlayback:${tag}] ▶️ Attempting play — src: ${video.src?.slice(-40)}, muted: ${video.muted}, readyState: ${video.readyState}`);
 
     try {

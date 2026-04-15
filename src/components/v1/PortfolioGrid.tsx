@@ -95,7 +95,6 @@ function PropertyCard({
           poster={image}
           loop
           muted
-          autoPlay
           playsInline
           preload="none"
           data-asset-type="video"

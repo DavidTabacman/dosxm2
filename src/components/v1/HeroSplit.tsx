@@ -81,7 +81,6 @@ export default function HeroSplit() {
             poster={LEFT_POSTER}
             loop
             muted
-            autoPlay
             playsInline
             preload="metadata"
             aria-hidden="true"
@@ -120,7 +119,6 @@ export default function HeroSplit() {
             poster={RIGHT_POSTER}
             loop
             muted
-            autoPlay
             playsInline
             preload="metadata"
             aria-hidden="true"
