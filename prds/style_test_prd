@@ -1,0 +1,202 @@
+# PRD: DOSXM2 - 3 Homepage Implementations (Expanded & Mobile-Optimized)
+
+> **Note for Claude Code:** This PRD contains specifications for building 3 distinct homepage variations for A/B testing and client presentation. 
+> **CRITICAL REQUIREMENT:** While developing these 3 variations (e.g., on `/v1`, `/v2`, `/v3` routes), the main root `/` MUST maintain the current "Building/Under Construction" page. Do not overwrite the existing root index until explicitly instructed.
+> **MOBILE-FIRST REQUIREMENT:** All "Wow Effects" must be implemented with mobile devices in mind. Avoid relying solely on `hover` or `mousemove` events. Use `IntersectionObserver` (scroll), device orientation (gyroscope), or touch gestures for mobile fallbacks.
+
+## 1. Project Overview
+- **Client:** DOSXM2 (Real Estate Agency in Madrid)
+- **Core Concept:** "El Poder de Dos" (The Power of Two)
+- **Core Message:** "Vendemos tu casa como si fuese la nuestra."
+- **Goal:** Create 3 distinct visual/interactive implementations of the same core concept, each featuring a unique "wow effect" that works flawlessly on both desktop and mobile.
+
+---
+
+## 2. Implementation V1: "La Dualidad Cinematográfica"
+*Focus: Premium, immersive, visual duality.*
+
+### 2.1. Design System (V1)
+- **Typography:** 
+  - Primary (Headings): `Playfair Display` (Serif, elegant)
+  - Secondary (Body/Data): `Space Grotesk` (Sans-serif, modern)
+- **Color Palette:**
+  - Backgrounds: Alternating `#0A0A0A` (Dark) and `#F5F5F0` (Off-white)
+  - Text: `#FFFFFF` on dark, `#1A1A1A` on light
+  - Accent: `#D4AF37` (Muted Gold)
+- **Layout Structure:** 50/50 Split-screens dominating the layout (stacking vertically on mobile).
+
+### 2.2. Section Specifications & Mobile-Optimized Wow Effects (V1)
+
+#### 1. Hero Section
+- **Layout:** 50/50 split. Left side dark, right side light. (Mobile: Top dark, bottom light).
+- **Copy:** 
+  - *Heading (Left/Top, Serif):* "Vendemos tu casa"
+  - *Heading (Right/Bottom, Serif Italic):* "como si fuese la nuestra."
+  - *Sub-heading (Spanning center, Sans):* "En un sector donde la mayoría trabaja solo, nosotros somos dos."
+- **WOW EFFECT (The Scroll Reveal):** 
+  - *Desktop:* As the user moves their mouse horizontally, the 50/50 split line follows the cursor.
+  - *Mobile (Optimized):* The split line is controlled by the device's gyroscope (tilting the phone shifts the split left/right) OR by vertical scroll progress. As the user scrolls down slightly, the dark side expands to reveal an elegant interior video, then the light side expands to reveal a bright daylight video.
+
+#### 2. "El Diferencial" (Why Us)
+- **Layout:** Dark background. Two large, elegant portrait images of the founders, slightly offset vertically.
+- **Copy:** 
+  - *Heading:* "Dos visiones. Un objetivo."
+  - *Body:* "No somos una franquicia. No somos un algoritmo. Somos dos expertos dedicados a maximizar el valor de tu propiedad en Madrid."
+- **WOW EFFECT (Parallax Portraits):** As the user scrolls, the two portraits move at slightly different speeds (parallax), creating a sense of depth and elegance.
+
+#### 3. Metrics Section
+- **Layout:** 3-column grid on dark background (Vertical stack on mobile).
+- **Interaction:** Numbers count up from 0 when scrolled into view.
+- **Copy:** "45 Días Promedio", "100% Éxito", "5/5 Satisfacción".
+
+#### 4. "Historias Vendidas" (Portfolio)
+- **Layout:** Asymmetric grid of property cards (Single column on mobile).
+- **Visuals:** Initial state is B&W static images.
+- **WOW EFFECT (Cinematic Focus):** 
+  - *Desktop:* On hover, the image expands with parallax and transitions to a full-color looping video.
+  - *Mobile (Optimized):* Uses `IntersectionObserver`. As a property card reaches the center of the viewport (the "focus zone"), it automatically expands, transitions from B&W to color, and starts playing the video loop. As it scrolls out of the center, it reverts to B&W.
+- **Copy (Card):** "El nuevo comienzo en Chamberí. Vendido en 18 días."
+
+#### 5. Prueba Social (Testimonials)
+- **Layout:** Light background. Large, elegant serif quotes centered on the screen.
+- **Copy:** 
+  - *Quote:* "Vendieron nuestro piso en 2 semanas por más de lo que esperábamos. El trato fue impecable."
+  - *Author:* "María y Carlos, Retiro."
+- **WOW EFFECT (Fade & Float):** Quotes fade in and float up gently as the user scrolls, creating a serene, premium reading experience.
+
+#### 6. Valorador (Lead Capture)
+- **Layout:** Split screen again. Left side dark with a subtle video loop, right side light with the form.
+- **Copy:** 
+  - *Heading:* "¿Cuánto vale tu historia?"
+  - *Form:* "Dirección", "Metros cuadrados", "Habitaciones", "Tu nombre", "Tu teléfono".
+- **Interaction:** Elegant, minimalist form fields with floating labels.
+
+---
+
+## 3. Implementation V2: "El Diálogo Abierto"
+*Focus: Empathy, personal connection, conversational UI.*
+
+### 3.1. Design System (V2)
+- **Typography:** 
+  - All text: `Inter` or `DM Sans` (Clean, friendly, highly legible)
+- **Color Palette:**
+  - Backgrounds: Warm tones `#FFFBF5` (Cream), `#F0EBE1` (Warm Gray)
+  - Text: `#2D2D2D` (Soft Black)
+  - Accent: `#E86A58` (Warm Terracotta)
+- **Layout Structure:** Centered, organic shapes, chat-bubble inspired containers.
+
+### 3.2. Section Specifications & Mobile-Optimized Wow Effects (V2)
+
+#### 1. Hero Section
+- **Layout:** Centered content with large, welcoming portraits of the two founders.
+- **Copy:** 
+  - *Heading (Large, friendly):* "Hola. Somos DOSXM2."
+  - *Sub-heading:* "Y vendemos tu casa como si fuese la nuestra. Literalmente."
+- **WOW EFFECT (The Living Portrait):** 
+  - *Desktop & Mobile:* The portraits are subtle cinemagraphs (video loops). As the user scrolls down, the portraits smoothly shrink and dock to the bottom corner of the screen (bottom right on desktop, bottom center on mobile), becoming a persistent "chat avatar" or floating action button (FAB) that guides them through the site.
+
+#### 2. "El Diferencial" Section
+- **Layout:** Alternating left/right chat-bubble style blocks.
+- **Visuals:** Small circular avatars of the founders next to the text blocks.
+- **WOW EFFECT (Typing Animation):** 
+  - *Desktop & Mobile:* Uses `IntersectionObserver`. As the user scrolls to this section, the chat bubbles don't just fade in. They appear sequentially with a realistic "typing..." indicator (three bouncing dots) for a brief moment before revealing the text, making the website feel like a live conversation unfolding as they scroll.
+- **Copy:** 
+  - *Bubble 1:* "No eres un número en una base de datos."
+  - *Bubble 2:* "Hablas directamente con nosotros. Siempre."
+
+#### 3. Metrics Section
+- **Layout:** Warm background. Large, friendly numbers in circular containers.
+- **Copy:** "Vendemos en 45 días", "100% de éxito", "Clientes felices".
+- **Interaction:** Numbers pop in with a slight bounce effect.
+
+#### 4. "Historias Vendidas" (Portfolio)
+- **Layout:** Masonry grid of property photos, looking like a curated Instagram feed.
+- **Visuals:** Bright, warm, lifestyle-focused photography.
+- **WOW EFFECT (Story Reveal):** Tapping/clicking a photo flips it over (3D card flip animation) to reveal the story behind the sale, written in a conversational tone.
+- **Copy (Back of card):** "Ana necesitaba vender rápido para mudarse a Londres. Lo logramos en 18 días sin bajar el precio."
+
+#### 5. Prueba Social (Testimonials)
+- **Layout:** Chat-bubble style testimonials, looking like WhatsApp messages.
+- **Copy:** 
+  - *Message:* "¡Chicos, sois los mejores! Gracias por todo el esfuerzo."
+  - *Sender:* "Ana, Malasaña."
+- **Interaction:** Messages slide in from the side as the user scrolls.
+
+#### 6. The Valuator (Lead Capture)
+- **Layout:** Conversational form (Typeform style). One question at a time.
+- **Interaction:** Smooth slide-up transitions between questions.
+- **Copy:** "Cuéntanos sobre tu casa. Nosotros nos encargamos del resto."
+
+---
+
+## 4. Implementation V3: "El Viaje Inmersivo"
+*Focus: Storytelling, editorial elegance, continuous narrative flow.*
+
+### 4.1. Design System (V3)
+- **Typography:** 
+  - Headings: `Ogg` or `Canela` (Highly expressive, editorial Serif)
+  - Body: `Inter` (Clean Sans-serif for readability)
+- **Color Palette:**
+  - Backgrounds: `#FAF9F6` (Warm Paper White)
+  - Text: `#1C1C1C` (Deep Charcoal)
+  - Accent: `#8B5A2B` (Earthy Ochre)
+- **Layout Structure:** Full-bleed imagery, overlapping elements, magazine-style editorial layouts.
+
+### 4.2. Section Specifications & Mobile-Optimized Wow Effects (V3)
+
+#### 1. Hero Section
+- **Layout:** Full-screen immersive video background with large, centered typography.
+- **Visuals:** High-quality, slow-motion video of a beautiful Madrid property, focusing on details (light hitting a floor, a hand turning a key).
+- **Copy:** 
+  - *Heading (Huge, expressive Serif):* "Tu casa."
+  - *Sub-heading (Fading in below):* "Nuestra dedicación. El poder de dos expertos trabajando para ti."
+- **WOW EFFECT (The Narrative Scroll):** 
+  - *Desktop & Mobile:* As the user scrolls down, the hero video doesn't just scroll out of view. Instead, the video scales down smoothly and becomes the first image in the "Historias Vendidas" section, seamlessly connecting the hero to the portfolio. The text fades out, and the background transitions from the video to the warm paper white.
+
+#### 2. "El Diferencial" Section
+- **Layout:** Overlapping text and image blocks, like a high-end editorial spread.
+- **Visuals:** Candid, high-quality photos of the founders working together.
+- **WOW EFFECT (The Reveal Mask):** 
+  - *Desktop & Mobile:* Uses `IntersectionObserver`. As the user scrolls, large blocks of solid color slide away to reveal the text and images underneath, creating a sense of uncovering a story. The images have a subtle parallax effect, moving slightly slower than the scroll speed to create depth.
+- **Copy:** 
+  - *Heading:* "Dos visiones. Un objetivo."
+  - *Body:* "No somos una agencia tradicional. Somos un equipo dedicado a contar la historia de tu propiedad y encontrar al comprador perfecto."
+
+#### 3. Metrics Section
+- **Layout:** Minimalist, editorial layout. Large serif numbers integrated into the text flow.
+- **Copy:** "Vendemos en un promedio de **45 días**, con una tasa de éxito del **100%**."
+- **Interaction:** The bold numbers fade in sequentially as the user reads.
+
+#### 4. "Historias Vendidas" (Portfolio)
+- **Layout:** Horizontal scrolling gallery (Carousel).
+- **Visuals:** Large, full-bleed images of sold properties.
+- **WOW EFFECT (The Horizontal Journey):** 
+  - *Desktop:* User scrolls vertically, but the gallery moves horizontally (scroll-jacking).
+  - *Mobile (Optimized):* A smooth, swipeable horizontal carousel with snap-to-center functionality. As each property snaps into the center, its specific story and metrics fade in below it.
+- **Copy:** 
+  - *Card:* "Chamberí. Vendido en 18 días. La historia de un nuevo comienzo."
+
+#### 5. Prueba Social (Testimonials)
+- **Layout:** Full-screen image background with a dark overlay. A single, powerful quote in large serif typography.
+- **Copy:** 
+  - *Quote:* "Entendieron el valor de nuestra casa desde el primer minuto."
+  - *Author:* "Familia García, Salamanca."
+- **Interaction:** The background image slowly zooms in (Ken Burns effect) while the quote remains static.
+
+#### 6. Valorador (Lead Capture)
+- **Layout:** Minimalist, editorial form. Looks like a high-end invitation.
+- **Copy:** 
+  - *Heading:* "Comencemos tu historia."
+  - *Form:* Elegant, single-line input fields that expand as you type.
+- **Interaction:** The form fields have a subtle underline animation when focused.
+
+---
+
+## 5. Technical Requirements for Claude Code
+1. **Framework:** Use standard HTML/CSS/JS or React/Next.js depending on the current stack.
+2. **Routing:** Implement these as `/v1`, `/v2`, and `/v3`.
+3. **Root Protection:** Ensure `/` serves the existing "Building" page.
+4. **Responsiveness:** All 3 variations must be fully responsive (mobile-first approach).
+5. **Animations:** Use CSS transitions or lightweight libraries (like Framer Motion or GSAP) for the specific interactions mentioned.
+6. **Mobile Interactions:** Rely heavily on `IntersectionObserver` for scroll-based triggers instead of `mouseenter`/`mouseleave`.
+7. **Assets:** Use placeholder images (`via.placeholder.com` or Unsplash source) with specific dimensions if real assets are not yet provided. Add `data-asset-type="video"` or `data-asset-type="portrait"` attributes to placeholders for easy replacement later.
