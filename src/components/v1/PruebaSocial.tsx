@@ -1,4 +1,6 @@
+import { useRef } from "react";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
+import { useScrollProgress } from "../shared/useScrollProgress";
 import styles from "./PruebaSocial.module.css";
 
 const TESTIMONIALS = [
@@ -19,13 +21,22 @@ const TESTIMONIALS = [
   },
 ];
 
-function QuoteCard({ quote, author }: { quote: string; author: string }) {
+function QuoteCard({
+  quote,
+  author,
+  parallaxOffset,
+}: {
+  quote: string;
+  author: string;
+  parallaxOffset: number;
+}) {
   const [ref, isVisible] = useIntersectionObserver({ threshold: 0.3 });
 
   return (
     <blockquote
       className={`${styles.quote} ${isVisible ? styles.inView : ""}`}
       ref={ref}
+      style={{ transform: `translateY(${isVisible ? parallaxOffset : 30}px)` }}
     >
       <p className={styles.quoteText}>&ldquo;{quote}&rdquo;</p>
       <footer className={styles.quoteAuthor}>&mdash; {author}</footer>
@@ -34,13 +45,21 @@ function QuoteCard({ quote, author }: { quote: string; author: string }) {
 }
 
 export default function PruebaSocial() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const progress = useScrollProgress(sectionRef);
+
   return (
-    <section className={styles.section}>
+    <section className={styles.section} ref={sectionRef}>
       <div className={styles.sectionLabel}>Prueba Social</div>
       <h2 className={styles.heading}>Lo que dicen nuestros clientes.</h2>
       <div className={styles.quotes}>
-        {TESTIMONIALS.map((t) => (
-          <QuoteCard key={t.author} quote={t.quote} author={t.author} />
+        {TESTIMONIALS.map((t, i) => (
+          <QuoteCard
+            key={t.author}
+            quote={t.quote}
+            author={t.author}
+            parallaxOffset={progress * -(i + 1) * 20}
+          />
         ))}
       </div>
     </section>

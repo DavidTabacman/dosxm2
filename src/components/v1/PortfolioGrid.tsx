@@ -7,30 +7,35 @@ const PROPERTIES = [
     zona: "Chamberí",
     meta: "Vendido en 18 días — 100% precio",
     image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
+    video: "https://videos.pexels.com/video-files/1448735/1448735-uhd_2560_1440_24fps.mp4",
   },
   {
     id: 2,
     zona: "Salamanca",
     meta: "Vendido en 22 días — 105% precio",
     image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop",
+    video: "https://videos.pexels.com/video-files/1838554/1838554-uhd_2560_1440_24fps.mp4",
   },
   {
     id: 3,
     zona: "Retiro",
     meta: "Vendido en 31 días — 98% precio",
     image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop",
+    video: "https://videos.pexels.com/video-files/3773486/3773486-uhd_2560_1440_30fps.mp4",
   },
   {
     id: 4,
     zona: "Moncloa",
     meta: "Vendido en 14 días — 100% precio",
     image: "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=800&h=600&fit=crop",
+    video: "https://videos.pexels.com/video-files/3773381/3773381-uhd_2560_1440_30fps.mp4",
   },
   {
     id: 5,
     zona: "Chamartín",
     meta: "Vendido en 27 días — 102% precio",
     image: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&h=600&fit=crop",
+    video: "https://videos.pexels.com/video-files/4063585/4063585-uhd_2560_1440_25fps.mp4",
   },
 ];
 
@@ -38,10 +43,12 @@ function PropertyCard({
   zona,
   meta,
   image,
+  video,
 }: {
   zona: string;
   meta: string;
   image: string;
+  video: string;
 }) {
   const [ref, isVisible] = useIntersectionObserver({ threshold: 0.4 });
 
@@ -50,13 +57,15 @@ function PropertyCard({
       className={`${styles.card} ${isVisible ? styles.inView : ""}`}
       ref={ref}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <video
         className={styles.cardImage}
-        src={image}
-        alt={`Propiedad en ${zona}`}
+        src={video}
+        poster={image}
+        loop
+        muted
+        autoPlay
+        playsInline
         data-asset-type="video"
-        loading="lazy"
       />
       <span className={styles.videoLabel} aria-hidden="true">
         Video Tour
@@ -76,7 +85,7 @@ export default function PortfolioGrid() {
       <h2 className={styles.heading}>Historias Vendidas</h2>
       <div className={styles.grid}>
         {PROPERTIES.map((p) => (
-          <PropertyCard key={p.id} zona={p.zona} meta={p.meta} image={p.image} />
+          <PropertyCard key={p.id} zona={p.zona} meta={p.meta} image={p.image} video={p.video} />
         ))}
       </div>
     </section>

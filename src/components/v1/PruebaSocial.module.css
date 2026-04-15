@@ -36,8 +36,8 @@
   padding: 0;
   border: none;
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  transition: opacity 0.8s ease-out;
+  will-change: transform;
 }
 
 .quote.inView {
@@ -64,7 +64,8 @@
 @media (prefers-reduced-motion: reduce) {
   .quote {
     opacity: 1;
-    transform: none;
+    transform: none !important;
     transition: none;
+    will-change: auto;
   }
 }

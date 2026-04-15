@@ -8,7 +8,7 @@ export default function LiveMetrics() {
   const [showSecond, setShowSecond] = useState(false);
 
   const count45 = useCountUp(45, 2000, isVisible);
-  const count100 = useCountUp(100, 2000, showSecond);
+  const count68 = useCountUp(68, 2000, showSecond);
 
   // Sequential fade: second number starts 600ms after section becomes visible
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function LiveMetrics() {
         <span
           className={`${styles.number} ${showSecond ? styles.numberVisible : ""}`}
         >
-          {count100}%
+          {count68}%
         </span>
         .
       </p>

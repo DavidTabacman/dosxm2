@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Playfair_Display, Inter } from "next/font/google";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import V3Layout from "@/components/v3/V3Layout";
 import HeroImmersive from "@/components/v3/HeroImmersive";
 import ElDiferencial from "@/components/v3/ElDiferencial";
@@ -8,10 +8,10 @@ import HistoriasVendidas from "@/components/v3/PortfolioTable";
 import PruebaSocial from "@/components/v3/PruebaSocial";
 import Valorador from "@/components/v3/Valorador";
 
-const playfair = Playfair_Display({
+const cormorant = Cormorant_Garamond({
   variable: "--font-v3-serif",
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
 });
 
@@ -30,7 +30,7 @@ export default function V3Page() {
           content="Tu casa. Nuestra dedicación. El poder de dos expertos trabajando para ti."
         />
       </Head>
-      <V3Layout fontClassName={`${playfair.variable} ${inter.variable}`}>
+      <V3Layout fontClassName={`${cormorant.variable} ${inter.variable}`}>
         <HeroImmersive />
         <ElDiferencial />
         <LiveMetrics />

@@ -3,9 +3,9 @@ import { useCountUp } from "../shared/useCountUp";
 import styles from "./MetricsCounter.module.css";
 
 const METRICS = [
-  { value: 45, suffix: "", label: "Días Promedio" },
-  { value: 100, suffix: "%", label: "Éxito" },
-  { value: 5, suffix: "/5", label: "Satisfacción" },
+  { value: 45, suffix: "", label: "Días Promedio", decimals: 0 },
+  { value: 68, suffix: "%", label: "Éxito", decimals: 0 },
+  { value: 3.5, suffix: "/5", label: "Satisfacción", decimals: 1 },
 ];
 
 function Metric({
@@ -13,18 +13,20 @@ function Metric({
   suffix,
   label,
   animate,
+  decimals = 0,
 }: {
   value: number;
   suffix: string;
   label: string;
   animate: boolean;
+  decimals?: number;
 }) {
-  const count = useCountUp(value, 2000, animate);
+  const count = useCountUp(value, 2000, animate, decimals);
 
   return (
     <div className={styles.metric}>
       <div className={styles.value}>
-        {count}
+        {decimals > 0 ? count.toFixed(decimals) : count}
         {suffix}
       </div>
       <div className={styles.divider} aria-hidden="true" />
@@ -46,6 +48,7 @@ export default function MetricsCounter() {
             suffix={m.suffix}
             label={m.label}
             animate={isVisible}
+            decimals={m.decimals}
           />
         ))}
       </div>

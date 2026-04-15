@@ -22,21 +22,29 @@ export default function HeroPortrait() {
           Y vendemos tu casa como si fuese la nuestra. Literalmente.
         </p>
 
-        {/* Portraits in hero (visible when hero is on screen) */}
+        {/* Portraits in hero — cinemagraph videos for "Living Portrait" effect */}
         {!showFab && (
           <div className={styles.portraits}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <video
               className={styles.portrait}
-              src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face"
-              alt="Fundador 1 de DOSXM2"
+              src="https://videos.pexels.com/video-files/4625518/4625518-uhd_2560_1440_24fps.mp4"
+              poster="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face"
+              loop
+              muted
+              autoPlay
+              playsInline
+              aria-label="Fundador 1 de DOSXM2"
               data-asset-type="portrait"
             />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <video
               className={styles.portrait}
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face"
-              alt="Fundador 2 de DOSXM2"
+              src="https://videos.pexels.com/video-files/4623581/4623581-uhd_2560_1440_24fps.mp4"
+              poster="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face"
+              loop
+              muted
+              autoPlay
+              playsInline
+              aria-label="Fundador 2 de DOSXM2"
               data-asset-type="portrait"
             />
           </div>

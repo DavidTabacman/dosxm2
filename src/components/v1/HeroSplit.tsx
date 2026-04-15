@@ -13,16 +13,18 @@ export default function HeroSplit() {
 
   return (
     <section className={styles.hero} ref={heroRef}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <div
         className={styles.panelLeft}
         style={{ flexBasis: `${dividerPos}%` }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <video
           className={styles.panelBg}
-          src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&h=800&fit=crop"
-          alt=""
+          src="https://videos.pexels.com/video-files/3773486/3773486-uhd_2560_1440_30fps.mp4"
+          poster="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&h=800&fit=crop"
+          loop
+          muted
+          autoPlay
+          playsInline
           aria-hidden="true"
           data-asset-type="hero-bg"
         />
@@ -43,11 +45,14 @@ export default function HeroSplit() {
         ref={rightRef}
         style={{ flexBasis: `${100 - dividerPos}%` }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <video
           className={styles.panelBg}
-          src="https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop"
-          alt=""
+          src="https://videos.pexels.com/video-files/3773381/3773381-uhd_2560_1440_30fps.mp4"
+          poster="https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop"
+          loop
+          muted
+          autoPlay
+          playsInline
           aria-hidden="true"
           data-asset-type="hero-bg"
         />

@@ -98,11 +98,53 @@
   margin-top: 0.25rem;
 }
 
+/* Typing indicator */
+.typing {
+  display: inline-flex;
+  gap: 4px;
+  padding: 0.75rem 1.25rem;
+  background: #ffffff;
+  border-radius: 12px;
+  border-top-left-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.rowRight .typing {
+  background: var(--v2-accent-light);
+  border-radius: 12px;
+  border-top-right-radius: 4px;
+}
+
+.typingDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #aaa;
+  animation: bounce 1.4s ease-in-out infinite;
+}
+
+.typingDot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typingDot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .slideLeft,
   .slideRight {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  .typingDot {
+    animation: none;
   }
 }

@@ -4,8 +4,8 @@ import styles from "./MetricsBounce.module.css";
 
 const METRICS = [
   { value: 45, suffix: " días", label: "Vendemos en" },
-  { value: 100, suffix: "%", label: "De éxito" },
-  { value: 50, suffix: "+", label: "Clientes felices" },
+  { value: 68, suffix: "%", label: "De éxito" },
+  { value: 35, suffix: "+", label: "Clientes felices" },
 ];
 
 function MetricCircle({

@@ -7,7 +7,8 @@ function easeOutCubic(t: number): number {
 export function useCountUp(
   end: number,
   duration = 2000,
-  trigger = true
+  trigger = true,
+  decimals = 0
 ): number {
   const [value, setValue] = useState(0);
   const rafRef = useRef<number>(0);
@@ -24,7 +25,11 @@ export function useCountUp(
       const progress = Math.min(elapsed / duration, 1);
       const eased = easeOutCubic(progress);
 
-      setValue(Math.round(eased * end));
+      setValue(
+        decimals > 0
+          ? parseFloat((eased * end).toFixed(decimals))
+          : Math.round(eased * end)
+      );
 
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(tick);
@@ -34,7 +39,7 @@ export function useCountUp(
     rafRef.current = requestAnimationFrame(tick);
 
     return () => cancelAnimationFrame(rafRef.current);
-  }, [trigger, end, duration]);
+  }, [trigger, end, duration, decimals]);
 
   return value;
 }

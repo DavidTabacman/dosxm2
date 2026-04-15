@@ -11,8 +11,8 @@ describe("V1 PortfolioGrid", () => {
 
   test("renders 5 property cards", () => {
     const { container } = render(<PortfolioGrid />);
-    const images = container.querySelectorAll("img[data-asset-type='video']");
-    expect(images).toHaveLength(5);
+    const videos = container.querySelectorAll("video[data-asset-type='video']");
+    expect(videos).toHaveLength(5);
   });
 
   test("renders all 5 zonas", () => {

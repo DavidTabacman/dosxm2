@@ -16,16 +16,16 @@ describe("V2 HeroPortrait", () => {
     );
   });
 
-  test("renders 2 founder portrait images in hero", () => {
+  test("renders 2 founder portrait videos in hero", () => {
     const { container } = render(<HeroPortrait />);
-    const portraits = container.querySelectorAll("img[data-asset-type='portrait']");
+    const portraits = container.querySelectorAll("video[data-asset-type='portrait']");
     expect(portraits).toHaveLength(2);
   });
 
-  test("portraits have meaningful alt text", () => {
+  test("portraits have meaningful aria-labels", () => {
     const { container } = render(<HeroPortrait />);
-    const portraits = container.querySelectorAll("img[data-asset-type='portrait']");
-    expect(portraits[0].getAttribute("alt")).toContain("Fundador 1");
-    expect(portraits[1].getAttribute("alt")).toContain("Fundador 2");
+    const portraits = container.querySelectorAll("video[data-asset-type='portrait']");
+    expect(portraits[0].getAttribute("aria-label")).toContain("Fundador 1");
+    expect(portraits[1].getAttribute("aria-label")).toContain("Fundador 2");
   });
 });

@@ -25,10 +25,10 @@ describe("V1 HeroSplit", () => {
     );
   });
 
-  test("renders two background images with data-asset-type", () => {
+  test("renders two background videos with data-asset-type", () => {
     const { container } = render(<HeroSplit />);
-    const images = container.querySelectorAll("img[data-asset-type='hero-bg']");
-    expect(images).toHaveLength(2);
+    const videos = container.querySelectorAll("video[data-asset-type='hero-bg']");
+    expect(videos).toHaveLength(2);
   });
 
   test("renders divider element", () => {
