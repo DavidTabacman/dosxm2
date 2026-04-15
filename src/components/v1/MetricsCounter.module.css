@@ -11,6 +11,14 @@
   max-width: 900px;
   margin: 0 auto;
   text-align: center;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.grid.revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 @media (max-width: 768px) {
@@ -48,4 +56,12 @@
   height: 2px;
   background: var(--v1-accent);
   opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grid {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

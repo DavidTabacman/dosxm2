@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { useSectionReveal } from "../shared/useSectionReveal";
 import styles from "./Valorador.module.css";
 
 const FIELDS = [
@@ -12,6 +13,7 @@ const FIELDS = [
 type FieldName = (typeof FIELDS)[number]["name"];
 
 export default function Valorador() {
+  const [revealRef, isRevealed] = useSectionReveal(0.2);
   const [values, setValues] = useState<Record<FieldName, string>>({
     direccion: "",
     metros: "",
@@ -25,8 +27,16 @@ export default function Valorador() {
     setValues((prev) => ({ ...prev, [name]: value }));
   }
 
+  if (typeof window !== "undefined") {
+    console.log(
+      `[V1-Valorador] 📋 Form state — revealed: ${isRevealed} | submitted: ${submitted} | ` +
+      `fieldsPopulated: ${Object.entries(values).filter(([, v]) => v.length > 0).length}/${FIELDS.length}`
+    );
+  }
+
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    console.log(`[V1-Valorador] ✅ Form submitted — fields: ${JSON.stringify(values)}`);
     setSubmitted(true);
   }
 
@@ -65,11 +75,15 @@ export default function Valorador() {
           </div>
         </div>
 
-        <div className={styles.formPanel}>
+        <div
+          className={`${styles.formPanel} ${isRevealed ? styles.formRevealed : ""}`}
+          ref={revealRef}
+        >
           <form className={styles.form} onSubmit={handleSubmit}>
             {FIELDS.map((field) => (
               <div className={styles.fieldGroup} key={field.name}>
                 <input
+                  id={`valorador-${field.name}`}
                   className={styles.input}
                   type={field.type}
                   placeholder=" "
@@ -77,7 +91,9 @@ export default function Valorador() {
                   onChange={(e) => handleChange(field.name, e.target.value)}
                   required
                 />
-                <label className={styles.label}>{field.label}</label>
+                <label className={styles.label} htmlFor={`valorador-${field.name}`}>
+                  {field.label}
+                </label>
               </div>
             ))}
             <button className={styles.submit} type="submit">

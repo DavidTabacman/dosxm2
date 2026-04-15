@@ -1,24 +1,15 @@
+/* =========================================================
+   HeroSplit — "La Dualidad Cinematográfica"
+   Base rules FIRST, then media query overrides.
+   ========================================================= */
+
 .hero {
   position: relative;
   min-height: 100vh;
-  display: flex;
   overflow: hidden;
 }
 
-/* Desktop: side-by-side split */
-@media (min-width: 769px) {
-  .hero {
-    flex-direction: row;
-  }
-}
-
-/* Mobile: stacked */
-@media (max-width: 768px) {
-  .hero {
-    flex-direction: column;
-  }
-}
-
+/* --- Base panel styles (mobile-first) --- */
 .panelLeft,
 .panelRight {
   position: relative;
@@ -26,7 +17,6 @@
   flex-direction: column;
   justify-content: center;
   padding: clamp(2rem, 6vw, 5rem);
-  transition: flex-basis 0.1s ease-out;
 }
 
 .panelLeft {
@@ -39,22 +29,43 @@
   color: var(--v1-text-light);
 }
 
+/* --- Desktop: overlapping panels with clip-path split reveal --- */
 @media (min-width: 769px) {
+  .hero {
+    display: block;
+  }
+
   .panelLeft,
   .panelRight {
-    flex-basis: 50%;
-    min-height: 100vh;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .panelRight {
+    clip-path: inset(0 0 0 var(--divider-pos, 50%));
+    will-change: clip-path;
+    transition: clip-path 0.08s ease-out;
   }
 }
 
+/* --- Mobile: stacked layout (no clip-path) --- */
 @media (max-width: 768px) {
+  .hero {
+    display: flex;
+    flex-direction: column;
+  }
+
   .panelLeft,
   .panelRight {
+    clip-path: none !important;
     min-height: 50vh;
     padding: clamp(3rem, 8vw, 5rem) clamp(1.5rem, 5vw, 3rem);
   }
 }
 
+/* --- Typography --- */
 .headingLeft {
   font-family: var(--font-v1-serif), serif;
   font-size: clamp(2.5rem, 6vw, 5rem);
@@ -76,12 +87,12 @@
   font-family: var(--font-v1-sans), system-ui, sans-serif;
   font-size: clamp(0.875rem, 1.8vw, 1.125rem);
   margin-top: 1.5rem;
-  opacity: 0.8;
+  opacity: 0.9;
   max-width: 500px;
   line-height: 1.6;
 }
 
-/* Divider line (desktop only) */
+/* --- Divider line (desktop only) --- */
 .divider {
   display: none;
 }
@@ -92,6 +103,7 @@
     position: absolute;
     top: 0;
     bottom: 0;
+    left: var(--divider-pos, 50%);
     width: 2px;
     background: var(--v1-accent);
     z-index: 10;
@@ -101,21 +113,41 @@
   }
 }
 
-/* Background images behind panels */
+/* --- Background videos / images behind panels --- */
 .panelBg {
   position: absolute;
   inset: 0;
   object-fit: cover;
   width: 100%;
   height: 100%;
-  opacity: 0.15;
+  filter: grayscale(1);
+  opacity: 0.35;
+  transition: filter 0.6s ease, opacity 0.6s ease;
+  -webkit-backface-visibility: hidden;
 }
 
 .panelLeft .panelBg {
-  opacity: 0.2;
+  opacity: 0.4;
 }
 
-/* Scroll reveal for mobile only */
+/* Desktop hover: B&W to Color reveal */
+@media (hover: hover) and (pointer: fine) {
+  .panelLeft:hover .panelBg,
+  .panelRight:hover .panelBg {
+    filter: grayscale(0);
+    opacity: 0.5;
+  }
+}
+
+/* Touch devices: color on scroll into view */
+@media (hover: none) {
+  .panelBg.videoInView {
+    filter: grayscale(0);
+    opacity: 0.5;
+  }
+}
+
+/* --- Scroll reveal for mobile only --- */
 @media (max-width: 768px) {
   .panelRight.mobileHidden {
     opacity: 0;
@@ -129,6 +161,7 @@
   }
 }
 
+/* --- Reduced motion --- */
 @media (prefers-reduced-motion: reduce) {
   .panelRight.mobileHidden {
     opacity: 1;
@@ -136,8 +169,17 @@
     transition: none;
   }
 
+  .panelRight {
+    clip-path: inset(0 0 0 50%) !important;
+    transition: none;
+  }
+
   .divider {
     left: 50% !important;
+    transition: none;
+  }
+
+  .panelBg {
     transition: none;
   }
 }

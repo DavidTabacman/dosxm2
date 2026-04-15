@@ -57,4 +57,18 @@ describe("V1 Valorador", () => {
     const check = container.querySelector("[aria-hidden='true']");
     expect(check?.textContent).toContain("✓");
   });
+
+  test("each input has an id and its label has matching htmlFor", () => {
+    const { container } = render(<Valorador />);
+    const inputs = container.querySelectorAll("input");
+    const fieldNames = ["direccion", "metros", "habitaciones", "nombre", "telefono"];
+
+    inputs.forEach((input, i) => {
+      const expectedId = `valorador-${fieldNames[i]}`;
+      expect(input.id).toBe(expectedId);
+
+      const label = container.querySelector(`label[for='${expectedId}']`);
+      expect(label).not.toBeNull();
+    });
+  });
 });

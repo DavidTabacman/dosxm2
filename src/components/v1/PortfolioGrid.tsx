@@ -1,19 +1,8 @@
+import { useRef } from "react";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
+import { useVideoPlayback } from "../shared/useVideoPlayback";
+import VideoPlayPause from "../shared/VideoPlayPause";
 import styles from "./PortfolioGrid.module.css";
-
-function videoDebug(label: string) {
-  return {
-    onLoadStart: () => console.log(`[Video:${label}] 📡 loadstart`),
-    onCanPlay: () => console.log(`[Video:${label}] ✅ canplay`),
-    onPlay: () => console.log(`[Video:${label}] ▶️ play`),
-    onPlaying: () => console.log(`[Video:${label}] 🎬 playing`),
-    onStalled: () => console.log(`[Video:${label}] ⚠️ stalled`),
-    onError: (e: React.SyntheticEvent<HTMLVideoElement>) => {
-      const v = e.currentTarget;
-      console.error(`[Video:${label}] ❌ ERROR — code: ${v.error?.code}, message: "${v.error?.message}", networkState: ${v.networkState}, src: ${v.src}`);
-    },
-  };
-}
 
 const PROPERTIES = [
   {
@@ -58,33 +47,62 @@ function PropertyCard({
   meta,
   image,
   video,
+  index,
 }: {
   zona: string;
   meta: string;
   image: string;
   video: string;
+  index: number;
 }) {
   const [ref, isVisible] = useIntersectionObserver({ threshold: 0.4 });
+  const videoElRef = useRef<HTMLVideoElement>(null);
+  const { ref: playbackRef, hasError } = useVideoPlayback(`Portfolio-${zona}`);
+
+  if (hasError) {
+    console.warn(
+      `[PortfolioGrid] ⚠️ Card "${zona}" video failed — showing poster fallback. ` +
+      `Video src: ${video.slice(-40)}`
+    );
+  }
+
+  const setVideoRef = (node: HTMLVideoElement | null) => {
+    videoElRef.current = node;
+    playbackRef(node);
+  };
 
   return (
     <div
       className={`${styles.card} ${isVisible ? styles.inView : ""}`}
       ref={ref}
+      role="group"
+      aria-label={`Propiedad en ${zona}`}
+      data-cursor="pointer"
+      style={{ "--stagger-index": index % 3 } as React.CSSProperties}
     >
-      <video
-        className={styles.cardImage}
-        src={video}
-        poster={image}
-        loop
-        muted
-        autoPlay
-        playsInline
-        data-asset-type="video"
-        {...videoDebug(`V1-Portfolio-${zona}`)}
-      />
-      <span className={styles.videoLabel} aria-hidden="true">
-        Video Tour
-      </span>
+      {hasError ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          className={styles.cardImage}
+          src={image}
+          alt={`Propiedad en ${zona}`}
+        />
+      ) : (
+        <video
+          ref={setVideoRef}
+          className={styles.cardImage}
+          src={video}
+          poster={image}
+          loop
+          muted
+          autoPlay
+          playsInline
+          preload="none"
+          data-asset-type="video"
+        />
+      )}
+      <VideoPlayPause videoRef={videoElRef} label={`Portfolio-${zona}`} />
+      <span className={styles.videoLabel}>Video Tour</span>
       <div className={styles.cardOverlay}>
         <p className={styles.cardZona}>{zona}</p>
         <p className={styles.cardMeta}>{meta}</p>
@@ -99,8 +117,15 @@ export default function PortfolioGrid() {
       <div className={styles.sectionLabel}>Nuestro Portfolio</div>
       <h2 className={styles.heading}>Historias Vendidas</h2>
       <div className={styles.grid}>
-        {PROPERTIES.map((p) => (
-          <PropertyCard key={p.id} zona={p.zona} meta={p.meta} image={p.image} video={p.video} />
+        {PROPERTIES.map((p, i) => (
+          <PropertyCard
+            key={p.id}
+            zona={p.zona}
+            meta={p.meta}
+            image={p.image}
+            video={p.video}
+            index={i}
+          />
         ))}
       </div>
     </section>

@@ -56,6 +56,17 @@
   overflow: hidden;
   border-radius: 4px;
   cursor: pointer;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.card.inView {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out,
+    box-shadow 0.4s ease;
+  transition-delay: calc(var(--stagger-index, 0) * 100ms);
 }
 
 .cardImage {
@@ -67,9 +78,18 @@
   transition: filter 0.6s ease, transform 0.6s ease;
 }
 
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
 .card:hover .cardImage {
   filter: grayscale(0);
   transform: scale(1.03);
+}
+
+.card:hover .cardOverlay {
+  padding-bottom: 1.75rem;
 }
 
 /* Mobile: IntersectionObserver driven */
@@ -84,6 +104,7 @@
   right: 0;
   padding: 1.25rem;
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  transition: padding 0.4s ease;
   color: #fff;
 }
 
@@ -124,6 +145,16 @@
 
 @media (prefers-reduced-motion: reduce) {
   .cardImage {
+    transition: none;
+  }
+
+  .card {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .cardOverlay {
     transition: none;
   }
 }

@@ -1,0 +1,65 @@
+/* Custom cursor — ring (trailing) + dot (instant) */
+.ring,
+.dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0; /* hidden until first mousemove */
+  will-change: transform;
+}
+
+.ring {
+  width: 40px;
+  height: 40px;
+  margin-left: -20px;
+  margin-top: -20px;
+  border: 2px solid var(--v1-accent, #d4af37);
+  border-radius: 50%;
+  transition: width 0.2s ease, height 0.2s ease, margin 0.2s ease,
+    border-color 0.2s ease, background 0.2s ease;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  margin-top: -3px;
+  background: var(--v1-accent, #d4af37);
+  border-radius: 50%;
+}
+
+/* Hover state — enlarged with blend mode */
+.ring[data-state="pointer"] {
+  width: 60px;
+  height: 60px;
+  margin-left: -30px;
+  margin-top: -30px;
+  border-color: var(--v1-accent, #d4af37);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+/* Split state — horizontal resize hint */
+.ring[data-state="split"] {
+  width: 50px;
+  height: 50px;
+  margin-left: -25px;
+  margin-top: -25px;
+  border-color: var(--v1-accent, #d4af37);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+/* Hide on touch devices */
+@media (pointer: coarse), (hover: none) {
+  .ring,
+  .dot {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    transition: none;
+  }
+}

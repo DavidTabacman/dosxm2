@@ -1,0 +1,47 @@
+.button {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease, background 0.2s ease;
+}
+
+/* Show on parent hover */
+*:hover > .button,
+.button:focus-visible {
+  opacity: 1;
+}
+
+.button:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.button:focus-visible {
+  opacity: 1;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Hide on touch devices — they have native controls */
+@media (pointer: coarse) {
+  .button {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+}

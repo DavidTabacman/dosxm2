@@ -26,7 +26,7 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  opacity: 0.5;
+  opacity: 0.6;
   margin-bottom: 1rem;
 }
 
@@ -65,21 +65,29 @@
   position: relative;
 }
 
-.portrait1,
-.portrait2 {
+/* Wrapper carries parallax transform (inline style) */
+.portraitWrapper {
   width: 48%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  border-radius: 4px;
   will-change: transform;
 }
 
-.portrait1 {
-  margin-top: 0;
+.portraitWrapper:last-child {
+  margin-top: 3rem;
 }
 
+/* Image gets hover scale (no inline transform conflict) */
+.portrait1,
 .portrait2 {
-  margin-top: 3rem;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 4px;
+  transition: transform 0.4s ease;
+}
+
+.portrait1:hover,
+.portrait2:hover {
+  transform: scale(1.02);
 }
 
 @media (max-width: 768px) {
@@ -87,12 +95,11 @@
     justify-content: center;
   }
 
-  .portrait1,
-  .portrait2 {
+  .portraitWrapper {
     width: 44%;
   }
 
-  .portrait2 {
+  .portraitWrapper:last-child {
     margin-top: 2rem;
   }
 }
@@ -104,8 +111,12 @@
     transition: none;
   }
 
+  .portraitWrapper {
+    transform: none !important;
+  }
+
   .portrait1,
   .portrait2 {
-    transform: none !important;
+    transition: none;
   }
 }

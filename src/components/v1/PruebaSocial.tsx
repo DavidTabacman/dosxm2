@@ -49,7 +49,10 @@ export default function PruebaSocial() {
   const progress = useScrollProgress(sectionRef);
 
   if (typeof window !== "undefined" && progress > 0 && progress < 1) {
-    console.log(`[V1-PruebaSocial] 📜 Parallax scroll progress: ${progress.toFixed(3)} | offsets: ${TESTIMONIALS.map((_, i) => (progress * -(i+1) * 20).toFixed(1) + "px").join(", ")}`);
+    console.log(
+      `[V1-PruebaSocial] 📜 Parallax scroll — progress: ${progress.toFixed(3)} | ` +
+      `offsets: ${TESTIMONIALS.map((_, i) => `card${i + 1}: ${(progress * -(i + 1) * 35).toFixed(1)}px`).join(", ")}`
+    );
   }
 
   return (
@@ -62,7 +65,7 @@ export default function PruebaSocial() {
             key={t.author}
             quote={t.quote}
             author={t.author}
-            parallaxOffset={progress * -(i + 1) * 20}
+            parallaxOffset={progress * -(i + 1) * 35}
           />
         ))}
       </div>

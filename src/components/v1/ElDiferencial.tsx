@@ -28,24 +28,27 @@ export default function ElDiferencial() {
         </div>
 
         <div className={styles.portraitColumn}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className={styles.portrait1}
-            src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&h=800&fit=crop&crop=face"
-            alt="Fundador 1 de DOSXM2"
-            data-asset-type="portrait"
-            loading="lazy"
-            style={{ transform: `translateY(${offset1}px)` }}
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className={styles.portrait2}
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&h=800&fit=crop&crop=face"
-            alt="Fundador 2 de DOSXM2"
-            data-asset-type="portrait"
-            loading="lazy"
-            style={{ transform: `translateY(${offset2}px)` }}
-          />
+          {/* Parallax on wrapper, hover scale on img — prevents inline transform from blocking CSS hover */}
+          <div className={styles.portraitWrapper} style={{ transform: `translateY(${offset1}px)` }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className={styles.portrait1}
+              src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&h=800&fit=crop&crop=face"
+              alt="Fundador 1 de DOSXM2"
+              data-asset-type="portrait"
+              loading="lazy"
+            />
+          </div>
+          <div className={styles.portraitWrapper} style={{ transform: `translateY(${offset2}px)` }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className={styles.portrait2}
+              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&h=800&fit=crop&crop=face"
+              alt="Fundador 2 de DOSXM2"
+              data-asset-type="portrait"
+              loading="lazy"
+            />
+          </div>
         </div>
       </div>
     </section>

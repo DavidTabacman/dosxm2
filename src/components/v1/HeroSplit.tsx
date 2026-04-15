@@ -1,52 +1,94 @@
-import { useRef, useCallback } from "react";
+import { useRef } from "react";
 import { useMousePosition } from "../shared/useMousePosition";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
+import { useVideoPlayback } from "../shared/useVideoPlayback";
+import VideoPlayPause from "../shared/VideoPlayPause";
 import styles from "./HeroSplit.module.css";
 
-function useVideoDebug(label: string) {
-  return {
-    onLoadStart: () => console.log(`[Video:${label}] 📡 loadstart — browser began fetching`),
-    onLoadedData: () => console.log(`[Video:${label}] 📦 loadeddata — first frame available`),
-    onCanPlay: () => console.log(`[Video:${label}] ✅ canplay — ready to play`),
-    onPlay: () => console.log(`[Video:${label}] ▶️ play — playback started`),
-    onPlaying: () => console.log(`[Video:${label}] 🎬 playing — actually rendering frames`),
-    onWaiting: () => console.log(`[Video:${label}] ⏳ waiting — buffering...`),
-    onStalled: () => console.log(`[Video:${label}] ⚠️ stalled — network stall`),
-    onError: (e: React.SyntheticEvent<HTMLVideoElement>) => {
-      const v = e.currentTarget;
-      const err = v.error;
-      console.error(`[Video:${label}] ❌ ERROR — code: ${err?.code}, message: "${err?.message}", networkState: ${v.networkState}, readyState: ${v.readyState}, src: ${v.src}`);
-    },
-    onSuspend: () => console.log(`[Video:${label}] 💤 suspend — browser paused fetching (intentional)`),
-  };
-}
+const LEFT_VIDEO = "https://assets.mixkit.co/videos/4814/4814-720.mp4";
+const LEFT_POSTER =
+  "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&h=800&fit=crop";
+const RIGHT_VIDEO = "https://assets.mixkit.co/videos/4818/4818-720.mp4";
+const RIGHT_POSTER =
+  "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop";
 
 export default function HeroSplit() {
   const heroRef = useRef<HTMLElement>(null);
+  const leftVideoElRef = useRef<HTMLVideoElement>(null);
+  const rightVideoElRef = useRef<HTMLVideoElement>(null);
+
   const { x } = useMousePosition(heroRef);
   const [rightRef, rightVisible] = useIntersectionObserver({ threshold: 0.3 });
+  const [leftInViewRef, leftInView] = useIntersectionObserver({ threshold: 0.3 });
+
+  const {
+    ref: leftPlaybackRef,
+    hasError: leftError,
+  } = useVideoPlayback("HeroSplit-Left");
+  const {
+    ref: rightPlaybackRef,
+    hasError: rightError,
+  } = useVideoPlayback("HeroSplit-Right");
 
   // Clamp divider between 30% and 70%
   const dividerPos = 30 + x * 40;
 
+  // Log split reveal state for debugging
+  if (typeof window !== "undefined") {
+    console.log(
+      `[HeroSplit] 🎞️ Split Reveal — dividerPos: ${dividerPos.toFixed(1)}% | ` +
+      `mouseX: ${x.toFixed(3)} | ` +
+      `leftVideo: ${leftError ? "❌ ERROR (poster fallback)" : "✅ OK"} | ` +
+      `rightVideo: ${rightError ? "❌ ERROR (poster fallback)" : "✅ OK"} | ` +
+      `leftInView: ${leftInView} | rightVisible: ${rightVisible}`
+    );
+  }
+
+  // Combine refs for left video: playback + element ref + inView
+  const setLeftVideoRef = (node: HTMLVideoElement | null) => {
+    leftVideoElRef.current = node;
+    leftPlaybackRef(node);
+    leftInViewRef(node);
+  };
+
+  // Combine refs for right video: playback + element ref
+  const setRightVideoRef = (node: HTMLVideoElement | null) => {
+    rightVideoElRef.current = node;
+    rightPlaybackRef(node);
+  };
+
   return (
-    <section className={styles.hero} ref={heroRef}>
-      <div
-        className={styles.panelLeft}
-        style={{ flexBasis: `${dividerPos}%` }}
-      >
-        <video
-          className={styles.panelBg}
-          src="https://assets.mixkit.co/videos/4814/4814-720.mp4"
-          poster="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&h=800&fit=crop"
-          loop
-          muted
-          autoPlay
-          playsInline
-          aria-hidden="true"
-          data-asset-type="hero-bg"
-          {...useVideoDebug("V1-Hero-Left")}
-        />
+    <section
+      className={styles.hero}
+      ref={heroRef}
+      data-cursor="split"
+      style={{ "--divider-pos": `${dividerPos}%` } as React.CSSProperties}
+    >
+      <div className={styles.panelLeft}>
+        {leftError ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            className={styles.panelBg}
+            src={LEFT_POSTER}
+            alt=""
+            aria-hidden="true"
+          />
+        ) : (
+          <video
+            ref={setLeftVideoRef}
+            className={`${styles.panelBg} ${leftInView ? styles.videoInView : ""}`}
+            src={LEFT_VIDEO}
+            poster={LEFT_POSTER}
+            loop
+            muted
+            autoPlay
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+            data-asset-type="hero-bg"
+          />
+        )}
+        <VideoPlayPause videoRef={leftVideoElRef} label="HeroSplit-Left" />
         <h1 className={styles.headingLeft}>Vendemos tu casa</h1>
         <p className={styles.subheading}>
           En un sector donde la mayoría trabaja solo, nosotros somos dos.
@@ -55,27 +97,37 @@ export default function HeroSplit() {
 
       <div
         className={styles.divider}
-        style={{ left: `${dividerPos}%` }}
         aria-hidden="true"
       />
 
       <div
         className={`${styles.panelRight} ${rightVisible ? styles.mobileVisible : styles.mobileHidden}`}
         ref={rightRef}
-        style={{ flexBasis: `${100 - dividerPos}%` }}
       >
-        <video
-          className={styles.panelBg}
-          src="https://assets.mixkit.co/videos/4818/4818-720.mp4"
-          poster="https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop"
-          loop
-          muted
-          autoPlay
-          playsInline
-          aria-hidden="true"
-          data-asset-type="hero-bg"
-          {...useVideoDebug("V1-Hero-Right")}
-        />
+        {rightError ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            className={styles.panelBg}
+            src={RIGHT_POSTER}
+            alt=""
+            aria-hidden="true"
+          />
+        ) : (
+          <video
+            ref={setRightVideoRef}
+            className={`${styles.panelBg} ${rightVisible ? styles.videoInView : ""}`}
+            src={RIGHT_VIDEO}
+            poster={RIGHT_POSTER}
+            loop
+            muted
+            autoPlay
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+            data-asset-type="hero-bg"
+          />
+        )}
+        <VideoPlayPause videoRef={rightVideoElRef} label="HeroSplit-Right" />
         <p className={styles.headingRight}>como si fuese la nuestra.</p>
       </div>
     </section>
