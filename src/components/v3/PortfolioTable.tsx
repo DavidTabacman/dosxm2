@@ -266,10 +266,11 @@ export default function HistoriasVendidas() {
 
     // Monitor sticky behavior during scroll (log once when in the critical zone)
     let logged = false;
+    const sectionEl = section; // non-null (guarded above)
     function checkSticky() {
       if (!sticky || logged) return;
       const stickyRect = sticky.getBoundingClientRect();
-      const sectionRect = section.getBoundingClientRect();
+      const sectionRect = sectionEl.getBoundingClientRect();
 
       // Critical zone: section top is past viewport top, section bottom still visible
       if (sectionRect.top < 0 && sectionRect.bottom > window.innerHeight * 0.5) {
