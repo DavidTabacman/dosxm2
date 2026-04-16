@@ -59,4 +59,18 @@ describe("V3 PortfolioTable (HistoriasVendidas)", () => {
     const images = container.querySelectorAll("img[data-asset-type='property-story']");
     expect(images[0].getAttribute("src")).toContain("photo-1600596542815");
   });
+
+  test("renders section with carousel structure for scroll-jacking", () => {
+    const { container } = renderWithContext();
+    const section = container.querySelector("section");
+    expect(section).toBeTruthy();
+
+    // The sticky container wraps the heading and carousel
+    const carousel = container.querySelector("[aria-roledescription='carrusel']");
+    expect(carousel).toBeTruthy();
+
+    // Carousel contains the track with cards
+    const cards = carousel?.querySelectorAll("[aria-roledescription='diapositiva']");
+    expect(cards?.length).toBe(5);
+  });
 });

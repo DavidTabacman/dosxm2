@@ -42,4 +42,20 @@ describe("V3 HeroImmersive", () => {
     const img = container.querySelector("img");
     expect(img?.getAttribute("data-asset-type")).toBe("hero-video-poster");
   });
+
+  test("renders sticky frame containing heading and subheading", () => {
+    const { container } = renderWithContext();
+    const section = container.querySelector("section");
+    expect(section).toBeTruthy();
+
+    // The section should contain the heading and subheading inside the overlay
+    const h1 = container.querySelector("h1");
+    const p = container.querySelector("p");
+    expect(h1?.textContent).toBe("Tu casa.");
+    expect(p?.textContent).toContain("Nuestra dedicación");
+
+    // Both should be inside the same section
+    expect(h1?.closest("section")).toBe(section);
+    expect(p?.closest("section")).toBe(section);
+  });
 });
