@@ -30,11 +30,17 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function smoothstep(t: number) {
-  return t * t * (3 - 2 * t);
+function easeOutQuart(t: number) {
+  return 1 - Math.pow(1 - t, 4);
 }
 
+const DEBUG = process.env.NODE_ENV === "development";
 const TAG = "V3-HeroMorph";
+
+// Sub-phase boundaries within the MORPH phase
+const ENTRANCE_END = 0.10;
+const CROSSFADE_START = 0.70;
+const MORPH_RADIUS_TARGET = 12; // px — visible card rounding
 
 export function HeroMorphProvider({ children }: { children: ReactNode }) {
   const heroRef = useRef<HTMLElement | null>(null);
@@ -44,52 +50,47 @@ export function HeroMorphProvider({ children }: { children: ReactNode }) {
   const rafRef = useRef(0);
   const isDesktopRef = useRef(false);
   const reducedMotionRef = useRef(false);
-  // Track current phase to log transitions (not every frame)
-  const currentPhaseRef = useRef<"hero" | "intermediate" | "morph" | "none">("none");
+  const currentPhaseRef = useRef<
+    "hero" | "intermediate" | "morph" | "post-morph" | "none"
+  >("none");
 
   const registerHeroRef = useCallback((el: HTMLElement | null) => {
     heroRef.current = el;
-    if (el) {
+    if (DEBUG && el) {
       console.log(
-        `[${TAG}] 📍 Hero ref registered — ` +
-        `offsetTop: ${el.offsetTop}px, offsetHeight: ${el.offsetHeight}px`
+        `[${TAG}] Hero ref registered — ` +
+          `offsetTop: ${el.offsetTop}px, offsetHeight: ${el.offsetHeight}px`
       );
     }
   }, []);
 
   const registerPortfolioRef = useCallback((el: HTMLElement | null) => {
     portfolioRef.current = el;
-    if (el) {
+    if (DEBUG && el) {
       console.log(
-        `[${TAG}] 📍 Portfolio ref registered — ` +
-        `offsetTop: ${el.offsetTop}px, offsetHeight: ${el.offsetHeight}px`
+        `[${TAG}] Portfolio ref registered — ` +
+          `offsetTop: ${el.offsetTop}px, offsetHeight: ${el.offsetHeight}px`
       );
     }
   }, []);
 
   const registerFirstCardRef = useCallback((el: HTMLElement | null) => {
     firstCardRef.current = el;
-    if (el) {
+    if (DEBUG && el) {
       const rect = el.getBoundingClientRect();
       console.log(
-        `[${TAG}] 📍 First card ref registered — ` +
-        `rect: ${Math.round(rect.left)},${Math.round(rect.top)} ${Math.round(rect.width)}x${Math.round(rect.height)}`
+        `[${TAG}] First card ref registered — ` +
+          `rect: ${Math.round(rect.left)},${Math.round(rect.top)} ` +
+          `${Math.round(rect.width)}x${Math.round(rect.height)}`
       );
     }
   }, []);
 
   useEffect(() => {
-    // Check desktop and reduced motion
     if (typeof window === "undefined") return;
 
     const checkDesktop = () => {
-      const was = isDesktopRef.current;
       isDesktopRef.current = window.matchMedia("(min-width: 769px)").matches;
-      if (was !== isDesktopRef.current) {
-        console.log(
-          `[${TAG}] 🖥️ Desktop mode changed: ${was} → ${isDesktopRef.current}`
-        );
-      }
     };
 
     try {
@@ -104,67 +105,60 @@ export function HeroMorphProvider({ children }: { children: ReactNode }) {
     window.addEventListener("resize", checkDesktop);
 
     if (reducedMotionRef.current) {
-      console.log(`[${TAG}] ♿ prefers-reduced-motion — morph effect disabled`);
+      if (DEBUG) console.log(`[${TAG}] prefers-reduced-motion — morph disabled`);
       if (morphLayerRef.current) {
         morphLayerRef.current.style.display = "none";
       }
       return () => window.removeEventListener("resize", checkDesktop);
     }
 
-    console.log(
-      `[${TAG}] 🎬 Morph scroll listener INITIALIZED — ` +
-      `isDesktop: ${isDesktopRef.current}, reducedMotion: ${reducedMotionRef.current}, ` +
-      `morphLayer: ${morphLayerRef.current ? "attached" : "NULL"}, ` +
-      `hero: ${heroRef.current ? "attached" : "NULL"}, ` +
-      `portfolio: ${portfolioRef.current ? "attached" : "NULL"}, ` +
-      `firstCard: ${firstCardRef.current ? "attached" : "NULL"}`
-    );
+    if (DEBUG) {
+      console.log(
+        `[${TAG}] Morph scroll listener INITIALIZED — ` +
+          `isDesktop: ${isDesktopRef.current}`
+      );
+    }
 
+    /* ── Helper: reset the morph layer to a neutral hidden state ── */
+    function resetLayer(layer: HTMLDivElement) {
+      layer.style.setProperty("--morph-z-index", "1");
+      layer.style.setProperty("--morph-inset-top", "0px");
+      layer.style.setProperty("--morph-inset-right", "0px");
+      layer.style.setProperty("--morph-inset-bottom", "0px");
+      layer.style.setProperty("--morph-inset-left", "0px");
+      layer.style.setProperty("--morph-radius", "0px");
+      layer.style.setProperty("--morph-opacity", "0");
+      layer.style.setProperty("--morph-scale", "1");
+    }
+
+    /* ── Main scroll update (called every rAF on scroll) ── */
     function update() {
       const layer = morphLayerRef.current;
-      if (!layer) {
-        if (currentPhaseRef.current !== "none") {
-          console.warn(`[${TAG}] ⚠️ morphLayer ref is NULL — morph cannot render`);
-          currentPhaseRef.current = "none";
-        }
-        return;
-      }
-      if (!isDesktopRef.current) return;
+      if (!layer || !isDesktopRef.current) return;
 
       const hero = heroRef.current;
-      const portfolio = portfolioRef.current;
-      const firstCard = firstCardRef.current;
-
-      if (!hero) {
-        if (currentPhaseRef.current !== "none") {
-          console.warn(`[${TAG}] ⚠️ Hero ref is NULL — morph paused`);
-          currentPhaseRef.current = "none";
-        }
-        return;
-      }
+      if (!hero) return;
 
       const vh = window.innerHeight;
       const scrollY = window.scrollY;
 
-      // Hero section bounds
       const heroTop = hero.offsetTop;
       const heroHeight = hero.offsetHeight;
       const heroBottom = heroTop + heroHeight;
 
-      // Phase 1: Hero section — subtle scale-down
+      /* ═══════════════════════════════════════════════════
+         Phase 1 — HERO: full-screen video, subtle scale-down
+         ═══════════════════════════════════════════════════ */
       if (scrollY < heroBottom) {
-        if (currentPhaseRef.current !== "hero") {
-          console.log(
-            `[${TAG}] 📐 Phase → HERO — ` +
-            `scrollY: ${Math.round(scrollY)}, heroBottom: ${Math.round(heroBottom)}, ` +
-            `heroHeight: ${heroHeight}px`
-          );
-          currentPhaseRef.current = "hero";
+        if (DEBUG && currentPhaseRef.current !== "hero") {
+          console.log(`[${TAG}] Phase → HERO`);
         }
+        currentPhaseRef.current = "hero";
 
         const heroProgress = clamp(scrollY / heroHeight, 0, 1);
-        const scale = 1 - heroProgress * 0.08;
+        const scale = 1 - heroProgress * 0.08; // 1.0 → 0.92
 
+        layer.style.setProperty("--morph-z-index", "1");
         layer.style.setProperty("--morph-inset-top", "0px");
         layer.style.setProperty("--morph-inset-right", "0px");
         layer.style.setProperty("--morph-inset-bottom", "0px");
@@ -173,109 +167,177 @@ export function HeroMorphProvider({ children }: { children: ReactNode }) {
         layer.style.setProperty("--morph-opacity", "1");
         layer.style.setProperty("--morph-scale", String(scale));
 
+        // First card stays at default opacity (1) — it's off-screen
+        const firstCard = firstCardRef.current;
         if (firstCard) {
-          firstCard.style.setProperty("--first-card-opacity", "0");
+          firstCard.style.removeProperty("--first-card-opacity");
         }
         return;
       }
 
-      // Phase 2: Intermediate sections — layer persists, hidden behind opaque sections
+      const portfolio = portfolioRef.current;
+
+      /* ═══════════════════════════════════════════════════
+         Phase 2 — INTERMEDIATE: layer hidden, sections occlude
+         ═══════════════════════════════════════════════════ */
       if (!portfolio) {
-        if (currentPhaseRef.current !== "intermediate") {
-          console.warn(
-            `[${TAG}] ⚠️ Phase → INTERMEDIATE but portfolio ref is NULL — ` +
-            `morph cannot calculate Phase 3. Is PortfolioTable mounted and registered?`
-          );
-          currentPhaseRef.current = "intermediate";
+        // Portfolio not mounted yet — stay intermediate
+        if (DEBUG && currentPhaseRef.current !== "intermediate") {
+          console.log(`[${TAG}] Phase → INTERMEDIATE (portfolio not mounted)`);
         }
-        layer.style.setProperty("--morph-opacity", "1");
-        layer.style.setProperty("--morph-scale", "0.92");
+        currentPhaseRef.current = "intermediate";
+        resetLayer(layer);
         return;
       }
 
       const portfolioRect = portfolio.getBoundingClientRect();
-      const morphStartThreshold = vh * 0.7;
 
-      if (portfolioRect.top > morphStartThreshold) {
-        if (currentPhaseRef.current !== "intermediate") {
+      if (portfolioRect.top > vh) {
+        // Portfolio hasn't entered viewport yet
+        if (DEBUG && currentPhaseRef.current !== "intermediate") {
           console.log(
-            `[${TAG}] 📐 Phase → INTERMEDIATE — ` +
-            `portfolioRect.top: ${Math.round(portfolioRect.top)}, ` +
-            `threshold: ${Math.round(morphStartThreshold)} (70% of ${vh}vh). ` +
-            `Layer hidden behind opaque sections.`
+            `[${TAG}] Phase → INTERMEDIATE — portfolioTop: ${Math.round(portfolioRect.top)}`
           );
-          currentPhaseRef.current = "intermediate";
         }
+        currentPhaseRef.current = "intermediate";
 
+        layer.style.setProperty("--morph-z-index", "1");
         layer.style.setProperty("--morph-inset-top", "0px");
         layer.style.setProperty("--morph-inset-right", "0px");
         layer.style.setProperty("--morph-inset-bottom", "0px");
         layer.style.setProperty("--morph-inset-left", "0px");
         layer.style.setProperty("--morph-radius", "0px");
-        layer.style.setProperty("--morph-opacity", "1");
+        layer.style.setProperty("--morph-opacity", "0");
         layer.style.setProperty("--morph-scale", "0.92");
 
+        const firstCard = firstCardRef.current;
         if (firstCard) {
-          firstCard.style.setProperty("--first-card-opacity", "0");
+          firstCard.style.removeProperty("--first-card-opacity");
         }
         return;
       }
 
-      // Phase 3: Portfolio arrival — morph to first card
+      /* ═══════════════════════════════════════════════════
+         Phase 3 — MORPH: video transforms into first card
+         ═══════════════════════════════════════════════════ */
+      const firstCard = firstCardRef.current;
       if (!firstCard) {
-        if (currentPhaseRef.current !== "morph") {
-          console.warn(
-            `[${TAG}] ⚠️ Phase → MORPH but firstCard ref is NULL — ` +
-            `cannot calculate morph target. Is the first StoryCard registered?`
-          );
-          currentPhaseRef.current = "morph";
+        if (DEBUG && currentPhaseRef.current !== "morph") {
+          console.log(`[${TAG}] Phase → MORPH (firstCard not registered)`);
         }
-        layer.style.setProperty("--morph-opacity", "1");
+        currentPhaseRef.current = "morph";
+        resetLayer(layer);
         return;
       }
 
-      if (currentPhaseRef.current !== "morph") {
+      // progress: 0 when portfolio top = vh, 1 when portfolio top = 0
+      const rawProgress = 1 - portfolioRect.top / vh;
+      const progress = clamp(rawProgress, 0, 1);
+
+      if (progress >= 1) {
+        /* ═══════════════════════════════════════════════════
+           Phase 4 — POST-MORPH: layer hidden, card visible
+           ═══════════════════════════════════════════════════ */
+        if (DEBUG && currentPhaseRef.current !== "post-morph") {
+          console.log(`[${TAG}] Phase → POST-MORPH`);
+        }
+        currentPhaseRef.current = "post-morph";
+        resetLayer(layer);
+        firstCard.style.removeProperty("--first-card-opacity");
+        return;
+      }
+
+      // We're in the active MORPH phase
+      if (DEBUG && currentPhaseRef.current !== "morph") {
         const cardRect = firstCard.getBoundingClientRect();
         console.log(
-          `[${TAG}] 📐 Phase → MORPH — ` +
-          `portfolioRect.top: ${Math.round(portfolioRect.top)}, ` +
-          `firstCard rect: ${Math.round(cardRect.left)},${Math.round(cardRect.top)} ` +
-          `${Math.round(cardRect.width)}x${Math.round(cardRect.height)}, ` +
-          `viewport: ${window.innerWidth}x${vh}`
+          `[${TAG}] Phase → MORPH — ` +
+            `portfolioTop: ${Math.round(portfolioRect.top)}, ` +
+            `card: ${Math.round(cardRect.left)},${Math.round(cardRect.top)} ` +
+            `${Math.round(cardRect.width)}x${Math.round(cardRect.height)}`
         );
-        currentPhaseRef.current = "morph";
       }
+      currentPhaseRef.current = "morph";
+
+      // Elevate above portfolio section (z-index 2)
+      layer.style.setProperty("--morph-z-index", "3");
 
       const cardRect = firstCard.getBoundingClientRect();
 
-      // Progress: 0 when portfolio top hits 70% of vh, 1 when it hits 0
-      const rawProgress = 1 - portfolioRect.top / morphStartThreshold;
-      const progress = clamp(rawProgress, 0, 1);
-      const eased = smoothstep(progress);
+      /* ── Sub-phase: Entrance (0 → ENTRANCE_END) ── */
+      if (progress <= ENTRANCE_END) {
+        const entranceT = progress / ENTRANCE_END;
 
-      // Interpolate clip-path inset from (0,0,0,0) to card's bounding rect
-      const insetTop = eased * cardRect.top;
-      const insetRight = eased * (window.innerWidth - cardRect.right);
-      const insetBottom = eased * (vh - cardRect.bottom);
-      const insetLeft = eased * cardRect.left;
-      const radius = eased * 4;
+        // Fade in the morph layer
+        layer.style.setProperty("--morph-opacity", String(entranceT));
+        // Fade out the real first card as morph layer takes over
+        firstCard.style.setProperty(
+          "--first-card-opacity",
+          String(1 - entranceT)
+        );
+
+        // Clip-path: start full-screen, begin shrinking
+        const earlyEased = easeOutQuart(entranceT);
+        const insetTop = earlyEased * cardRect.top * 0.15;
+        const insetRight =
+          earlyEased * (window.innerWidth - cardRect.right) * 0.15;
+        const insetBottom = earlyEased * (vh - cardRect.bottom) * 0.15;
+        const insetLeft = earlyEased * cardRect.left * 0.15;
+
+        layer.style.setProperty("--morph-inset-top", `${insetTop}px`);
+        layer.style.setProperty("--morph-inset-right", `${insetRight}px`);
+        layer.style.setProperty("--morph-inset-bottom", `${insetBottom}px`);
+        layer.style.setProperty("--morph-inset-left", `${insetLeft}px`);
+        layer.style.setProperty("--morph-radius", "0px");
+        layer.style.setProperty(
+          "--morph-scale",
+          String(0.92 + earlyEased * 0.08 * 0.15)
+        );
+        return;
+      }
+
+      /* ── Sub-phase: Main morph (ENTRANCE_END → CROSSFADE_START) ── */
+      // Normalize progress within this sub-phase
+      const morphT = clamp(
+        (progress - ENTRANCE_END) / (CROSSFADE_START - ENTRANCE_END),
+        0,
+        1
+      );
+      const eased = easeOutQuart(morphT);
+
+      // Blend from the entrance end-state (15% of target insets) to full card insets
+      const blendFrom = 0.15;
+      const blendedEased = blendFrom + eased * (1 - blendFrom);
+
+      const insetTop = blendedEased * cardRect.top;
+      const insetRight = blendedEased * (window.innerWidth - cardRect.right);
+      const insetBottom = blendedEased * (vh - cardRect.bottom);
+      const insetLeft = blendedEased * cardRect.left;
+      const radius = eased * MORPH_RADIUS_TARGET;
 
       layer.style.setProperty("--morph-inset-top", `${insetTop}px`);
       layer.style.setProperty("--morph-inset-right", `${insetRight}px`);
       layer.style.setProperty("--morph-inset-bottom", `${insetBottom}px`);
       layer.style.setProperty("--morph-inset-left", `${insetLeft}px`);
       layer.style.setProperty("--morph-radius", `${radius}px`);
-      layer.style.setProperty("--morph-scale", String(0.92 + eased * 0.08));
+      layer.style.setProperty(
+        "--morph-scale",
+        String(0.92 + blendedEased * 0.08)
+      );
 
-      // Cross-fade: morph layer fades out, first card fades in
-      const fadeStart = 0.6;
-      const fadeProgress = clamp((progress - fadeStart) / (1 - fadeStart), 0, 1);
-      layer.style.setProperty("--morph-opacity", String(1 - fadeProgress));
-      if (firstCard) {
-        firstCard.style.setProperty(
-          "--first-card-opacity",
-          String(fadeProgress)
+      /* ── Sub-phase: Cross-fade (CROSSFADE_START → 1.0) ── */
+      if (progress >= CROSSFADE_START) {
+        const fadeT = clamp(
+          (progress - CROSSFADE_START) / (1 - CROSSFADE_START),
+          0,
+          1
         );
+        layer.style.setProperty("--morph-opacity", String(1 - fadeT));
+        firstCard.style.setProperty("--first-card-opacity", String(fadeT));
+      } else {
+        // Main morph: layer fully visible, card hidden
+        layer.style.setProperty("--morph-opacity", "1");
+        firstCard.style.setProperty("--first-card-opacity", "0");
       }
     }
 

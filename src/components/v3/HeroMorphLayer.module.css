@@ -1,7 +1,7 @@
 .morphLayer {
   position: fixed;
   inset: 0;
-  z-index: 1;
+  z-index: var(--morph-z-index, 1);
   pointer-events: none;
   overflow: hidden;
   clip-path: inset(

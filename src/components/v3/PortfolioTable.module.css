@@ -3,6 +3,7 @@
   overflow: hidden;
   position: relative;
   z-index: 2;
+  background: var(--v3-bg);
 }
 
 /* First card opacity controlled by morph layer during hero-to-card transition */
