@@ -189,6 +189,107 @@ export default function HistoriasVendidas() {
 
   const useScrollJacking = isDesktop && !reducedMotion;
 
+  // === DIAGNOSTIC: Remove after debugging blank gap ===
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const sticky = section.querySelector("[data-sticky-debug]") as HTMLElement | null;
+    if (!sticky) {
+      console.log("[V3-DEBUG] ⚠️ No [data-sticky-debug] element found");
+      return;
+    }
+
+    const sectionStyles = getComputedStyle(section);
+    const stickyStyles = getComputedStyle(sticky);
+    const bodyStyles = getComputedStyle(document.body);
+    const htmlStyles = getComputedStyle(document.documentElement);
+
+    console.log("[V3-DEBUG] === STICKY DIAGNOSTIC ===");
+    console.log("[V3-DEBUG] Section:", {
+      overflow: sectionStyles.overflow,
+      overflowX: sectionStyles.overflowX,
+      overflowY: sectionStyles.overflowY,
+      position: sectionStyles.position,
+      height: sectionStyles.height,
+      className: section.className,
+    });
+    console.log("[V3-DEBUG] StickyContainer:", {
+      position: stickyStyles.position,
+      top: stickyStyles.top,
+      height: stickyStyles.height,
+      overflow: stickyStyles.overflow,
+    });
+    console.log("[V3-DEBUG] Body:", {
+      overflow: bodyStyles.overflow,
+      overflowX: bodyStyles.overflowX,
+      overflowY: bodyStyles.overflowY,
+    });
+    console.log("[V3-DEBUG] HTML:", {
+      overflow: htmlStyles.overflow,
+      overflowX: htmlStyles.overflowX,
+      overflowY: htmlStyles.overflowY,
+    });
+    console.log("[V3-DEBUG] useScrollJacking:", useScrollJacking);
+    console.log("[V3-DEBUG] isDesktop:", isDesktop, "reducedMotion:", reducedMotion);
+
+    // Walk ancestor chain looking for scroll containers or containing blocks
+    let el: HTMLElement | null = section.parentElement;
+    let depth = 0;
+    while (el && depth < 10) {
+      const cs = getComputedStyle(el);
+      const hasOverflow =
+        cs.overflow !== "visible" ||
+        cs.overflowX !== "visible" ||
+        cs.overflowY !== "visible";
+      const hasContainingBlock =
+        cs.transform !== "none" ||
+        cs.willChange !== "auto" ||
+        cs.filter !== "none";
+      if (hasOverflow || hasContainingBlock) {
+        console.log(
+          `[V3-DEBUG] Ancestor[${depth}] <${el.tagName}.${el.className.slice(0, 50)}>:`,
+          {
+            overflow: cs.overflow,
+            overflowX: cs.overflowX,
+            overflowY: cs.overflowY,
+            transform: cs.transform,
+            willChange: cs.willChange,
+            filter: cs.filter,
+            position: cs.position,
+          }
+        );
+      }
+      el = el.parentElement;
+      depth++;
+    }
+
+    // Monitor sticky behavior during scroll (log once when in the critical zone)
+    let logged = false;
+    function checkSticky() {
+      if (!sticky || logged) return;
+      const stickyRect = sticky.getBoundingClientRect();
+      const sectionRect = section.getBoundingClientRect();
+
+      // Critical zone: section top is past viewport top, section bottom still visible
+      if (sectionRect.top < 0 && sectionRect.bottom > window.innerHeight * 0.5) {
+        console.log(
+          "[V3-DEBUG] SCROLL CHECK — section.top:",
+          Math.round(sectionRect.top),
+          "sticky.top:",
+          Math.round(stickyRect.top),
+          "PINNED:",
+          Math.abs(stickyRect.top) < 5
+        );
+        logged = true;
+      }
+    }
+
+    window.addEventListener("scroll", checkSticky, { passive: true });
+    return () => window.removeEventListener("scroll", checkSticky);
+  }, [useScrollJacking, isDesktop, reducedMotion]);
+  // === END DIAGNOSTIC ===
+
   // Scroll-jacking: direct DOM mutation (no React re-renders)
   useEffect(() => {
     const el = sectionRef.current;
@@ -310,7 +411,7 @@ export default function HistoriasVendidas() {
       className={`${styles.section} ${useScrollJacking ? styles.sectionDesktop : ""}`}
       ref={sectionRef}
     >
-      <div className={useScrollJacking ? styles.stickyContainer : undefined}>
+      <div className={useScrollJacking ? styles.stickyContainer : undefined} data-sticky-debug>
         <h2
           className={`${styles.heading} ${anim.revealTarget} ${headingRevealed ? anim.revealTargetVisible : ""}`}
           ref={headingRef}
