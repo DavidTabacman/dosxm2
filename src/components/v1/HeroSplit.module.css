@@ -1,6 +1,7 @@
 /* =========================================================
    HeroSplit — "La Dualidad Cinematográfica"
-   Base rules FIRST, then media query overrides.
+   Architecture: background panels (clipped) + text overlays
+   (separate layer with matching clip-paths, fixed positions).
    ========================================================= */
 
 .hero {
@@ -9,27 +10,23 @@
   overflow: hidden;
 }
 
-/* --- Base panel styles (mobile-first) --- */
+/* =========================================================
+   Background panels — videos + solid colors only, no text.
+   On desktop both overlap and .panelRight is clipped.
+   ========================================================= */
 .panelLeft,
 .panelRight {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: clamp(2rem, 6vw, 5rem);
 }
 
 .panelLeft {
   background: var(--v1-dark);
-  color: var(--v1-text-dark);
 }
 
 .panelRight {
   background: var(--v1-light);
-  color: var(--v1-text-light);
 }
 
-/* --- Desktop: overlapping panels with clip-path split reveal --- */
 @media (min-width: 769px) {
   .hero {
     display: block;
@@ -47,12 +44,64 @@
     clip-path: inset(0 0 0 var(--divider-pos, 50%));
     will-change: clip-path;
     transition: clip-path 0.08s ease-out;
-    /* Push text past the divider so it's in the visible (unclipped) area */
-    padding-left: calc(var(--divider-pos, 50%) + clamp(2rem, 6vw, 5rem));
   }
 }
 
-/* --- Mobile: stacked layout (no clip-path) --- */
+/* =========================================================
+   Text overlays — above panels, fixed positions.
+   Each has its own clip-path matching its panel so text is
+   only visible over the correct background color.
+   Text positions are FIXED — only the clip boundary moves.
+   ========================================================= */
+.textLeft,
+.textRight {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(2rem, 6vw, 5rem);
+  pointer-events: none;
+}
+
+.textLeft {
+  color: var(--v1-text-dark);
+}
+
+.textRight {
+  color: var(--v1-text-light);
+}
+
+@media (min-width: 769px) {
+  .textLeft,
+  .textRight {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    will-change: clip-path;
+    transition: clip-path 0.08s ease-out;
+  }
+
+  .textLeft {
+    clip-path: inset(0 calc(100% - var(--divider-pos, 50%)) 0 0);
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.2) 60%,
+      transparent 100%
+    );
+  }
+
+  .textRight {
+    clip-path: inset(0 0 0 var(--divider-pos, 50%));
+    background: linear-gradient(
+      225deg,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.1) 60%,
+      transparent 100%
+    );
+  }
+}
+
+/* Mobile: stacked layout, no clip-path */
 @media (max-width: 768px) {
   .hero {
     display: flex;
@@ -61,20 +110,50 @@
 
   .panelLeft,
   .panelRight {
-    clip-path: none !important;
     min-height: 50vh;
+  }
+
+  /* Panels stack but are covered by text overlays */
+  .panelLeft {
+    position: relative;
+  }
+
+  .panelRight {
+    position: relative;
+    clip-path: none !important;
+  }
+
+  .textLeft,
+  .textRight {
+    min-height: 50vh;
+    clip-path: none !important;
     padding: clamp(3rem, 8vw, 5rem) clamp(1.5rem, 5vw, 3rem);
+  }
+
+  .textLeft {
+    background: var(--v1-dark);
+  }
+
+  .textRight {
+    background: var(--v1-light);
+  }
+
+  /* Hide background panels on mobile — text overlays have the backgrounds */
+  .panelLeft,
+  .panelRight {
+    position: absolute;
+    inset: 0;
+    height: 50%;
+  }
+
+  .panelRight {
+    top: 50%;
   }
 }
 
-/* --- Typography — z-index ensures text sits above .panelBg and ::before overlay --- */
-.headingLeft,
-.headingRight,
-.subheading {
-  position: relative;
-  z-index: 2;
-}
-
+/* =========================================================
+   Typography
+   ========================================================= */
 .headingLeft {
   font-family: var(--font-v1-serif), serif;
   font-size: clamp(2.5rem, 6vw, 5rem);
@@ -101,7 +180,9 @@
   line-height: 1.6;
 }
 
-/* --- Divider line (desktop only) --- */
+/* =========================================================
+   Divider line (desktop only)
+   ========================================================= */
 .divider {
   display: none;
 }
@@ -122,23 +203,9 @@
   }
 }
 
-/* --- Dark gradient scrim for text readability over video --- */
-.panelLeft::before,
-.panelRight::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.5) 0%,
-    rgba(0, 0, 0, 0.2) 60%,
-    transparent 100%
-  );
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* --- Background videos / images behind panels --- */
+/* =========================================================
+   Background videos / images behind panels
+   ========================================================= */
 .panelBg {
   position: absolute;
   inset: 0;
@@ -172,29 +239,43 @@
   }
 }
 
-/* --- Scroll reveal for mobile only --- */
+/* =========================================================
+   Scroll reveal for mobile only (right text overlay)
+   ========================================================= */
 @media (max-width: 768px) {
-  .panelRight.mobileHidden {
+  .textRight.mobileHidden {
     opacity: 0;
     transform: translateY(40px);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
   }
 
-  .panelRight.mobileVisible {
+  .textRight.mobileVisible {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-/* --- Reduced motion --- */
+/* =========================================================
+   Reduced motion
+   ========================================================= */
 @media (prefers-reduced-motion: reduce) {
-  .panelRight.mobileHidden {
+  .textRight.mobileHidden {
     opacity: 1;
     transform: none;
     transition: none;
   }
 
   .panelRight {
+    clip-path: inset(0 0 0 50%) !important;
+    transition: none;
+  }
+
+  .textLeft {
+    clip-path: inset(0 50% 0 0) !important;
+    transition: none;
+  }
+
+  .textRight {
     clip-path: inset(0 0 0 50%) !important;
     transition: none;
   }

@@ -73,6 +73,7 @@ export default function HeroSplit() {
       ref={heroRef}
       style={{ "--divider-pos": "50%" } as React.CSSProperties}
     >
+      {/* Background panels — videos + solid colors only */}
       <div className={styles.panelLeft}>
         {leftError ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -96,22 +97,9 @@ export default function HeroSplit() {
             data-asset-type="hero-bg"
           />
         )}
-        <VideoPlayPause videoRef={leftVideoElRef} label="HeroSplit-Left" />
-        <h1 className={styles.headingLeft}>Vendemos tu casa</h1>
-        <p className={styles.subheading}>
-          En un sector donde la mayoría trabaja solo, nosotros somos dos.
-        </p>
       </div>
 
-      <div
-        className={styles.divider}
-        aria-hidden="true"
-      />
-
-      <div
-        className={`${styles.panelRight} ${rightVisible ? styles.mobileVisible : styles.mobileHidden}`}
-        ref={rightRef}
-      >
+      <div className={styles.panelRight} ref={rightRef}>
         {rightError ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -134,8 +122,24 @@ export default function HeroSplit() {
             data-asset-type="hero-bg"
           />
         )}
-        <VideoPlayPause videoRef={rightVideoElRef} label="HeroSplit-Right" />
+      </div>
+
+      <div className={styles.divider} aria-hidden="true" />
+
+      {/* Text overlays — above panels, fixed positions, own clip-paths */}
+      <div className={styles.textLeft}>
+        <h1 className={styles.headingLeft}>Vendemos tu casa</h1>
+        <p className={styles.subheading}>
+          En un sector donde la mayoría trabaja solo, nosotros somos dos.
+        </p>
+        <VideoPlayPause videoRef={leftVideoElRef} label="HeroSplit-Left" />
+      </div>
+
+      <div
+        className={`${styles.textRight} ${rightVisible ? styles.mobileVisible : styles.mobileHidden}`}
+      >
         <p className={styles.headingRight}>como si fuese la nuestra.</p>
+        <VideoPlayPause videoRef={rightVideoElRef} label="HeroSplit-Right" />
       </div>
     </section>
   );
