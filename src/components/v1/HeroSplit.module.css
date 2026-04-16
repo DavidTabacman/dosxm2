@@ -65,7 +65,14 @@
   }
 }
 
-/* --- Typography --- */
+/* --- Typography — z-index ensures text sits above .panelBg and ::before overlay --- */
+.headingLeft,
+.headingRight,
+.subheading {
+  position: relative;
+  z-index: 2;
+}
+
 .headingLeft {
   font-family: var(--font-v1-serif), serif;
   font-size: clamp(2.5rem, 6vw, 5rem);
@@ -111,6 +118,22 @@
     transition: left 0.08s ease-out;
     box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
   }
+}
+
+/* --- Dark gradient scrim for text readability over video --- */
+.panelLeft::before,
+.panelRight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.2) 60%,
+    transparent 100%
+  );
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* --- Background videos / images behind panels --- */
