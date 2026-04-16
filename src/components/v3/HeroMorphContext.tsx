@@ -30,17 +30,17 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function easeOutQuart(t: number) {
-  return 1 - Math.pow(1 - t, 4);
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
 }
 
 const DEBUG = process.env.NODE_ENV === "development";
 const TAG = "V3-HeroMorph";
 
 // Sub-phase boundaries within the MORPH phase
-const ENTRANCE_END = 0.10;
-const CROSSFADE_START = 0.70;
-const MORPH_RADIUS_TARGET = 12; // px — visible card rounding
+const FADE_IN_END = 0.12; // morph layer opacity 0 → 1
+const CROSSFADE_START = 0.80; // morph layer fades out, card revealed
+const MORPH_RADIUS_TARGET = 12; // px
 
 export function HeroMorphProvider({ children }: { children: ReactNode }) {
   const heroRef = useRef<HTMLElement | null>(null);
@@ -140,6 +140,7 @@ export function HeroMorphProvider({ children }: { children: ReactNode }) {
       if (!hero) return;
 
       const vh = window.innerHeight;
+      const vw = window.innerWidth;
       const scrollY = window.scrollY;
 
       const heroTop = hero.offsetTop;
@@ -166,22 +167,15 @@ export function HeroMorphProvider({ children }: { children: ReactNode }) {
         layer.style.setProperty("--morph-radius", "0px");
         layer.style.setProperty("--morph-opacity", "1");
         layer.style.setProperty("--morph-scale", String(scale));
-
-        // First card stays at default opacity (1) — it's off-screen
-        const firstCard = firstCardRef.current;
-        if (firstCard) {
-          firstCard.style.removeProperty("--first-card-opacity");
-        }
         return;
       }
 
       const portfolio = portfolioRef.current;
 
       /* ═══════════════════════════════════════════════════
-         Phase 2 — INTERMEDIATE: layer hidden, sections occlude
+         Phase 2 — INTERMEDIATE: layer hidden behind opaque sections
          ═══════════════════════════════════════════════════ */
       if (!portfolio) {
-        // Portfolio not mounted yet — stay intermediate
         if (DEBUG && currentPhaseRef.current !== "intermediate") {
           console.log(`[${TAG}] Phase → INTERMEDIATE (portfolio not mounted)`);
         }
@@ -193,7 +187,6 @@ export function HeroMorphProvider({ children }: { children: ReactNode }) {
       const portfolioRect = portfolio.getBoundingClientRect();
 
       if (portfolioRect.top > vh) {
-        // Portfolio hasn't entered viewport yet
         if (DEBUG && currentPhaseRef.current !== "intermediate") {
           console.log(
             `[${TAG}] Phase → INTERMEDIATE — portfolioTop: ${Math.round(portfolioRect.top)}`
@@ -209,11 +202,6 @@ export function HeroMorphProvider({ children }: { children: ReactNode }) {
         layer.style.setProperty("--morph-radius", "0px");
         layer.style.setProperty("--morph-opacity", "0");
         layer.style.setProperty("--morph-scale", "0.92");
-
-        const firstCard = firstCardRef.current;
-        if (firstCard) {
-          firstCard.style.removeProperty("--first-card-opacity");
-        }
         return;
       }
 
@@ -243,18 +231,13 @@ export function HeroMorphProvider({ children }: { children: ReactNode }) {
         }
         currentPhaseRef.current = "post-morph";
         resetLayer(layer);
-        firstCard.style.removeProperty("--first-card-opacity");
         return;
       }
 
-      // We're in the active MORPH phase
+      // Active MORPH phase
       if (DEBUG && currentPhaseRef.current !== "morph") {
-        const cardRect = firstCard.getBoundingClientRect();
         console.log(
-          `[${TAG}] Phase → MORPH — ` +
-            `portfolioTop: ${Math.round(portfolioRect.top)}, ` +
-            `card: ${Math.round(cardRect.left)},${Math.round(cardRect.top)} ` +
-            `${Math.round(cardRect.width)}x${Math.round(cardRect.height)}`
+          `[${TAG}] Phase → MORPH — portfolioTop: ${Math.round(portfolioRect.top)}`
         );
       }
       currentPhaseRef.current = "morph";
@@ -262,57 +245,33 @@ export function HeroMorphProvider({ children }: { children: ReactNode }) {
       // Elevate above portfolio section (z-index 2)
       layer.style.setProperty("--morph-z-index", "3");
 
+      // ── Target position: where the card WILL BE when the sticky container pins ──
+      // The card's current rect is offset by the section's scroll position.
+      // Subtracting portfolioRect.top gives us the card's position within
+      // the section, which equals its viewport position when the section
+      // top reaches 0 (sticky container pinned).
       const cardRect = firstCard.getBoundingClientRect();
+      const sectionOffset = Math.max(portfolioRect.top, 0);
+      const targetTop = cardRect.top - sectionOffset;
+      const targetBottom = cardRect.bottom - sectionOffset;
+      const targetLeft = cardRect.left;
+      const targetRight = cardRect.right;
 
-      /* ── Sub-phase: Entrance (0 → ENTRANCE_END) ── */
-      if (progress <= ENTRANCE_END) {
-        const entranceT = progress / ENTRANCE_END;
+      // Ensure target is within viewport bounds (clamp to avoid negative insets
+      // that would expand clip-path beyond the element)
+      const clampedTargetTop = Math.max(0, targetTop);
+      const clampedTargetBottom = Math.min(vh, targetBottom);
+      const clampedTargetLeft = Math.max(0, targetLeft);
+      const clampedTargetRight = Math.min(vw, targetRight);
 
-        // Fade in the morph layer
-        layer.style.setProperty("--morph-opacity", String(entranceT));
-        // Fade out the real first card as morph layer takes over
-        firstCard.style.setProperty(
-          "--first-card-opacity",
-          String(1 - entranceT)
-        );
+      // ── Morph easing ──
+      const eased = easeOutCubic(progress);
 
-        // Clip-path: start full-screen, begin shrinking
-        const earlyEased = easeOutQuart(entranceT);
-        const insetTop = earlyEased * cardRect.top * 0.15;
-        const insetRight =
-          earlyEased * (window.innerWidth - cardRect.right) * 0.15;
-        const insetBottom = earlyEased * (vh - cardRect.bottom) * 0.15;
-        const insetLeft = earlyEased * cardRect.left * 0.15;
-
-        layer.style.setProperty("--morph-inset-top", `${insetTop}px`);
-        layer.style.setProperty("--morph-inset-right", `${insetRight}px`);
-        layer.style.setProperty("--morph-inset-bottom", `${insetBottom}px`);
-        layer.style.setProperty("--morph-inset-left", `${insetLeft}px`);
-        layer.style.setProperty("--morph-radius", "0px");
-        layer.style.setProperty(
-          "--morph-scale",
-          String(0.92 + earlyEased * 0.08 * 0.15)
-        );
-        return;
-      }
-
-      /* ── Sub-phase: Main morph (ENTRANCE_END → CROSSFADE_START) ── */
-      // Normalize progress within this sub-phase
-      const morphT = clamp(
-        (progress - ENTRANCE_END) / (CROSSFADE_START - ENTRANCE_END),
-        0,
-        1
-      );
-      const eased = easeOutQuart(morphT);
-
-      // Blend from the entrance end-state (15% of target insets) to full card insets
-      const blendFrom = 0.15;
-      const blendedEased = blendFrom + eased * (1 - blendFrom);
-
-      const insetTop = blendedEased * cardRect.top;
-      const insetRight = blendedEased * (window.innerWidth - cardRect.right);
-      const insetBottom = blendedEased * (vh - cardRect.bottom);
-      const insetLeft = blendedEased * cardRect.left;
+      // Clip-path: full-screen → target card shape
+      const insetTop = eased * clampedTargetTop;
+      const insetRight = eased * (vw - clampedTargetRight);
+      const insetBottom = eased * (vh - clampedTargetBottom);
+      const insetLeft = eased * clampedTargetLeft;
       const radius = eased * MORPH_RADIUS_TARGET;
 
       layer.style.setProperty("--morph-inset-top", `${insetTop}px`);
@@ -320,25 +279,24 @@ export function HeroMorphProvider({ children }: { children: ReactNode }) {
       layer.style.setProperty("--morph-inset-bottom", `${insetBottom}px`);
       layer.style.setProperty("--morph-inset-left", `${insetLeft}px`);
       layer.style.setProperty("--morph-radius", `${radius}px`);
-      layer.style.setProperty(
-        "--morph-scale",
-        String(0.92 + blendedEased * 0.08)
-      );
+      layer.style.setProperty("--morph-scale", String(0.92 + eased * 0.08));
 
-      /* ── Sub-phase: Cross-fade (CROSSFADE_START → 1.0) ── */
-      if (progress >= CROSSFADE_START) {
-        const fadeT = clamp(
-          (progress - CROSSFADE_START) / (1 - CROSSFADE_START),
-          0,
-          1
-        );
-        layer.style.setProperty("--morph-opacity", String(1 - fadeT));
-        firstCard.style.setProperty("--first-card-opacity", String(fadeT));
-      } else {
-        // Main morph: layer fully visible, card hidden
-        layer.style.setProperty("--morph-opacity", "1");
-        firstCard.style.setProperty("--first-card-opacity", "0");
+      // ── Opacity: fade in at start, fade out at end ──
+      // The first card is always visible (opacity 1). The morph layer at
+      // z-index 3 covers it while visible. When the morph layer fades out
+      // at the end, the real card is revealed underneath.
+      let layerOpacity = 1;
+
+      if (progress < FADE_IN_END) {
+        // Fade in
+        layerOpacity = progress / FADE_IN_END;
+      } else if (progress > CROSSFADE_START) {
+        // Cross-fade out — reveal the real card underneath
+        const fadeT = (progress - CROSSFADE_START) / (1 - CROSSFADE_START);
+        layerOpacity = 1 - fadeT;
       }
+
+      layer.style.setProperty("--morph-opacity", String(layerOpacity));
     }
 
     function handleScroll() {
