@@ -47,6 +47,8 @@
     clip-path: inset(0 0 0 var(--divider-pos, 50%));
     will-change: clip-path;
     transition: clip-path 0.08s ease-out;
+    /* Push text past the divider so it's in the visible (unclipped) area */
+    padding-left: calc(var(--divider-pos, 50%) + clamp(2rem, 6vw, 5rem));
   }
 }
 
