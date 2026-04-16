@@ -4,10 +4,10 @@ import { useVideoPlayback } from "../shared/useVideoPlayback";
 import VideoPlayPause from "../shared/VideoPlayPause";
 import styles from "./HeroSplit.module.css";
 
-const LEFT_VIDEO = "https://assets.mixkit.co/videos/4814/4814-720.mp4";
+const LEFT_VIDEO = "https://assets.mixkit.co/videos/4029/4029-720.mp4";
 const LEFT_POSTER =
   "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&h=800&fit=crop";
-const RIGHT_VIDEO = "https://assets.mixkit.co/videos/4818/4818-720.mp4";
+const RIGHT_VIDEO = "https://assets.mixkit.co/videos/4488/4488-720.mp4";
 const RIGHT_POSTER =
   "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop";
 

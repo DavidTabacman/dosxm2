@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
 import { useSectionReveal } from "../shared/useSectionReveal";
 import { useHeroMorph } from "./HeroMorphContext";
+import { HERO_IMAGE_BASE } from "./heroAssets";
 import styles from "./PortfolioTable.module.css";
 import anim from "./v3-animations.module.css";
 
@@ -11,8 +12,7 @@ const STORIES = [
     zona: "Chamberí",
     dias: 18,
     story: "La historia de un nuevo comienzo.",
-    image:
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=1000&fit=crop",
+    image: `${HERO_IMAGE_BASE}?w=800&h=1000&fit=crop`,
   },
   {
     zona: "Salamanca",

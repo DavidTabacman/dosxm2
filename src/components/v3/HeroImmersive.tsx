@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useHeroMorph } from "./HeroMorphContext";
+import { HERO_IMAGE_BASE } from "./heroAssets";
 import styles from "./HeroImmersive.module.css";
 
 export default function HeroImmersive() {
@@ -90,7 +91,7 @@ export default function HeroImmersive() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className={styles.fallbackImage}
-          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop"
+          src={`${HERO_IMAGE_BASE}?w=1920&h=1080&fit=crop`}
           alt="Interior de propiedad en Madrid"
           data-asset-type="hero-video-poster"
           loading="eager"
