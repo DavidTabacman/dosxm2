@@ -11,10 +11,13 @@
   opacity: var(--first-card-opacity, 1);
 }
 
-/* Desktop scroll-jacking: tall section for scroll travel */
+/* Desktop scroll-jacking: tall section for scroll travel.
+   overflow: clip (not hidden) preserves position: sticky on the
+   inner container — hidden creates a scroll container that breaks sticky. */
 .sectionDesktop {
   height: 250vh;
   padding: 0;
+  overflow: clip;
 }
 
 /* Sticky container pins content while section scrolls */
