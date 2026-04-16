@@ -57,7 +57,7 @@ describe("useScrollAlive", () => {
     expect(result.current[2]).toBe(false); // isAlive
   });
 
-  test("returns [ref, true, true] immediately when CSS scroll-driven animations supported", () => {
+  test("CSS supported: isEntered true immediately, isAlive deferred to IO", () => {
     (CSS.supports as ReturnType<typeof vi.fn>).mockReturnValue(true);
     const { result } = renderHook(() => useScrollAlive());
 
@@ -66,10 +66,22 @@ describe("useScrollAlive", () => {
       result.current[0](node);
     });
 
+    // isEntered is true immediately (CSS handles entrance animation)
     expect(result.current[1]).toBe(true);
+    // isAlive waits for IO (triggers side effects like video playback)
+    expect(result.current[2]).toBe(false);
+    // One IO created for the alive threshold
+    expect(observeCallbacks).toHaveLength(1);
+    expect(mockObserves[0]).toHaveBeenCalledWith(node);
+
+    // Fire the alive observer
+    act(() => {
+      observeCallbacks[0]([{ isIntersecting: true }]);
+    });
+
     expect(result.current[2]).toBe(true);
-    // No IntersectionObservers should be created
-    expect(observeCallbacks).toHaveLength(0);
+    // Fire-once: unobserves after triggering
+    expect(mockUnobserves[0]).toHaveBeenCalledWith(node);
   });
 
   test("creates two IntersectionObservers when CSS unsupported", () => {

@@ -6,12 +6,13 @@ let aliveIdCounter = 0;
  * Two-phase scroll reveal hook with CSS Scroll-Driven Animations detection.
  *
  * When the browser supports `animation-timeline: view()` (Chrome 115+, Safari 26+),
- * this hook returns [ref, true, true] immediately — CSS handles the animations.
+ * CSS handles the visual animations (entrance + colorize). isEntered is set true
+ * immediately (CSS drives the fade-in), but isAlive still waits for an
+ * IntersectionObserver — because isAlive triggers side effects (video playback)
+ * that must only fire when the card is actually visible on screen.
  *
  * When unsupported (Firefox, older browsers), falls back to two fire-once
- * IntersectionObservers at different thresholds:
- *   - isEntered (low threshold): card fades in, still B&W
- *   - isAlive (high threshold): card transitions to color, video can start
+ * IntersectionObservers at different thresholds for both phases.
  *
  * Respects prefers-reduced-motion and SSR safety.
  */
@@ -49,17 +50,6 @@ export function useScrollAlive(
       const tag = `ScrollAlive#${debugId.current}`;
       const elLabel = `${node.tagName?.toLowerCase()}.${(node.className?.toString() || "").slice(0, 40)}`;
 
-      // If CSS scroll-driven animations handle everything, skip JS
-      if (cssSupported.current) {
-        console.log(
-          `[${tag}] ✅ CSS animation-timeline:view() supported — ` +
-          `skipping JS observers, both phases immediately active. Element: ${elLabel}`
-        );
-        setIsEntered(true);
-        setIsAlive(true);
-        return;
-      }
-
       // SSR safety
       if (typeof IntersectionObserver === "undefined") {
         console.warn(
@@ -84,6 +74,37 @@ export function useScrollAlive(
         return;
       }
 
+      if (cssSupported.current) {
+        // CSS handles the visual animations (entrance fade-in + grayscale).
+        // Set isEntered immediately so fallback CSS classes don't interfere.
+        // But isAlive still uses IO — it triggers side effects (video playback)
+        // that must only fire when the card is actually visible.
+        console.log(
+          `[${tag}] ✅ CSS animation-timeline:view() supported — ` +
+          `entrance immediate, alive deferred to IO (threshold: ${aliveThreshold}). ` +
+          `Element: ${elLabel}`
+        );
+        setIsEntered(true);
+
+        const aliveObs = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              console.log(
+                `[${tag}] 🎨 ALIVE (CSS path) — ratio: ${(entry.intersectionRatio ?? 0).toFixed(2)}. ` +
+                `Video playback should start now.`
+              );
+              setIsAlive(true);
+              aliveObs.unobserve(node);
+            }
+          },
+          { threshold: aliveThreshold }
+        );
+        aliveObs.observe(node);
+        aliveObserverRef.current = aliveObs;
+        return;
+      }
+
+      // Full JS fallback — both phases use IO
       console.log(
         `[${tag}] 🎬 JS fallback active (CSS animation-timeline not supported) — ` +
         `observing with thresholds: entrance=${entranceThreshold}, alive=${aliveThreshold}. ` +

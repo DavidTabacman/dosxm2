@@ -71,6 +71,20 @@ function StoryCard({
   });
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Stable combined ref — avoids re-registration on every render
+  const combinedRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (typeof ref === "function") ref(node);
+      (cardRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      if (isFirstCard && onFirstCardRef) onFirstCardRef(node);
+    },
+    // ref from useIntersectionObserver is stable (useCallback inside the hook).
+    // onFirstCardRef is stable (wrapped in useCallback in parent).
+    // isFirstCard is a constant for each card instance.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [ref, isFirstCard, onFirstCardRef]
+  );
+
   const isActive = isIntersecting;
 
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
@@ -104,12 +118,7 @@ function StoryCard({
   return (
     <div
       className={`${styles.card} ${isActive ? styles.cardActive : ""} ${isFirstCard ? styles.cardMorphTarget : ""}`}
-      ref={(node) => {
-        // Combine refs
-        if (typeof ref === "function") ref(node);
-        (cardRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
-        if (isFirstCard && onFirstCardRef) onFirstCardRef(node);
-      }}
+      ref={combinedRef}
       role="group"
       aria-roledescription="diapositiva"
       aria-label={`${index + 1} de ${total}: Propiedad en ${zona}`}
