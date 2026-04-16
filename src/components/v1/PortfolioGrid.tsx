@@ -1,5 +1,5 @@
-import { useCallback, useRef } from "react";
-import { useIntersectionObserver } from "../shared/useIntersectionObserver";
+import { useCallback, useEffect, useRef } from "react";
+import { useScrollAlive } from "../shared/useScrollAlive";
 import { useVideoPlayback } from "../shared/useVideoPlayback";
 import VideoPlayPause from "../shared/VideoPlayPause";
 import styles from "./PortfolioGrid.module.css";
@@ -55,19 +55,42 @@ function PropertyCard({
   video: string;
   index: number;
 }) {
-  const [ref, isVisible] = useIntersectionObserver({ threshold: 0.4 });
+  const [revealRef, isEntered, isAlive] = useScrollAlive(0.15, 0.5);
   const videoElRef = useRef<HTMLVideoElement>(null);
-  const { ref: playbackRef, hasError } = useVideoPlayback(`Portfolio-${zona}`);
+  const { ref: playbackRef, hasError, play } = useVideoPlayback(
+    `Portfolio-${zona}`,
+    { autoplay: false }
+  );
 
   const setVideoRef = useCallback((node: HTMLVideoElement | null) => {
     videoElRef.current = node;
     playbackRef(node);
   }, [playbackRef]);
 
+  // Start video playback when the card comes alive
+  useEffect(() => {
+    if (isAlive) {
+      console.log(
+        `[V1-PortfolioGrid:${zona}] 🎨 Card ALIVE — triggering deferred video play. ` +
+        `hasError: ${hasError}, videoRef: ${videoElRef.current ? "attached" : "null"}`
+      );
+      play();
+    }
+  }, [isAlive, play, zona, hasError]);
+
+  // Build className — entered/alive classes are used by the JS fallback path.
+  // When CSS scroll-driven animations are active, both are true immediately
+  // and the @supports(animation-timeline) CSS block handles animations instead.
+  const cardClass = [
+    styles.card,
+    isEntered ? styles.entered : "",
+    isAlive ? styles.alive : "",
+  ].filter(Boolean).join(" ");
+
   return (
     <div
-      className={`${styles.card} ${isVisible ? styles.inView : ""}`}
-      ref={ref}
+      className={cardClass}
+      ref={revealRef}
       role="group"
       aria-label={`Propiedad en ${zona}`}
       style={{ "--stagger-index": index % 3 } as React.CSSProperties}
@@ -88,7 +111,7 @@ function PropertyCard({
           loop
           muted
           playsInline
-          preload="none"
+          preload="metadata"
           data-asset-type="video"
         />
       )}

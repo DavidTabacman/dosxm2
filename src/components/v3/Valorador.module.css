@@ -3,6 +3,9 @@
   max-width: 600px;
   margin: 0 auto;
   text-align: center;
+  position: relative;
+  z-index: 2;
+  background: var(--v3-bg);
 }
 
 .heading {

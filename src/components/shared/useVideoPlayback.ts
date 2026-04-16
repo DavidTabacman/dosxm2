@@ -5,11 +5,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * - AbortController-based listener cleanup (no leaks on ref re-calls)
  * - play() concurrency guard (prevents AbortError cascades)
  * - IntersectionObserver-based off-screen pause/resume
+ * - Optional deferred playback mode (autoplay: false)
  */
-export function useVideoPlayback(label?: string): {
+export function useVideoPlayback(
+  label?: string,
+  options?: { autoplay?: boolean }
+): {
   ref: (node: HTMLVideoElement | null) => void;
   hasError: boolean;
   isPlaying: boolean;
+  play: () => void;
 } {
   const [hasError, setHasError] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -18,8 +23,10 @@ export function useVideoPlayback(label?: string): {
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const playPendingRef = useRef(false);
+  const hasPlayedRef = useRef(false);
 
   const tag = label || "video";
+  const shouldAutoplay = options?.autoplay !== false;
 
   // Guarded play — prevents concurrent play() calls
   const safePlay = useCallback(async (video: HTMLVideoElement): Promise<boolean> => {
@@ -30,6 +37,7 @@ export function useVideoPlayback(label?: string): {
     playPendingRef.current = true;
     try {
       await video.play();
+      hasPlayedRef.current = true;
       return true;
     } catch (error) {
       if (error instanceof DOMException) {
@@ -38,6 +46,7 @@ export function useVideoPlayback(label?: string): {
           video.muted = true;
           try {
             await video.play();
+            hasPlayedRef.current = true;
             return true;
           } catch (retryError) {
             const msg = retryError instanceof DOMException
@@ -48,7 +57,7 @@ export function useVideoPlayback(label?: string): {
             return false;
           }
         } else if (error.name === "AbortError") {
-          // Interrupted — not a real failure, will retry via IO
+          console.warn(`[VideoPlayback:${tag}] ⏳ AbortError — play() interrupted, will retry via IO`);
           return false;
         } else {
           console.error(`[VideoPlayback:${tag}] Play error — ${error.name}: ${error.message}`);
@@ -74,6 +83,15 @@ export function useVideoPlayback(label?: string): {
     };
   }, []);
 
+  // Imperative play trigger for deferred mode
+  const play = useCallback(() => {
+    if (videoRef.current) {
+      safePlay(videoRef.current).then((ok) => {
+        if (ok) setIsPlaying(true);
+      });
+    }
+  }, [safePlay]);
+
   const ref = useCallback(
     (node: HTMLVideoElement | null) => {
       // === CLEANUP previous node ===
@@ -87,6 +105,7 @@ export function useVideoPlayback(label?: string): {
         retryTimerRef.current = null;
       }
       playPendingRef.current = false;
+      hasPlayedRef.current = false;
 
       if (!node) {
         videoRef.current = null;
@@ -118,11 +137,20 @@ export function useVideoPlayback(label?: string): {
         console.error(`[VideoPlayback:${tag}] Network stalled — src: ${node.src?.slice(-40)}`);
       }, { signal });
 
-      // Initial play attempt
-      safePlay(node).then((ok) => {
-        if (ok) setIsPlaying(true);
-        else if (!node.paused) setIsPlaying(true);
-      });
+      // Initial play attempt — only if autoplay is enabled
+      if (shouldAutoplay) {
+        safePlay(node).then((ok) => {
+          if (ok) {
+            console.log(`[VideoPlayback:${tag}] ✅ Initial autoplay succeeded`);
+            setIsPlaying(true);
+          } else if (!node.paused) setIsPlaying(true);
+        });
+      } else {
+        console.log(
+          `[VideoPlayback:${tag}] ⏸️ Deferred mode — autoplay skipped, waiting for play() call. ` +
+          `src: ${node.src?.slice(-40)}, readyState: ${node.readyState}`
+        );
+      }
 
       // IntersectionObserver: pause off-screen, resume on-screen
       if (typeof IntersectionObserver !== "undefined") {
@@ -130,9 +158,13 @@ export function useVideoPlayback(label?: string): {
           ([entry]) => {
             if (signal.aborted) return; // Skip if node was cleaned up
             if (entry.isIntersecting) {
-              safePlay(node).then((ok) => {
-                if (ok) setIsPlaying(true);
-              });
+              // Only auto-resume if the video has been played at least once
+              // (prevents IO from starting a deferred video prematurely)
+              if (hasPlayedRef.current) {
+                safePlay(node).then((ok) => {
+                  if (ok) setIsPlaying(true);
+                });
+              }
             } else {
               node.pause();
             }
@@ -143,8 +175,8 @@ export function useVideoPlayback(label?: string): {
         observerRef.current = observer;
       }
     },
-    [safePlay, tag]
+    [safePlay, tag, shouldAutoplay]
   );
 
-  return { ref, hasError, isPlaying };
+  return { ref, hasError, isPlaying, play };
 }

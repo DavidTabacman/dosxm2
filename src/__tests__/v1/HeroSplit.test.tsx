@@ -7,6 +7,7 @@ vi.mock("@/components/shared/useVideoPlayback", () => ({
     ref: () => {},
     hasError: false,
     isPlaying: false,
+    play: () => {},
   }),
 }));
 

@@ -1,6 +1,8 @@
 import Head from "next/head";
 import { Instrument_Serif, Inter } from "next/font/google";
 import V3Layout from "@/components/v3/V3Layout";
+import { HeroMorphProvider } from "@/components/v3/HeroMorphContext";
+import HeroMorphLayer from "@/components/v3/HeroMorphLayer";
 import HeroImmersive from "@/components/v3/HeroImmersive";
 import ElDiferencial from "@/components/v3/ElDiferencial";
 import LiveMetrics from "@/components/v3/LiveMetrics";
@@ -31,12 +33,15 @@ export default function V3Page() {
         />
       </Head>
       <V3Layout fontClassName={`${instrumentSerif.variable} ${inter.variable}`}>
-        <HeroImmersive />
-        <ElDiferencial />
-        <LiveMetrics />
-        <HistoriasVendidas />
-        <PruebaSocial />
-        <Valorador />
+        <HeroMorphProvider>
+          <HeroMorphLayer />
+          <HeroImmersive />
+          <ElDiferencial />
+          <LiveMetrics />
+          <HistoriasVendidas />
+          <PruebaSocial />
+          <Valorador />
+        </HeroMorphProvider>
       </V3Layout>
     </>
   );

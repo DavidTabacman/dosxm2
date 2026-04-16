@@ -1,6 +1,13 @@
 .section {
   padding: clamp(4rem, 8vw, 6rem) 0;
   overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+
+/* First card opacity controlled by morph layer during hero-to-card transition */
+.cardMorphTarget {
+  opacity: var(--first-card-opacity, 1);
 }
 
 /* Desktop scroll-jacking: tall section for scroll travel */

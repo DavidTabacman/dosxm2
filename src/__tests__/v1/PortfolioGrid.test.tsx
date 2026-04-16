@@ -7,7 +7,12 @@ vi.mock("@/components/shared/useVideoPlayback", () => ({
     ref: () => {},
     hasError: false,
     isPlaying: false,
+    play: vi.fn(),
   }),
+}));
+
+vi.mock("@/components/shared/useScrollAlive", () => ({
+  useScrollAlive: () => [() => {}, true, true],
 }));
 
 describe("V1 PortfolioGrid", () => {
@@ -80,5 +85,13 @@ describe("V1 PortfolioGrid", () => {
     // Videos start paused in jsdom, so buttons show "Reproducir video"
     const buttons = container.querySelectorAll("button[aria-label='Reproducir video']");
     expect(buttons).toHaveLength(5);
+  });
+
+  test("videos use preload='metadata' for buffering", () => {
+    const { container } = render(<PortfolioGrid />);
+    const videos = container.querySelectorAll("video");
+    videos.forEach((video) => {
+      expect(video.getAttribute("preload")).toBe("metadata");
+    });
   });
 });

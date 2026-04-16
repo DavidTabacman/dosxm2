@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 // Note: useState still used for isDesktop and reducedMotion (rarely change, re-render OK)
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
 import { useSectionReveal } from "../shared/useSectionReveal";
+import { useHeroMorph } from "./HeroMorphContext";
 import styles from "./PortfolioTable.module.css";
 import anim from "./v3-animations.module.css";
 
@@ -11,7 +12,7 @@ const STORIES = [
     dias: 18,
     story: "La historia de un nuevo comienzo.",
     image:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=1000&fit=crop",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=1000&fit=crop",
   },
   {
     zona: "Salamanca",
@@ -52,6 +53,8 @@ function StoryCard({
   image,
   index,
   total,
+  isFirstCard,
+  onFirstCardRef,
 }: {
   zona: string;
   dias: number;
@@ -59,6 +62,8 @@ function StoryCard({
   image: string;
   index: number;
   total: number;
+  isFirstCard?: boolean;
+  onFirstCardRef?: (el: HTMLDivElement | null) => void;
 }) {
   const [ref, isIntersecting] = useIntersectionObserver({
     threshold: 0.6,
@@ -98,11 +103,12 @@ function StoryCard({
 
   return (
     <div
-      className={`${styles.card} ${isActive ? styles.cardActive : ""}`}
+      className={`${styles.card} ${isActive ? styles.cardActive : ""} ${isFirstCard ? styles.cardMorphTarget : ""}`}
       ref={(node) => {
         // Combine refs
         if (typeof ref === "function") ref(node);
         (cardRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        if (isFirstCard && onFirstCardRef) onFirstCardRef(node);
       }}
       role="group"
       aria-roledescription="diapositiva"
@@ -136,6 +142,20 @@ export default function HistoriasVendidas() {
   const rafRef = useRef<number>(0);
   const prevActiveRef = useRef(-1);
   const [headingRef, headingRevealed] = useSectionReveal(0.15);
+  const { registerPortfolioRef, registerFirstCardRef } = useHeroMorph();
+
+  // Register portfolio section with morph context
+  useEffect(() => {
+    registerPortfolioRef(sectionRef.current);
+    return () => registerPortfolioRef(null);
+  }, [registerPortfolioRef]);
+
+  const handleFirstCardRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      registerFirstCardRef(el);
+    },
+    [registerFirstCardRef]
+  );
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -305,6 +325,8 @@ export default function HistoriasVendidas() {
                 image={s.image}
                 index={i}
                 total={STORIES.length}
+                isFirstCard={i === 0}
+                onFirstCardRef={i === 0 ? handleFirstCardRef : undefined}
               />
             ))}
           </div>

@@ -1,42 +1,38 @@
 .hero {
-  --morph-scale: 1;
-  --morph-radius: 0px;
-  --morph-x: 0px;
-  --morph-y: 0px;
   --text-opacity: 1;
   --gradient-opacity: 0;
-  --morph-shadow: none;
-  --morph-width: 100%;
 
   position: relative;
   height: 160vh;
   overflow: visible;
+  z-index: 2;
 }
 
-/* Sticky frame keeps the visual pinned while section scrolls */
+/* Sticky frame keeps the text pinned while section scrolls */
 .stickyFrame {
   position: sticky;
   top: 0;
   height: 100vh;
   overflow: hidden;
+  z-index: 2;
 }
 
-.imageWrapper {
+/* Fallback image — hidden on desktop (morph layer provides the image).
+   Visible on mobile and reduced-motion. */
+.fallbackImage {
   position: absolute;
   inset: 0;
-  max-width: var(--morph-width);
-  margin: 0 auto;
-  transform: scale(var(--morph-scale)) translate(var(--morph-x), var(--morph-y));
-  border-radius: var(--morph-radius);
-  box-shadow: var(--morph-shadow);
-  overflow: hidden;
-  will-change: transform, border-radius, box-shadow;
-}
-
-.image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .fallbackImage {
+    opacity: 1;
+  }
 }
 
 .overlay {
@@ -95,12 +91,8 @@
     position: relative;
   }
 
-  .imageWrapper {
-    transform: none;
-    border-radius: 0;
-    box-shadow: none;
-    max-width: none;
-    will-change: auto;
+  .fallbackImage {
+    opacity: 1;
   }
 
   .overlay {

@@ -51,22 +51,16 @@
   }
 }
 
+/* ============================================================
+   Card base — visible by default (progressive enhancement).
+   Scroll-driven animations or JS fallback handle the entrance.
+   ============================================================ */
 .card {
   position: relative;
   overflow: hidden;
   border-radius: 4px;
   cursor: pointer;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.card.inView {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out,
-    box-shadow 0.4s ease;
-  transition-delay: calc(var(--stagger-index, 0) * 100ms);
 }
 
 .cardImage {
@@ -78,6 +72,9 @@
   transition: filter 0.6s ease, transform 0.6s ease;
 }
 
+/* ============================================================
+   Hover effects (always active, independent of scroll state)
+   ============================================================ */
 .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
@@ -92,11 +89,76 @@
   padding-bottom: 1.75rem;
 }
 
-/* Mobile: IntersectionObserver driven */
-.card.inView .cardImage {
-  filter: grayscale(0);
+/* ============================================================
+   CSS Scroll-Driven Animations (Chrome 115+, Edge 115+, Safari 26+)
+   Entrance + colorize are SEQUENCED via animation-range so
+   the user sees B&W cards fade in, then desaturate to color.
+   ============================================================ */
+@keyframes card-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+@keyframes card-colorize {
+  from {
+    filter: grayscale(1);
+  }
+  to {
+    filter: grayscale(0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .card {
+      animation: card-entrance linear both;
+      /* MUST be after animation shorthand — shorthand resets timeline */
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+
+    .cardImage {
+      animation: card-colorize linear both;
+      animation-timeline: view();
+      animation-range: entry 60% cover 40%;
+    }
+  }
+}
+
+/* ============================================================
+   JS fallback for browsers without scroll-driven animations
+   (Firefox, older browsers). Uses class-toggled transitions
+   driven by useScrollAlive hook.
+   ============================================================ */
+@supports not (animation-timeline: view()) {
+  .card {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .card.entered {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out,
+      box-shadow 0.4s ease;
+    transition-delay: calc(var(--stagger-index, 0) * 100ms);
+  }
+
+  .card.alive .cardImage {
+    filter: grayscale(0);
+    transition: filter 0.8s ease;
+  }
+}
+
+/* ============================================================
+   Overlay, labels, metadata
+   ============================================================ */
 .cardOverlay {
   position: absolute;
   bottom: 0;
@@ -139,13 +201,17 @@
 }
 
 .card:hover .videoLabel,
-.card.inView .videoLabel {
+.card.alive .videoLabel {
   opacity: 1;
 }
 
+/* ============================================================
+   Reduced motion — everything visible, no animations at all
+   ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   .cardImage {
     transition: none;
+    filter: grayscale(0);
   }
 
   .card {

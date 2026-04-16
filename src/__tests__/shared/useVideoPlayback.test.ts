@@ -205,4 +205,82 @@ describe("useVideoPlayback", () => {
       await new Promise((r) => setTimeout(r, 0));
     });
   });
+
+  test("returns a play function", () => {
+    const { result } = renderHook(() => useVideoPlayback());
+    expect(typeof result.current.play).toBe("function");
+  });
+
+  describe("autoplay: false (deferred mode)", () => {
+    test("does NOT call play() on ref attach", () => {
+      const { result } = renderHook(() =>
+        useVideoPlayback("test", { autoplay: false })
+      );
+      const video = document.createElement("video");
+      video.play = vi.fn().mockResolvedValue(undefined);
+
+      act(() => {
+        result.current.ref(video);
+      });
+
+      expect(video.play).not.toHaveBeenCalled();
+    });
+
+    test("imperative play() triggers playback", async () => {
+      const { result } = renderHook(() =>
+        useVideoPlayback("test", { autoplay: false })
+      );
+      const video = document.createElement("video");
+      video.play = vi.fn().mockResolvedValue(undefined);
+
+      act(() => {
+        result.current.ref(video);
+      });
+
+      expect(video.play).not.toHaveBeenCalled();
+
+      await act(async () => {
+        result.current.play();
+        await new Promise((r) => setTimeout(r, 0));
+      });
+
+      expect(video.play).toHaveBeenCalled();
+    });
+
+    test("IO does NOT auto-resume until first manual play()", async () => {
+      const { result } = renderHook(() =>
+        useVideoPlayback("test", { autoplay: false })
+      );
+      const video = document.createElement("video");
+      video.play = vi.fn().mockResolvedValue(undefined);
+      video.pause = vi.fn();
+
+      act(() => {
+        result.current.ref(video);
+      });
+
+      // IO fires visible — should NOT start playback (never been played)
+      act(() => {
+        observeCallback?.([{ isIntersecting: true }]);
+      });
+      expect(video.play).not.toHaveBeenCalled();
+
+      // Manual play
+      await act(async () => {
+        result.current.play();
+        await new Promise((r) => setTimeout(r, 0));
+      });
+      expect(video.play).toHaveBeenCalledTimes(1);
+
+      // Now IO should resume after being played at least once
+      video.play.mockClear();
+      act(() => {
+        observeCallback?.([{ isIntersecting: false }]);
+      });
+      act(() => {
+        observeCallback?.([{ isIntersecting: true }]);
+      });
+      expect(video.play).toHaveBeenCalled();
+    });
+  });
 });

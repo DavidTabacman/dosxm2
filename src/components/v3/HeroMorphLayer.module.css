@@ -1,0 +1,39 @@
+.morphLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  clip-path: inset(
+    var(--morph-inset-top, 0)
+    var(--morph-inset-right, 0)
+    var(--morph-inset-bottom, 0)
+    var(--morph-inset-left, 0)
+    round var(--morph-radius, 0px)
+  );
+  opacity: var(--morph-opacity, 1);
+  will-change: clip-path, opacity;
+}
+
+.morphImage {
+  width: 100%;
+  height: 100dvh;
+  object-fit: cover;
+  transform: scale(var(--morph-scale, 1));
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* Disable on mobile — morph effect is desktop-only */
+@media (max-width: 768px) {
+  .morphLayer {
+    display: none;
+  }
+}
+
+/* Disable under reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .morphLayer {
+    display: none;
+  }
+}

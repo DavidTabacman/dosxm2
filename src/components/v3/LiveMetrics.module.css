@@ -3,6 +3,7 @@
   text-align: left;
   background: var(--v3-bg);
   position: relative;
+  z-index: 2;
   overflow: hidden;
 }
 
