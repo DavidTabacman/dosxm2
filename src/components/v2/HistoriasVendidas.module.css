@@ -133,7 +133,7 @@
 }
 
 .cardFront {
-  background: var(--v2-bg-alt);
+  background: linear-gradient(135deg, var(--v2-bg-alt), var(--v2-accent-light));
 }
 
 .cardBack {

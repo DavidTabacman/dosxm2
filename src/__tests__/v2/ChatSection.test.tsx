@@ -1,20 +1,13 @@
 import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
-import { render, act } from "@testing-library/react";
+import { render, act, fireEvent } from "@testing-library/react";
 import ChatSection from "@/components/v2/ChatSection";
 
-vi.mock("@/components/shared/useIntersectionObserver", () => {
-  let callback: ((visible: boolean) => void) | null = null;
-  return {
-    useIntersectionObserver: () => {
-      const { useState } = require("react");
-      const [visible, setVisible] = useState(true);
-      callback = setVisible;
-      const ref = () => {};
-      return [ref, visible];
-    },
-    __setVisible: (v: boolean) => callback?.(v),
-  };
-});
+vi.mock("@/components/shared/useSectionReveal", () => ({
+  useSectionReveal: () => {
+    const ref = () => {};
+    return [ref, true];
+  },
+}));
 
 describe("V2 ChatSection", () => {
   beforeEach(() => {
@@ -69,7 +62,6 @@ describe("V2 ChatSection", () => {
     expect(container.textContent).toContain("Conocemos cada rincón");
     expect(container.textContent).toContain("Y tratamos tu casa");
 
-    // Simulate visibility toggle (scroll away and back) via re-render
     // The hasAnimated ref should prevent re-animation
     // Messages should remain visible, not reset to hidden
     const textBefore = container.textContent;
@@ -79,5 +71,29 @@ describe("V2 ChatSection", () => {
     });
 
     expect(container.textContent).toBe(textBefore);
+  });
+
+  test("heading area has reveal animation class", () => {
+    const { container } = render(<ChatSection />);
+    const section = container.querySelector("section");
+    // The first child div should have the revealTarget class
+    const headingWrapper = section?.querySelector("div");
+    expect(headingWrapper?.className).toContain("revealTarget");
+    expect(headingWrapper?.className).toContain("revealTargetVisible");
+  });
+
+  test("avatar fallback renders on image load error", () => {
+    const { container } = render(<ChatSection />);
+
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    const avatars = container.querySelectorAll("img[data-asset-type='portrait']");
+    expect(avatars.length).toBeGreaterThan(0);
+
+    // Simulate error on first avatar
+    fireEvent.error(avatars[0]);
+    expect((avatars[0] as HTMLImageElement).style.display).toBe("none");
   });
 });

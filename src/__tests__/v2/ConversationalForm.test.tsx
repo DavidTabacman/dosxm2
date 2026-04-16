@@ -2,6 +2,13 @@ import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import ConversationalForm from "@/components/v2/ConversationalForm";
 
+vi.mock("@/components/shared/useSectionReveal", () => ({
+  useSectionReveal: () => {
+    const ref = () => {};
+    return [ref, true];
+  },
+}));
+
 function fillInput(container: HTMLElement, value: string) {
   const input = container.querySelector("input");
   if (input) {
@@ -198,5 +205,15 @@ describe("V2 ConversationalForm validation", () => {
 
     // Error should be gone
     expect(container.querySelector("[role='alert']")).toBeNull();
+  });
+});
+
+describe("V2 ConversationalForm entrance animation", () => {
+  test("section container has stagger animation classes", () => {
+    const { container } = render(<ConversationalForm />);
+    const section = container.querySelector("section");
+    const containerDiv = section?.querySelector("div");
+    expect(containerDiv?.className).toContain("stagger");
+    expect(containerDiv?.className).toContain("staggerVisible");
   });
 });

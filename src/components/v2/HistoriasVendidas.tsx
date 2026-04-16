@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useIntersectionObserver } from "../shared/useIntersectionObserver";
+import { useSectionReveal } from "../shared/useSectionReveal";
 import styles from "./HistoriasVendidas.module.css";
+import anim from "./v2-animations.module.css";
 
 const PROPERTIES = [
   {
@@ -57,7 +58,7 @@ function FlipCard({
   story: string;
 }) {
   const [flipState, setFlipState] = useState<"none" | "flipped" | "unflipping">("none");
-  const [ref, isVisible] = useIntersectionObserver({ threshold: 0.2 });
+  const [ref, isRevealed] = useSectionReveal(0.2);
   const isFlipped = flipState === "flipped";
 
   function handleFlip() {
@@ -86,7 +87,7 @@ function FlipCard({
 
   return (
     <div
-      className={`${styles.card} ${flipClass} ${isVisible ? styles.inView : ""}`}
+      className={`${styles.card} ${flipClass} ${isRevealed ? styles.inView : ""}`}
       ref={ref}
       onClick={handleFlip}
       onKeyDown={(e) => {
@@ -115,6 +116,7 @@ function FlipCard({
             onError={(e) => {
               const img = e.currentTarget;
               console.error(`[V2-HistoriasVendidas] ❌ Image load FAILED for "${zona}" — src: ${img.src}, naturalWidth: ${img.naturalWidth}. Reason: image URL may be unreachable, CORS blocked, or Unsplash rate-limited`);
+              img.style.display = "none";
             }}
             onLoad={(e) => {
               const img = e.currentTarget;
@@ -138,10 +140,14 @@ function FlipCard({
 }
 
 export default function HistoriasVendidas() {
+  const [sectionRef, isSectionRevealed] = useSectionReveal(0.15);
+
   return (
-    <section className={styles.section}>
-      <div className={styles.sectionLabel}>Historias Vendidas</div>
-      <h2 className={styles.heading}>Cada casa tiene su historia.</h2>
+    <section className={styles.section} ref={sectionRef}>
+      <div className={`${anim.revealTarget} ${isSectionRevealed ? anim.revealTargetVisible : ""}`}>
+        <div className={styles.sectionLabel}>Historias Vendidas</div>
+        <h2 className={styles.heading}>Cada casa tiene su historia.</h2>
+      </div>
       <div className={styles.grid}>
         {PROPERTIES.map((p) => (
           <FlipCard

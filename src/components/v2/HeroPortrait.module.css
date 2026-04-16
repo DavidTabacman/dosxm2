@@ -64,6 +64,12 @@
   100% { transform: scale(1.04); }
 }
 
+.portraitsHidden {
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+}
+
 /* FAB state */
 .fab {
   position: fixed;
@@ -88,6 +94,7 @@
   height: 48px;
   border: 2px solid var(--v2-accent);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  background: var(--v2-accent);
   animation: none;
 }
 
@@ -109,6 +116,12 @@
     left: 50%;
     transform: translateX(-50%);
   }
+}
+
+.fabHidden {
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

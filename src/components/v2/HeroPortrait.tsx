@@ -47,48 +47,46 @@ export default function HeroPortrait() {
         </p>
 
         {/* Portraits in hero — cinemagraph videos for "Living Portrait" effect */}
-        {!showFab && (
-          <div className={styles.portraits}>
-            <video
-              className={styles.portrait}
-              src="https://assets.mixkit.co/videos/4623/4623-720.mp4"
-              poster="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face"
-              loop
-              muted
-              autoPlay
-              playsInline
-              aria-label="Retrato de cofundador de DOSXM2"
-              data-asset-type="portrait"
-              {...videoDebug("V2-Portrait-1")}
-            />
-            <video
-              className={styles.portrait}
-              src="https://assets.mixkit.co/videos/4535/4535-720.mp4"
-              poster="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
-              loop
-              muted
-              autoPlay
-              playsInline
-              aria-label="Retrato de cofundador de DOSXM2"
-              data-asset-type="portrait"
-              {...videoDebug("V2-Portrait-2")}
-            />
-          </div>
-        )}
+        <div className={`${styles.portraits} ${showFab ? styles.portraitsHidden : ""}`}>
+          <video
+            className={styles.portrait}
+            src="https://assets.mixkit.co/videos/4623/4623-720.mp4"
+            poster="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face"
+            loop
+            muted
+            autoPlay
+            playsInline
+            aria-label="Retrato de cofundador de DOSXM2"
+            data-asset-type="portrait"
+            {...videoDebug("V2-Portrait-1")}
+          />
+          <video
+            className={styles.portrait}
+            src="https://assets.mixkit.co/videos/4535/4535-720.mp4"
+            poster="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
+            loop
+            muted
+            autoPlay
+            playsInline
+            aria-label="Retrato de cofundador de DOSXM2"
+            data-asset-type="portrait"
+            {...videoDebug("V2-Portrait-2")}
+          />
+        </div>
       </section>
 
       {/* FAB (visible when hero scrolls out) */}
-      {showFab && (
+      {mounted && (
         <>
-          <div className={styles.fabBg} aria-hidden="true" />
-          <div className={styles.fab} aria-label="Fundadores de DOSXM2">
+          <div className={`${styles.fabBg} ${showFab ? "" : styles.fabHidden}`} aria-hidden="true" />
+          <div className={`${styles.fab} ${showFab ? "" : styles.fabHidden}`} aria-label="Fundadores de DOSXM2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className={styles.portrait}
               src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=96&h=96&fit=crop&crop=face"
               alt="Retrato de cofundador de DOSXM2"
               data-asset-type="portrait"
-              onError={(e) => console.error(`[V2-HeroPortrait] ❌ FAB image 1 load FAILED — src: ${e.currentTarget.src}. Reason: image URL unreachable or CORS blocked`)}
+              onError={(e) => { console.error(`[V2-HeroPortrait] ❌ FAB image 1 load FAILED — src: ${e.currentTarget.src}. Reason: image URL unreachable or CORS blocked`); e.currentTarget.style.display = "none"; }}
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -96,7 +94,7 @@ export default function HeroPortrait() {
               src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&crop=face"
               alt="Retrato de cofundador de DOSXM2"
               data-asset-type="portrait"
-              onError={(e) => console.error(`[V2-HeroPortrait] ❌ FAB image 2 load FAILED — src: ${e.currentTarget.src}. Reason: image URL unreachable or CORS blocked`)}
+              onError={(e) => { console.error(`[V2-HeroPortrait] ❌ FAB image 2 load FAILED — src: ${e.currentTarget.src}. Reason: image URL unreachable or CORS blocked`); e.currentTarget.style.display = "none"; }}
             />
           </div>
         </>

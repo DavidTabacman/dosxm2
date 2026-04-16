@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { useIntersectionObserver } from "../shared/useIntersectionObserver";
+import { useSectionReveal } from "../shared/useSectionReveal";
 import styles from "./ChatSection.module.css";
+import anim from "./v2-animations.module.css";
 
 const AVATAR_1 = "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&h=80&fit=crop&crop=face";
 const AVATAR_2 = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face";
@@ -84,16 +85,19 @@ function ChatBubble({
 
   return (
     <div className={`${rowClass} ${state === "visible" ? styles.visible : ""}`}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        className={styles.avatar}
-        src={message.avatar}
-        alt="Retrato de cofundador de DOSXM2"
-        data-asset-type="portrait"
-        onError={(e) => {
-          console.error(`[V2-ChatSection] ❌ Avatar load FAILED for bubble #${index} — src: ${e.currentTarget.src}. Reason: image URL unreachable or CORS blocked`);
-        }}
-      />
+      <div className={styles.avatarFallback}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className={styles.avatar}
+          src={message.avatar}
+          alt="Retrato de cofundador de DOSXM2"
+          data-asset-type="portrait"
+          onError={(e) => {
+            console.error(`[V2-ChatSection] ❌ Avatar load FAILED for bubble #${index} — src: ${e.currentTarget.src}. Reason: image URL unreachable or CORS blocked`);
+            e.currentTarget.style.display = "none";
+          }}
+        />
+      </div>
       {state === "typing" ? (
         <div className={styles.typing} aria-label="Escribiendo...">
           <span className={styles.typingDot} />
@@ -108,19 +112,21 @@ function ChatBubble({
 }
 
 export default function ChatSection() {
-  const [ref, isVisible] = useIntersectionObserver({ threshold: 0.2 });
+  const [ref, isRevealed] = useSectionReveal(0.2);
 
   return (
     <section className={styles.section} ref={ref}>
-      <div className={styles.sectionLabel}>El Diferencial</div>
-      <h2 className={styles.heading}>Una conversación, no un formulario.</h2>
+      <div className={`${anim.revealTarget} ${isRevealed ? anim.revealTargetVisible : ""}`}>
+        <div className={styles.sectionLabel}>El Diferencial</div>
+        <h2 className={styles.heading}>Una conversación, no un formulario.</h2>
+      </div>
 
       {MESSAGES.map((msg, i) => (
         <ChatBubble
           key={i}
           message={msg}
           index={i}
-          sectionVisible={isVisible}
+          sectionVisible={isRevealed}
         />
       ))}
     </section>

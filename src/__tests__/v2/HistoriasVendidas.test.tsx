@@ -1,6 +1,13 @@
-import { expect, test, describe } from "vitest";
+import { expect, test, describe, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import HistoriasVendidas from "@/components/v2/HistoriasVendidas";
+
+vi.mock("@/components/shared/useSectionReveal", () => ({
+  useSectionReveal: () => {
+    const ref = () => {};
+    return [ref, true];
+  },
+}));
 
 describe("V2 HistoriasVendidas", () => {
   test("renders heading 'Cada casa tiene su historia.'", () => {
@@ -78,5 +85,30 @@ describe("V2 HistoriasVendidas", () => {
       expect(alt).toContain("barrio de");
       expect(alt).toContain("Madrid");
     });
+  });
+
+  test("cards stay visible after reveal (fire-once, no flicker)", () => {
+    const { container } = render(<HistoriasVendidas />);
+    const cards = container.querySelectorAll("[role='button']");
+    cards.forEach((card) => {
+      expect(card.className).toContain("inView");
+    });
+  });
+
+  test("property image fallback on load error", () => {
+    const { container } = render(<HistoriasVendidas />);
+    const images = container.querySelectorAll("img[data-asset-type='property-lifestyle']");
+    expect(images.length).toBe(5);
+
+    fireEvent.error(images[0]);
+    expect((images[0] as HTMLImageElement).style.display).toBe("none");
+  });
+
+  test("section heading has reveal animation class", () => {
+    const { container } = render(<HistoriasVendidas />);
+    const section = container.querySelector("section");
+    const headingWrapper = section?.querySelector("div");
+    expect(headingWrapper?.className).toContain("revealTarget");
+    expect(headingWrapper?.className).toContain("revealTargetVisible");
   });
 });

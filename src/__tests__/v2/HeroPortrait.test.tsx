@@ -1,8 +1,16 @@
-import { expect, test, describe } from "vitest";
-import { render } from "@testing-library/react";
+import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
+import { render, act, fireEvent } from "@testing-library/react";
 import HeroPortrait from "@/components/v2/HeroPortrait";
 
 describe("V2 HeroPortrait", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   test("renders heading 'Hola. Somos DOSXM2.'", () => {
     const { container } = render(<HeroPortrait />);
     const h1 = container.querySelector("h1");
@@ -27,5 +35,38 @@ describe("V2 HeroPortrait", () => {
     const portraits = container.querySelectorAll("video[data-asset-type='portrait']");
     expect(portraits[0].getAttribute("aria-label")).toContain("cofundador");
     expect(portraits[1].getAttribute("aria-label")).toContain("cofundador");
+  });
+
+  test("videos always present in DOM regardless of scroll state", () => {
+    const { container } = render(<HeroPortrait />);
+    // Videos should always be in the DOM (not conditionally rendered)
+    const videos = container.querySelectorAll("video[data-asset-type='portrait']");
+    expect(videos).toHaveLength(2);
+  });
+
+  test("FAB images present after mount delay", () => {
+    const { container } = render(<HeroPortrait />);
+
+    // Advance past the 100ms mount delay
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+
+    const fabImages = container.querySelectorAll("img[data-asset-type='portrait']");
+    expect(fabImages).toHaveLength(2);
+  });
+
+  test("FAB image fallback on error", () => {
+    const { container } = render(<HeroPortrait />);
+
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+
+    const fabImages = container.querySelectorAll("img[data-asset-type='portrait']");
+    expect(fabImages.length).toBeGreaterThan(0);
+
+    fireEvent.error(fabImages[0]);
+    expect((fabImages[0] as HTMLImageElement).style.display).toBe("none");
   });
 });

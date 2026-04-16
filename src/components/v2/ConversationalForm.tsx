@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { useSectionReveal } from "../shared/useSectionReveal";
 import styles from "./ConversationalForm.module.css";
+import anim from "./v2-animations.module.css";
 
 interface Step {
   label: string;
@@ -32,6 +34,7 @@ const STEPS: Step[] = [
 ];
 
 export default function ConversationalForm() {
+  const [sectionRef, sectionRevealed] = useSectionReveal(0.15);
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>(
     Array(STEPS.length).fill("")
@@ -83,7 +86,7 @@ export default function ConversationalForm() {
 
   if (submitted) {
     return (
-      <section className={styles.section}>
+      <section className={styles.section} ref={sectionRef}>
         <div className={styles.container}>
           <div className={styles.success} role="status" aria-live="polite">
             <div className={styles.successIconWrapper} aria-hidden="true">
@@ -128,8 +131,8 @@ export default function ConversationalForm() {
   };
 
   return (
-    <section className={styles.section}>
-      <div className={styles.container}>
+    <section className={styles.section} ref={sectionRef}>
+      <div className={`${styles.container} ${anim.stagger} ${sectionRevealed ? anim.staggerVisible : ""}`}>
         <h2 className={styles.heading}>Cuéntanos sobre tu casa.</h2>
         <p className={styles.subheading}>
           Nosotros nos encargamos del resto.

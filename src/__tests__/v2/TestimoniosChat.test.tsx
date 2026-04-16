@@ -79,4 +79,12 @@ describe("V2 TestimoniosChat", () => {
     const { container } = render(<TestimoniosChat />);
     expect(container.textContent).toContain("Prueba Social");
   });
+
+  test("heading area has reveal animation class", () => {
+    const { container } = render(<TestimoniosChat />);
+    const section = container.querySelector("section");
+    const headingWrapper = section?.querySelector("div");
+    expect(headingWrapper?.className).toContain("revealTarget");
+    expect(headingWrapper?.className).toContain("revealTargetVisible");
+  });
 });

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSectionReveal } from "../shared/useSectionReveal";
 import styles from "./TestimoniosChat.module.css";
+import anim from "./v2-animations.module.css";
 
 const TESTIMONIALS = [
   {
@@ -93,8 +94,10 @@ export default function TestimoniosChat() {
 
   return (
     <section className={styles.section} ref={ref}>
-      <div className={styles.sectionLabel}>Prueba Social</div>
-      <h2 className={styles.heading}>Lo que nos dicen nuestros clientes.</h2>
+      <div className={`${anim.revealTarget} ${isVisible ? anim.revealTargetVisible : ""}`}>
+        <div className={styles.sectionLabel}>Prueba Social</div>
+        <h2 className={styles.heading}>Lo que nos dicen nuestros clientes.</h2>
+      </div>
       <div className={styles.chat}>
         {TESTIMONIALS.map((t, i) => (
           <ChatBubble
