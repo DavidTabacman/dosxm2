@@ -1,6 +1,5 @@
 .section {
   padding: clamp(4rem, 8vw, 6rem) 0;
-  overflow: hidden;
   position: relative;
   z-index: 2;
   background: var(--v3-bg);
@@ -11,13 +10,10 @@
   opacity: var(--first-card-opacity, 1);
 }
 
-/* Desktop scroll-jacking: tall section for scroll travel.
-   overflow: clip (not hidden) preserves position: sticky on the
-   inner container — hidden creates a scroll container that breaks sticky. */
+/* Desktop scroll-jacking: tall section for scroll travel */
 .sectionDesktop {
   height: 250vh;
   padding: 0;
-  overflow: clip;
 }
 
 /* Sticky container pins content while section scrolls */
