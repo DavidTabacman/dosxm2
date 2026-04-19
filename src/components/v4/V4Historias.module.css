@@ -1,0 +1,289 @@
+/* =========================================================
+   V4 Historias Vendidas — moderate-sized flip cards (BRD 4.4).
+   State machine + keyframes mirror V2; dimensions reduced,
+   palette swapped, grid replaces column masonry for stable
+   layout that doesn't depend on break-inside quirks.
+   ========================================================= */
+
+.section {
+  background: var(--v4-bg);
+  padding: clamp(5rem, 11vw, 8rem) clamp(1.5rem, 5vw, 3rem);
+  scroll-margin-top: calc(var(--v4-header-h) + 16px);
+}
+
+.sectionHeader {
+  max-width: var(--v4-max-width);
+  margin: 0 auto clamp(2.5rem, 6vw, 4rem);
+  text-align: left;
+}
+
+.eyebrow {
+  font-family: var(--v4-font-sans);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--v4-accent);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.heading {
+  font-family: var(--v4-font-serif);
+  font-weight: 400;
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.75rem;
+  max-width: 22ch;
+}
+
+.headingAccent {
+  font-style: italic;
+  color: var(--v4-accent);
+}
+
+.sub {
+  font-family: var(--v4-font-sans);
+  font-size: clamp(0.9375rem, 1.55vw, 1.0625rem);
+  line-height: 1.6;
+  color: var(--v4-muted-strong);
+  max-width: 52ch;
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  max-width: var(--v4-max-width);
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+  }
+}
+
+/* Card shell — BRD says moderate size (not oversized). We target
+   ~340x460 on desktop through aspect-ratio + column width. */
+.card {
+  perspective: 900px;
+  cursor: pointer;
+  position: relative;
+  border-radius: 14px;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--v4-accent);
+  outline-offset: 4px;
+}
+
+.cardInner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  transform-style: preserve-3d;
+}
+
+.card.flipped .cardInner {
+  animation: flipToBack 0.7s ease-in-out forwards;
+}
+
+.card.unflipping .cardInner {
+  animation: flipToFront 0.7s ease-in-out forwards;
+}
+
+.card.flipped .cardInner,
+.card.unflipping .cardInner {
+  will-change: transform;
+}
+
+@keyframes flipToBack {
+  0%   { transform: translateZ(0) rotateY(0deg); }
+  50%  { transform: translateZ(56px) rotateY(90deg); }
+  100% { transform: translateZ(0) rotateY(180deg); }
+}
+
+@keyframes flipToFront {
+  0%   { transform: translateZ(0) rotateY(180deg); }
+  50%  { transform: translateZ(56px) rotateY(270deg); }
+  100% { transform: translateZ(0) rotateY(360deg); }
+}
+
+/* Dynamic shadow during flip */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 5%;
+  border-radius: 14px;
+  box-shadow: 0 22px 44px rgba(28, 28, 28, 0.22);
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.card.flipped::after,
+.card.unflipping::after {
+  animation: flipShadow 0.7s ease-in-out;
+}
+
+@keyframes flipShadow {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.cardFront,
+.cardBack {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.cardFront {
+  background: var(--v4-surface-elevated);
+  box-shadow: 0 10px 30px rgba(28, 28, 28, 0.1);
+}
+
+.cardBack {
+  transform: rotateY(180deg);
+  background: var(--v4-fg);
+  color: var(--v4-bg);
+  padding: clamp(1.25rem, 2.6vw, 1.75rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  text-align: left;
+  box-shadow: 0 10px 30px rgba(28, 28, 28, 0.18);
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cardFrontOverlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 1rem 1.25rem 1.25rem;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.62) 0%,
+    rgba(0, 0, 0, 0.25) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cardTitle {
+  font-family: var(--v4-font-serif);
+  font-weight: 400;
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.cardZona {
+  font-family: var(--v4-font-sans);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.cardHint {
+  font-family: var(--v4-font-sans);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.72);
+  margin-top: 0.25rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover .cardHint,
+.card:focus-visible .cardHint {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .cardHint {
+    opacity: 0.85;
+  }
+}
+
+/* Back of card */
+.backTopLabel {
+  font-family: var(--v4-font-sans);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--v4-accent);
+}
+
+.backTitle {
+  font-family: var(--v4-font-serif);
+  font-weight: 400;
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  margin: 0 0 0.5rem;
+  line-height: 1.15;
+}
+
+.backStory {
+  font-family: var(--v4-font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: rgba(250, 249, 246, 0.9);
+  margin: 0;
+}
+
+.backOutcome {
+  font-family: var(--v4-font-sans);
+  font-size: 0.8125rem;
+  color: var(--v4-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(250, 249, 246, 0.12);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card.flipped .cardInner,
+  .card.unflipping .cardInner {
+    animation: none;
+    will-change: auto;
+  }
+
+  .card.flipped .cardInner {
+    transform: rotateY(180deg);
+  }
+
+  .card.flipped::after,
+  .card.unflipping::after {
+    animation: none;
+  }
+
+  .cardHint {
+    opacity: 0.85;
+    transition: none;
+  }
+}

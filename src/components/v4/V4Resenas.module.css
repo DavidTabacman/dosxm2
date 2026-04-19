@@ -1,0 +1,211 @@
+/* =========================================================
+   V4 Reseñas — conversational "typing reviews" (BRD 4.5).
+   Uses V4 palette: Papel Cálido background, Carbón Profundo
+   text, Ocre Terroso for accents/sender names.
+   ========================================================= */
+
+.section {
+  background: var(--v4-surface-elevated);
+  padding: clamp(5rem, 11vw, 8rem) clamp(1.5rem, 5vw, 3rem);
+  scroll-margin-top: calc(var(--v4-header-h) + 16px);
+}
+
+.sectionHeader {
+  max-width: 740px;
+  margin: 0 auto clamp(2.5rem, 6vw, 4rem);
+  text-align: center;
+}
+
+.eyebrow {
+  font-family: var(--v4-font-sans);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--v4-accent);
+  font-weight: 600;
+  margin-bottom: 0.875rem;
+}
+
+.heading {
+  font-family: var(--v4-font-serif);
+  font-weight: 400;
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.75rem;
+}
+
+.headingAccent {
+  font-style: italic;
+  color: var(--v4-accent);
+}
+
+.sub {
+  font-family: var(--v4-font-sans);
+  font-size: clamp(0.9375rem, 1.55vw, 1.0625rem);
+  color: var(--v4-muted-strong);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.chat {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.row {
+  display: flex;
+  /* reserved space equal to the typing indicator height so the bubble's
+     eventual reveal doesn't pop layout — matches V2's approach. */
+  min-height: 3rem;
+}
+
+.rowRight {
+  justify-content: flex-end;
+}
+
+/* Slide in once message is revealed */
+.slideLeft {
+  opacity: 0;
+  transform: translateX(-24px);
+}
+
+.slideRight {
+  opacity: 0;
+  transform: translateX(24px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .slideLeft,
+  .slideRight {
+    transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+.slideLeft.inView,
+.slideRight.inView {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Bubble */
+.bubble {
+  max-width: min(82%, 420px);
+  background: var(--v4-bg);
+  border: 1px solid var(--v4-border);
+  border-radius: 18px;
+  border-top-left-radius: 4px;
+  padding: 0.875rem 1.125rem;
+  box-shadow: 0 2px 10px rgba(28, 28, 28, 0.06);
+}
+
+.rowRight .bubble {
+  background: var(--v4-fg);
+  color: var(--v4-bg);
+  border-color: var(--v4-fg);
+  border-radius: 18px;
+  border-top-right-radius: 4px;
+}
+
+.senderName {
+  font-family: var(--v4-font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--v4-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 0.25rem;
+}
+
+.rowRight .senderName {
+  color: #e9c996;
+}
+
+.location {
+  font-family: var(--v4-font-sans);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--v4-muted);
+  margin-left: 0.5rem;
+}
+
+.rowRight .location {
+  color: rgba(250, 249, 246, 0.55);
+}
+
+.message {
+  font-family: var(--v4-font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.time {
+  display: block;
+  text-align: right;
+  font-family: var(--v4-font-sans);
+  font-size: 0.6875rem;
+  color: var(--v4-muted);
+  margin-top: 0.375rem;
+}
+
+.rowRight .time {
+  color: rgba(250, 249, 246, 0.55);
+}
+
+/* Typing indicator */
+.typing {
+  display: inline-flex;
+  gap: 4px;
+  padding: 0.875rem 1.125rem;
+  background: var(--v4-bg);
+  border: 1px solid var(--v4-border);
+  border-radius: 18px;
+  border-top-left-radius: 4px;
+  box-shadow: 0 2px 10px rgba(28, 28, 28, 0.06);
+  align-items: center;
+}
+
+.rowRight .typing {
+  background: var(--v4-fg);
+  border-color: var(--v4-fg);
+  border-radius: 18px;
+  border-top-right-radius: 4px;
+}
+
+.typingDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--v4-muted);
+  animation: bounce 1.4s ease-in-out infinite;
+}
+
+.rowRight .typingDot {
+  background: rgba(250, 249, 246, 0.75);
+}
+
+.typingDot:nth-child(2) { animation-delay: 0.2s; }
+.typingDot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slideLeft,
+  .slideRight {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .typingDot {
+    animation: none;
+  }
+}

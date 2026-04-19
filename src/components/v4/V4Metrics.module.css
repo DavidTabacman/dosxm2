@@ -1,0 +1,109 @@
+/* =========================================================
+   V4 Métricas / Resultados — dark editorial section.
+   BRD 4.3: counters animate only once when entering viewport.
+   Background: Carbón Profundo. Numbers: Papel Cálido.
+   Accent: Ocre Terroso.
+   ========================================================= */
+
+.section {
+  background: var(--v4-surface-dark);
+  color: var(--v4-bg);
+  padding: clamp(4.5rem, 10vw, 7.5rem) clamp(1.5rem, 5vw, 3rem);
+  scroll-margin-top: calc(var(--v4-header-h) + 16px);
+}
+
+.inner {
+  max-width: var(--v4-max-width);
+  margin: 0 auto;
+}
+
+.heading {
+  font-family: var(--v4-font-serif);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5rem;
+  max-width: 24ch;
+  color: var(--v4-bg);
+}
+
+.eyebrow {
+  font-family: var(--v4-font-sans);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--v4-accent);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.sub {
+  font-family: var(--v4-font-sans);
+  font-size: clamp(0.9375rem, 1.55vw, 1rem);
+  line-height: 1.6;
+  color: rgba(250, 249, 246, 0.72);
+  margin: 0 0 clamp(2.5rem, 6vw, 4rem);
+  max-width: 48ch;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+@media (max-width: 820px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(250, 249, 246, 0.12);
+}
+
+.value {
+  font-family: var(--v4-font-sans);
+  font-weight: 600;
+  font-size: clamp(2.75rem, 7.5vw, 5.25rem);
+  line-height: 1;
+  color: var(--v4-bg);
+  letter-spacing: -0.03em;
+  /* Keep layout stable while counting — monospace-style tabular figures. */
+  font-variant-numeric: tabular-nums;
+}
+
+.valueSuffix {
+  color: var(--v4-accent);
+  margin-left: 0.125em;
+}
+
+.label {
+  font-family: var(--v4-font-sans);
+  font-size: clamp(0.8125rem, 1.4vw, 0.95rem);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(250, 249, 246, 0.75);
+  font-weight: 500;
+}
+
+.caption {
+  font-family: var(--v4-font-sans);
+  font-size: 0.8125rem;
+  color: rgba(250, 249, 246, 0.5);
+  line-height: 1.5;
+  max-width: 26ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .value,
+  .valueSuffix {
+    transition: none;
+  }
+}

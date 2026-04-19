@@ -1,0 +1,319 @@
+/* =========================================================
+   V4 Valorador — conversational step-by-step form (BRD 4.6).
+   Typeform-ish feel with V4 palette.
+   ========================================================= */
+
+.section {
+  background: var(--v4-bg);
+  padding: clamp(5rem, 11vw, 8rem) clamp(1.5rem, 5vw, 3rem);
+  scroll-margin-top: calc(var(--v4-header-h) + 16px);
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.eyebrow {
+  font-family: var(--v4-font-sans);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--v4-accent);
+  font-weight: 600;
+  margin-bottom: 0.875rem;
+}
+
+.heading {
+  font-family: var(--v4-font-serif);
+  font-weight: 400;
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.75rem;
+}
+
+.headingAccent {
+  font-style: italic;
+  color: var(--v4-accent);
+}
+
+.sub {
+  font-family: var(--v4-font-sans);
+  font-size: clamp(0.9375rem, 1.55vw, 1.0625rem);
+  color: var(--v4-muted-strong);
+  line-height: 1.6;
+  margin: 0 0 clamp(2rem, 5vw, 3rem);
+  max-width: 56ch;
+}
+
+.progress {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.dot {
+  flex: 1;
+  height: 3px;
+  background: var(--v4-border-strong);
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+.dotActive {
+  background: var(--v4-accent);
+}
+
+.stepWrapper {
+  position: relative;
+  min-height: 220px;
+}
+
+.step {
+  animation: slideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.label {
+  font-family: var(--v4-font-serif);
+  font-weight: 400;
+  font-size: clamp(1.25rem, 2.6vw, 1.75rem);
+  line-height: 1.3;
+  margin: 0 0 1.25rem;
+  color: var(--v4-fg);
+  display: block;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1.5px solid var(--v4-border-strong);
+  border-radius: 10px;
+  font-family: var(--v4-font-sans);
+  font-size: 1rem;
+  background: var(--v4-bg);
+  color: var(--v4-fg);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease-out;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--v4-accent);
+  box-shadow: 0 0 0 4px var(--v4-accent-soft);
+}
+
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231c1c1c' fill='none' stroke-width='1.6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  cursor: pointer;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80%      { transform: translateX(4px); }
+}
+
+.shake {
+  animation: shake 0.45s ease;
+  border-color: #c14d3a !important;
+}
+
+.errorText {
+  display: block;
+  color: #c14d3a;
+  font-family: var(--v4-font-sans);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  align-items: center;
+}
+
+.btnPrimary {
+  flex: 1 1 auto;
+  min-width: 140px;
+  padding: 0.95rem 1.5rem;
+  background: var(--v4-accent);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--v4-font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.btnPrimary:hover,
+.btnPrimary:focus-visible {
+  background: var(--v4-accent-strong);
+  transform: translateY(-1px);
+}
+
+.btnPrimary:focus-visible {
+  outline: 2px solid var(--v4-accent-strong);
+  outline-offset: 3px;
+}
+
+.btnSecondary {
+  padding: 0.95rem 1.4rem;
+  background: transparent;
+  color: var(--v4-fg);
+  border: 1.5px solid var(--v4-border-strong);
+  border-radius: 999px;
+  font-family: var(--v4-font-sans);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.btnSecondary:hover,
+.btnSecondary:focus-visible {
+  border-color: var(--v4-accent);
+  color: var(--v4-accent);
+}
+
+.btnSecondary:focus-visible {
+  outline: 2px solid var(--v4-accent);
+  outline-offset: 3px;
+}
+
+.stepMeta {
+  font-family: var(--v4-font-sans);
+  font-size: 0.75rem;
+  color: var(--v4-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Success state */
+.success {
+  text-align: center;
+  padding: 2.5rem 1rem;
+}
+
+.successIcon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1.5rem;
+  color: var(--v4-accent);
+}
+
+.successSvg {
+  width: 100%;
+  height: 100%;
+}
+
+.successCircle {
+  stroke-dasharray: 157;
+  stroke-dashoffset: 157;
+  animation: drawCircle 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.successCheck {
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+  animation: drawCheck 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+}
+
+@keyframes drawCircle { to { stroke-dashoffset: 0; } }
+@keyframes drawCheck { to { stroke-dashoffset: 0; } }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.successHeading {
+  font-family: var(--v4-font-serif);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 0 0 0.5rem;
+  opacity: 0;
+  animation: fadeInUp 0.4s ease-out 0.9s forwards;
+}
+
+.successText {
+  font-family: var(--v4-font-sans);
+  color: var(--v4-muted-strong);
+  max-width: 44ch;
+  margin: 0 auto 1.5rem;
+  line-height: 1.6;
+  opacity: 0;
+  animation: fadeInUp 0.4s ease-out 1.1s forwards;
+}
+
+.successCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  background: var(--v4-fg);
+  color: var(--v4-bg);
+  border-radius: 999px;
+  font-family: var(--v4-font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  opacity: 0;
+  animation: fadeInUp 0.4s ease-out 1.3s forwards;
+  transition: background-color 0.25s ease;
+}
+
+.successCta:hover,
+.successCta:focus-visible {
+  background: var(--v4-accent-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step,
+  .success,
+  .successHeading,
+  .successText,
+  .successCta {
+    animation: none;
+    opacity: 1;
+  }
+
+  .shake {
+    animation: none;
+  }
+
+  .successCircle,
+  .successCheck {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+}

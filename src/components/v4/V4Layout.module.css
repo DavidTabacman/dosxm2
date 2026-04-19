@@ -1,0 +1,51 @@
+/* =========================================================
+   V4 design tokens — "Elegancia Cinematográfica con
+   Empatía Conversacional". Scoped to .root so V1/V2/V3
+   on their own routes are unaffected.
+   ========================================================= */
+
+.root {
+  /* BRD 2.1 — color palette */
+  --v4-bg: #faf9f6;              /* Papel Cálido */
+  --v4-fg: #1c1c1c;              /* Carbón Profundo */
+  --v4-accent: #8b5a2b;          /* Ocre Terroso */
+
+  /* Derived tokens (hand-tuned for contrast and UI affordances) */
+  --v4-accent-soft: rgba(139, 90, 43, 0.12);
+  --v4-accent-strong: #6e4621;
+  --v4-surface-elevated: #f3efe7;
+  --v4-surface-dark: #0f0f0f;    /* metrics section background */
+  --v4-border: rgba(28, 28, 28, 0.08);
+  --v4-border-strong: rgba(28, 28, 28, 0.18);
+  --v4-muted: rgba(28, 28, 28, 0.62);
+  --v4-muted-strong: rgba(28, 28, 28, 0.78);
+
+  /* Layout tokens */
+  --v4-header-h: 64px;
+  --v4-fab-size: 52px;
+  --v4-max-width: 1180px;
+
+  /* Typography — substitutes for licensed faces Ogg/Canela are loaded
+     at the page level (Fraunces for serif, Inter for sans). */
+  --v4-font-serif: var(--font-v4-serif), "Times New Roman", serif;
+  --v4-font-sans: var(--font-v4-sans), system-ui, -apple-system, sans-serif;
+
+  background: var(--v4-bg);
+  color: var(--v4-fg);
+  font-family: var(--v4-font-sans);
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Note: each V4 section sets its own `scroll-margin-top` so anchor-link
+   scrolls don't land underneath the sticky header. Using scroll-padding-top
+   here would be a no-op because the html/body is the actual scroll
+   container, not this inner div. */
+
+@media (max-width: 768px) {
+  .root {
+    --v4-header-h: 56px;
+    --v4-fab-size: 48px;
+  }
+}
+

@@ -1,0 +1,320 @@
+/* =========================================================
+   V4 HeroSplit — split-screen cinematic hero.
+   Architecture (learned from V1 commit 8ce42ff):
+     - Background panels (clipped) hold the videos/posters.
+     - Text overlays are a separate layer with FIXED positions
+       so the moving divider never clips the copy.
+   Palette: V4 Papel Cálido + Carbón Profundo + Ocre Terroso.
+   ========================================================= */
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--v4-fg);
+  color: #ffffff;
+}
+
+/* Background panels */
+.panelLeft,
+.panelRight {
+  position: relative;
+}
+
+.panelLeft {
+  background: var(--v4-fg);
+}
+
+.panelRight {
+  background: var(--v4-bg);
+}
+
+@media (min-width: 769px) {
+  .hero {
+    display: block;
+  }
+
+  .panelLeft,
+  .panelRight {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .panelRight {
+    clip-path: inset(0 0 0 var(--divider-pos, 50%));
+    will-change: clip-path;
+    transition: clip-path 0.08s ease-out;
+  }
+}
+
+/* Background media */
+.panelBg {
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  filter: saturate(0.9);
+  opacity: 0.55;
+  -webkit-backface-visibility: hidden;
+}
+
+.panelLeft .panelBg {
+  opacity: 0.45;
+}
+
+/* Veils for readability */
+.panelLeft::after,
+.panelRight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.panelLeft::after {
+  background: linear-gradient(
+    120deg,
+    rgba(28, 28, 28, 0.72) 0%,
+    rgba(28, 28, 28, 0.35) 55%,
+    rgba(28, 28, 28, 0.15) 100%
+  );
+}
+
+.panelRight::after {
+  background: linear-gradient(
+    240deg,
+    rgba(250, 249, 246, 0.55) 0%,
+    rgba(250, 249, 246, 0.25) 55%,
+    rgba(250, 249, 246, 0.05) 100%
+  );
+}
+
+/* Text overlays — fixed positions above panels, clip only their own panel. */
+.textLayer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(2rem, 6vw, 5rem);
+  z-index: 3;
+  max-width: 720px;
+  pointer-events: auto;
+}
+
+@media (min-width: 769px) {
+  .textLayer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: min(620px, 55vw);
+  }
+}
+
+.eyebrow {
+  font-family: var(--v4-font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 1.25rem;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(28, 28, 28, 0.28);
+  backdrop-filter: blur(4px);
+}
+
+.heading {
+  font-family: var(--v4-font-serif);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 6.5vw, 5.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin: 0;
+  color: #ffffff;
+  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.45);
+}
+
+.headingAccent {
+  font-style: italic;
+  color: #f3e3c9;
+}
+
+.sub {
+  font-family: var(--v4-font-sans);
+  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+  line-height: 1.55;
+  margin: 1.5rem 0 2rem;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 38ch;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--v4-accent);
+  color: #ffffff;
+  font-family: var(--v4-font-sans);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.875rem 1.75rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 10px 28px rgba(139, 90, 43, 0.28);
+}
+
+.cta:hover,
+.cta:focus-visible {
+  background: var(--v4-accent-strong);
+  transform: translateY(-1px);
+}
+
+.cta:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+.ctaArrow {
+  transition: transform 0.25s ease;
+}
+
+.cta:hover .ctaArrow {
+  transform: translateX(3px);
+}
+
+.scrollHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--v4-font-sans);
+}
+
+/* Divider */
+.divider {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .divider {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--divider-pos, 50%);
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.05) 0%,
+      var(--v4-accent) 20%,
+      var(--v4-accent) 80%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+    z-index: 4;
+    pointer-events: none;
+    transition: left 0.08s ease-out;
+    box-shadow: 0 0 22px rgba(139, 90, 43, 0.35);
+  }
+}
+
+/* Mobile: stacked layout, text on each half */
+@media (max-width: 768px) {
+  .hero {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .panelLeft,
+  .panelRight {
+    position: relative;
+    min-height: 52vh;
+    width: 100%;
+  }
+
+  .panelRight {
+    clip-path: none !important;
+  }
+
+  .textLayer {
+    padding: clamp(3rem, 9vw, 5rem) clamp(1.5rem, 5vw, 2.5rem);
+  }
+
+  .panelLeft .textLayer {
+    min-height: 52vh;
+  }
+
+  .panelRight .textLayer {
+    min-height: 48vh;
+    color: var(--v4-fg);
+    max-width: 100%;
+    align-items: flex-start;
+  }
+
+  .panelRight .heading {
+    color: var(--v4-fg);
+    font-size: clamp(1.75rem, 6vw, 3rem);
+    text-shadow: none;
+  }
+
+  .panelRight .headingAccent {
+    color: var(--v4-accent);
+  }
+
+  .panelRight .sub {
+    color: var(--v4-muted-strong);
+    text-shadow: none;
+  }
+
+  .panelRight .eyebrow {
+    color: var(--v4-muted-strong);
+    border-color: var(--v4-border-strong);
+    background: var(--v4-surface-elevated);
+  }
+
+  .scrollHint {
+    color: var(--v4-muted);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .panelRight {
+    clip-path: inset(0 0 0 50%) !important;
+    transition: none;
+  }
+
+  .divider {
+    left: 50% !important;
+    transition: none;
+  }
+
+  .panelBg {
+    transition: none;
+  }
+
+  .cta,
+  .ctaArrow {
+    transition: none;
+  }
+}
