@@ -2,6 +2,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 let revealIdCounter = 0;
 
+export interface UseSectionRevealOptions {
+  /**
+   * IntersectionObserver rootMargin. Useful for sections that should
+   * reveal slightly before fully entering the viewport (e.g. V4 Métricas
+   * fires with `"0px 0px -10% 0px"` so short viewports still trigger).
+   */
+  rootMargin?: string;
+}
+
 /**
  * Scroll-triggered entrance animation hook (fire-once).
  * Returns [ref, isRevealed] — apply the ref to the element and toggle
@@ -10,8 +19,10 @@ let revealIdCounter = 0;
  * Respects prefers-reduced-motion by immediately returning true.
  */
 export function useSectionReveal(
-  threshold = 0.15
+  threshold = 0.15,
+  options: UseSectionRevealOptions = {}
 ): [ref: (node: Element | null) => void, isRevealed: boolean] {
+  const { rootMargin = "0px" } = options;
   const [isRevealed, setIsRevealed] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const debugId = useRef(++revealIdCounter);
@@ -49,7 +60,24 @@ export function useSectionReveal(
         return;
       }
 
-      console.log(`[SectionReveal #${debugId.current}] 👁️ Observing element: ${label} | threshold: ${threshold}`);
+      // Already-visible safety net: if the element is already within the
+      // viewport when the ref attaches (e.g. direct-link nav with #hash),
+      // fire immediately — IntersectionObserver's initial callback can
+      // otherwise arrive too late or appear skipped.
+      if (typeof window !== "undefined") {
+        const rect = node.getBoundingClientRect();
+        const inView =
+          rect.top < window.innerHeight && rect.bottom > 0 && rect.width > 0;
+        if (inView) {
+          console.log(
+            `[SectionReveal #${debugId.current}] ⚡ Already in view on mount — revealing immediately. Element: ${label}`
+          );
+          setIsRevealed(true);
+          return;
+        }
+      }
+
+      console.log(`[SectionReveal #${debugId.current}] 👁️ Observing element: ${label} | threshold: ${threshold} | rootMargin: ${rootMargin}`);
 
       const observer = new IntersectionObserver(
         ([entry]) => {
@@ -59,13 +87,13 @@ export function useSectionReveal(
             observer.unobserve(node); // Fire once
           }
         },
-        { threshold }
+        { threshold, rootMargin }
       );
 
       observer.observe(node);
       observerRef.current = observer;
     },
-    [threshold]
+    [threshold, rootMargin]
   );
 
   return [ref, isRevealed];

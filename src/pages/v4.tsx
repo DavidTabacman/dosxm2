@@ -10,6 +10,8 @@ import V4Resenas from "@/components/v4/V4Resenas";
 import V4Valorador from "@/components/v4/V4Valorador";
 import V4Footer from "@/components/v4/V4Footer";
 import V4WhatsAppFAB from "@/components/v4/V4WhatsAppFAB";
+import { useScrollPastAnchor } from "@/components/shared/useScrollPastAnchor";
+import { buildWhatsAppUrl } from "@/components/shared/whatsApp";
 
 /* BRD 2.2 — "Ogg o Canela" are licensed faces. Fraunces is the closest
  * open substitute (Google Fonts) for a contrasted editorial serif. Swap
@@ -73,13 +75,14 @@ const DOSXM2_PHONE = "34600000000"; // placeholder — swap with real number at 
 const WA_MESSAGE =
   "Hola DOSXM2, quiero información sobre cómo vender mi casa en Madrid.";
 
-function buildWhatsAppUrl() {
-  const clean = DOSXM2_PHONE.replace(/[^\d]/g, "");
-  return `https://wa.me/${clean}?text=${encodeURIComponent(WA_MESSAGE)}`;
-}
-
 export default function V4Page() {
-  const whatsappUrl = buildWhatsAppUrl();
+  const whatsappUrl = buildWhatsAppUrl(DOSXM2_PHONE, WA_MESSAGE);
+
+  /* Single source of truth for the "portraits have detached" handoff.
+   * Both V4Diferencial (to fade its portraits out) and V4WhatsAppFAB
+   * (to rise into view) read this boolean, so their transitions stay
+   * coordinated without duplicate observers. */
+  const portraitsDetached = useScrollPastAnchor("#diferencial");
 
   return (
     <>
@@ -102,7 +105,11 @@ export default function V4Page() {
       <V4Layout fontClassName={`${fraunces.variable} ${inter.variable}`}>
         <V4StickyHeader />
         <V4HeroSplit />
-        <V4Diferencial founderA={FOUNDER_A} founderB={FOUNDER_B} />
+        <V4Diferencial
+          founderA={FOUNDER_A}
+          founderB={FOUNDER_B}
+          portraitsDetached={portraitsDetached}
+        />
         <V4Metrics metrics={METRICS} />
         <V4Historias />
         <V4Resenas />
@@ -111,10 +118,13 @@ export default function V4Page() {
         <V4WhatsAppFAB
           phone={DOSXM2_PHONE}
           message={WA_MESSAGE}
+          visible={portraitsDetached}
           portraitAUrl={FOUNDER_A.portraitUrl}
           portraitAAlt={FOUNDER_A.alt}
           portraitBUrl={FOUNDER_B.portraitUrl}
           portraitBAlt={FOUNDER_B.alt}
+          founderAName={FOUNDER_A.name}
+          founderBName={FOUNDER_B.name}
         />
       </V4Layout>
     </>

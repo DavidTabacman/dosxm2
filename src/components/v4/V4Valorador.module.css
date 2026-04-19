@@ -280,8 +280,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 1.5rem;
-  background: var(--v4-fg);
-  color: var(--v4-bg);
+  background: var(--v4-accent);
+  color: #ffffff;
   border-radius: 999px;
   font-family: var(--v4-font-sans);
   font-size: 0.95rem;
@@ -290,6 +290,7 @@
   opacity: 0;
   animation: fadeInUp 0.4s ease-out 1.3s forwards;
   transition: background-color 0.25s ease;
+  box-shadow: 0 8px 22px rgba(139, 90, 43, 0.28);
 }
 
 .successCta:hover,

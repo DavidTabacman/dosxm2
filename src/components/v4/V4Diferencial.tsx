@@ -12,12 +12,20 @@ export interface V4DiferencialProps {
   id?: string;
   founderA: Founder;
   founderB: Founder;
+  /**
+   * When true, the portrait block fades out — the page-level
+   * `useScrollPastAnchor` has detected the section is off-screen,
+   * and the floating WhatsApp FAB is arriving at the bottom-right.
+   * This sells the "portraits detached" narrative per BRD 4.2.
+   */
+  portraitsDetached?: boolean;
 }
 
 export default function V4Diferencial({
   id = "diferencial",
   founderA,
   founderB,
+  portraitsDetached = false,
 }: V4DiferencialProps) {
   const [ref, isRevealed] = useSectionReveal(0.15);
 
@@ -62,7 +70,8 @@ export default function V4Diferencial({
         <div
           className={`${styles.portraits} ${anim.revealTarget} ${
             isRevealed ? anim.revealTargetVisible : ""
-          }`}
+          } ${portraitsDetached ? styles.portraitsDetached : ""}`}
+          data-detached={portraitsDetached ? "true" : "false"}
         >
           {[founderA, founderB].map((founder) => (
             <div key={founder.name} className={styles.portraitFrame}>

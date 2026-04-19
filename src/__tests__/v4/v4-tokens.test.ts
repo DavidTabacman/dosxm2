@@ -48,3 +48,55 @@ describe("V4 animation primitives (motion-first pattern)", () => {
     expect(css).toMatch(/staggerVisible > \*:nth-child/);
   });
 });
+
+describe("V4 ochre presence (BRD 2.1 brand motif)", () => {
+  function readCss(name: string) {
+    return readFileSync(
+      resolve(__dirname, `../../components/v4/${name}`),
+      "utf-8"
+    );
+  }
+
+  test("Hero CTA uses ochre background", () => {
+    const css = readCss("V4HeroSplit.module.css");
+    expect(css).toMatch(/\.cta\s*{[^}]*background:\s*var\(--v4-accent\)/);
+  });
+
+  test("Valorador submit button uses ochre background", () => {
+    const css = readCss("V4Valorador.module.css");
+    expect(css).toMatch(/\.btnPrimary\s*{[^}]*background:\s*var\(--v4-accent\)/);
+  });
+
+  test("Valorador success CTA uses ochre background", () => {
+    const css = readCss("V4Valorador.module.css");
+    expect(css).toMatch(
+      /\.successCta\s*{[^}]*background:\s*var\(--v4-accent\)/
+    );
+  });
+
+  test("Sticky header nav underline uses ochre", () => {
+    const css = readCss("V4StickyHeader.module.css");
+    expect(css).toMatch(
+      /\.navLink::after\s*{[^}]*background:\s*var\(--v4-accent\)/
+    );
+  });
+
+  test("Metrics tiles carry an ochre whisker accent", () => {
+    const css = readCss("V4Metrics.module.css");
+    expect(css).toMatch(
+      /\.tile::before\s*{[^}]*background:\s*var\(--v4-accent\)/
+    );
+  });
+
+  test("Historias cards carry an ochre decorative numeral", () => {
+    const css = readCss("V4Historias.module.css");
+    expect(css).toMatch(
+      /\.card::before\s*{[^}]*color:\s*var\(--v4-accent\)/
+    );
+  });
+
+  test("WhatsApp FAB uses a soft ochre halo on focus", () => {
+    const css = readCss("V4WhatsAppFAB.module.css");
+    expect(css).toMatch(/var\(--v4-accent-soft\)/);
+  });
+});

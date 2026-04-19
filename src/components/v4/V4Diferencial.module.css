@@ -96,6 +96,19 @@
   grid-template-columns: 1fr 1fr;
   gap: clamp(0.75rem, 2vw, 1.25rem);
   position: relative;
+  transition:
+    opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* When the section scrolls off-screen, the page hoists a
+   `portraitsDetached` flag that fades the portraits out — giving
+   the illusion that they've flown down-right into the FAB.
+   Coordinated with the FAB's 100ms entrance delay. */
+.portraitsDetached {
+  opacity: 0;
+  transform: scale(0.92);
+  pointer-events: none;
 }
 
 .portraitFrame {
@@ -171,6 +184,7 @@
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
+  .portraits,
   .portraitFrame,
   .portrait {
     transition: none;
@@ -181,6 +195,10 @@
   }
 
   .portraitFrame:hover .portrait {
+    transform: none;
+  }
+
+  .portraitsDetached {
     transform: none;
   }
 }

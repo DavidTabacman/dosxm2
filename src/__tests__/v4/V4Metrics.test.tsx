@@ -2,6 +2,8 @@ import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { render, act } from "@testing-library/react";
 import V4Metrics from "@/components/v4/V4Metrics";
 
+// Mock the section-reveal hook so tests don't depend on IntersectionObserver
+// or scroll position. The hook is unit-tested separately in shared/.
 vi.mock("@/components/shared/useSectionReveal", () => ({
   useSectionReveal: () => [() => {}, true],
 }));
@@ -92,5 +94,22 @@ describe("V4 Metrics", () => {
     const grid = container.querySelector("section")!.querySelector("div > div:last-child");
     const tiles = grid?.children ?? [];
     expect(tiles.length).toBe(METRICS.length);
+  });
+
+  test("count-up does NOT reset when the component re-renders", () => {
+    // Regression for BRD 4.3: once counted, the numbers stay fixed —
+    // rerender of the parent (e.g. surrounding page state change) must
+    // not restart the animation from zero.
+    const { container, rerender } = render(<V4Metrics metrics={METRICS} />);
+    act(() => {
+      vi.advanceTimersByTime(2200);
+    });
+    expect(container.textContent).toContain("30");
+    expect(container.textContent).toContain("100");
+
+    rerender(<V4Metrics metrics={METRICS} />);
+    // No further timer advance — numbers must still read the final value.
+    expect(container.textContent).toContain("30");
+    expect(container.textContent).toContain("100");
   });
 });

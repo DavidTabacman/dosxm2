@@ -22,10 +22,20 @@ vi.mock("@/components/shared/useSectionReveal", () => ({
   useSectionReveal: () => [() => {}, true],
 }));
 
+vi.mock("@/components/shared/useSectionVisible", () => ({
+  useSectionVisible: () => [() => {}, true],
+}));
+
+const scrollPastRef = { current: false };
+vi.mock("@/components/shared/useScrollPastAnchor", () => ({
+  useScrollPastAnchor: () => scrollPastRef.current,
+}));
+
 describe("V4 Page (integration)", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     Element.prototype.scrollIntoView = vi.fn();
+    scrollPastRef.current = false;
   });
 
   afterEach(() => {
@@ -106,5 +116,30 @@ describe("V4 Page (integration)", () => {
     ids.forEach((id) => {
       expect(sectionIds.has(id)).toBe(true);
     });
+  });
+
+  test("before scrolling past Diferencial, portraits are attached and FAB hidden", () => {
+    scrollPastRef.current = false;
+    const { container } = render(<V4Page />);
+    const portraits = container.querySelector("[data-detached]");
+    expect(portraits?.getAttribute("data-detached")).toBe("false");
+
+    const fab = container.querySelector("[data-testid='v4-whatsapp-fab']");
+    expect(fab?.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  test("after scrolling past Diferencial, portraits detach and FAB is visible", () => {
+    scrollPastRef.current = true;
+    const { container } = render(<V4Page />);
+    // FAB needs its 100ms arming delay before becoming visible.
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+
+    const portraits = container.querySelector("[data-detached]");
+    expect(portraits?.getAttribute("data-detached")).toBe("true");
+
+    const fab = container.querySelector("[data-testid='v4-whatsapp-fab']");
+    expect(fab?.getAttribute("aria-hidden")).toBe("false");
   });
 });

@@ -89,11 +89,21 @@
   left: 0.125rem;
   right: 0.125rem;
   bottom: 0;
-  height: 1px;
-  background: currentColor;
+  height: 2px;
+  background: var(--v4-accent);
   transform: scaleX(0);
   transform-origin: center;
   transition: transform 0.25s ease;
+}
+
+.navLink:hover,
+.navLink:focus-visible {
+  color: var(--v4-accent);
+}
+
+.headerSolid .navLink:hover,
+.headerSolid .navLink:focus-visible {
+  color: var(--v4-accent-strong);
 }
 
 .navLink:hover::after,

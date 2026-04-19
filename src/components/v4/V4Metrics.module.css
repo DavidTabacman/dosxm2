@@ -66,6 +66,21 @@
   gap: 0.75rem;
   padding-top: 1.25rem;
   border-top: 1px solid rgba(250, 249, 246, 0.12);
+  position: relative;
+}
+
+/* Ochre whisker — short brand-tinted accent sitting on top of the
+   hairline border. Reinforces the Ocre Terroso motif on the dark
+   metrics section without shouting. */
+.tile::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: clamp(32px, 6vw, 56px);
+  height: 2px;
+  background: var(--v4-accent);
+  border-radius: 1px;
 }
 
 .value {

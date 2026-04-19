@@ -64,7 +64,12 @@ export default function V4Metrics({
   metrics,
 }: V4MetricsProps) {
   // useSectionReveal is fire-once — isRevealed goes true and stays true.
-  const [ref, isRevealed] = useSectionReveal(0.25);
+  // Lower threshold + negative bottom rootMargin so short-viewport users
+  // still trigger the count-up animation; the hook also has an
+  // already-in-view safety net for direct-link nav (/v4#resultados).
+  const [ref, isRevealed] = useSectionReveal(0.15, {
+    rootMargin: "0px 0px -10% 0px",
+  });
 
   return (
     <section

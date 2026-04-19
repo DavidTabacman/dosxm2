@@ -5,28 +5,22 @@ import V4WhatsAppFAB from "@/components/v4/V4WhatsAppFAB";
 const DEFAULT_PROPS = {
   phone: "34600123456",
   message: "Hola DOSXM2",
+  visible: true,
   portraitAUrl: "https://example.com/a.jpg",
   portraitAAlt: "Retrato A",
   portraitBUrl: "https://example.com/b.jpg",
   portraitBAlt: "Retrato B",
-  label: "WhatsApp",
+  founderAName: "Borja",
+  founderBName: "Diego",
 };
 
 describe("V4 WhatsAppFAB", () => {
-  let anchor: HTMLElement;
-
   beforeEach(() => {
     vi.useFakeTimers();
-    // Component observes the anchor section — tests need one to exist so
-    // the IO fallback path picks `visible=true`. We inject + clean up.
-    anchor = document.createElement("section");
-    anchor.id = "diferencial";
-    document.body.appendChild(anchor);
   });
 
   afterEach(() => {
     vi.useRealTimers();
-    if (anchor.parentNode) anchor.parentNode.removeChild(anchor);
   });
 
   test("renders a link with a wa.me URL including the phone", () => {
@@ -61,6 +55,33 @@ describe("V4 WhatsAppFAB", () => {
     expect(portraits[1].getAttribute("alt")).toBe("Retrato B");
   });
 
+  test("does NOT render the 'Hablemos por WhatsApp' label as a visible pill", () => {
+    // BRD 4.2: portraits themselves are the affordance, no separate pill.
+    // The tooltip CONTAINS the text but it's role=tooltip and visually
+    // hidden until hover/focus — the FAB itself should never show it as
+    // a persistent label next to a WhatsApp icon.
+    const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
+    // There must be no WhatsApp SVG icon rendered alongside the portraits.
+    const svgs = container.querySelectorAll("svg");
+    expect(svgs.length).toBe(0);
+  });
+
+  test("exposes the accessible label naming both founders", () => {
+    const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
+    const link = container.querySelector("a");
+    const ariaLabel = link?.getAttribute("aria-label") ?? "";
+    expect(ariaLabel).toContain("Borja");
+    expect(ariaLabel).toContain("Diego");
+    expect(ariaLabel).toContain("WhatsApp");
+  });
+
+  test("includes a tooltip element for hover discoverability", () => {
+    const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
+    const tooltip = container.querySelector("[role='tooltip']");
+    expect(tooltip).not.toBeNull();
+    expect(tooltip?.textContent).toContain("Hablemos por WhatsApp");
+  });
+
   test("FAB is hidden before mount delay (armed flag false)", () => {
     const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
     // Immediately after render, armed is false → aria-hidden=true
@@ -68,15 +89,24 @@ describe("V4 WhatsAppFAB", () => {
     expect(wrapper.getAttribute("aria-hidden")).toBe("true");
   });
 
-  test("FAB becomes visible after mount delay (IO-unsupported fallback)", () => {
-    // In jsdom IO is undefined → defaults to visible=true → after 100ms arm
-    // delay the FAB should no longer be aria-hidden.
+  test("FAB becomes visible after mount delay when visible=true", () => {
     const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
     act(() => {
       vi.advanceTimersByTime(200);
     });
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.getAttribute("aria-hidden")).toBe("false");
+  });
+
+  test("FAB stays hidden when visible=false even after mount delay", () => {
+    const { container } = render(
+      <V4WhatsAppFAB {...DEFAULT_PROPS} visible={false} />
+    );
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    const wrapper = container.firstElementChild as HTMLElement;
+    expect(wrapper.getAttribute("aria-hidden")).toBe("true");
   });
 
   test("portraits hide on image error (graceful degradation)", () => {
@@ -96,13 +126,19 @@ describe("V4 WhatsAppFAB", () => {
   });
 
   test("link tabIndex is -1 while hidden, 0 when visible", () => {
-    const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
+    const { container } = render(
+      <V4WhatsAppFAB {...DEFAULT_PROPS} visible={false} />
+    );
     const link = container.querySelector("a")!;
     expect(link.getAttribute("tabindex")).toBe("-1");
+  });
 
+  test("tabIndex is 0 once armed and visible", () => {
+    const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
     act(() => {
       vi.advanceTimersByTime(200);
     });
+    const link = container.querySelector("a")!;
     expect(link.getAttribute("tabindex")).toBe("0");
   });
 
@@ -112,121 +148,5 @@ describe("V4 WhatsAppFAB", () => {
     );
     const href = container.querySelector("a")?.getAttribute("href") ?? "";
     expect(href).toBe("https://wa.me/34600123456");
-  });
-});
-
-/**
- * IO-path tests: the production logic uses IntersectionObserver to only show
- * the FAB AFTER the user has scrolled past the anchor section (BRD 4.2).
- * jsdom has no IO, so we provide a controllable fake here.
- */
-describe("V4 WhatsAppFAB (IntersectionObserver path)", () => {
-  let anchor: HTMLElement;
-  let ioCallback: IntersectionObserverCallback | null = null;
-  let fakeObserver: { observe: ReturnType<typeof vi.fn>; disconnect: ReturnType<typeof vi.fn>; unobserve: ReturnType<typeof vi.fn> };
-  let OriginalIO: typeof IntersectionObserver | undefined;
-
-  beforeEach(() => {
-    vi.useFakeTimers();
-    anchor = document.createElement("section");
-    anchor.id = "diferencial";
-    document.body.appendChild(anchor);
-
-    OriginalIO = (globalThis as { IntersectionObserver?: typeof IntersectionObserver }).IntersectionObserver;
-    fakeObserver = {
-      observe: vi.fn(),
-      disconnect: vi.fn(),
-      unobserve: vi.fn(),
-    };
-    // Must be a real constructor — the component calls `new IntersectionObserver(...)`.
-    class FakeIO {
-      constructor(cb: IntersectionObserverCallback) {
-        ioCallback = cb;
-      }
-      observe = fakeObserver.observe;
-      disconnect = fakeObserver.disconnect;
-      unobserve = fakeObserver.unobserve;
-      takeRecords = () => [];
-      root = null;
-      rootMargin = "";
-      thresholds: ReadonlyArray<number> = [];
-    }
-    (globalThis as { IntersectionObserver: unknown }).IntersectionObserver =
-      FakeIO as unknown as typeof IntersectionObserver;
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-    if (anchor.parentNode) anchor.parentNode.removeChild(anchor);
-    ioCallback = null;
-    (globalThis as { IntersectionObserver?: typeof IntersectionObserver }).IntersectionObserver = OriginalIO;
-  });
-
-  function fireIntersection(bottom: number, isIntersecting: boolean) {
-    if (!ioCallback) throw new Error("IO callback not captured");
-    const entry = {
-      boundingClientRect: { bottom } as DOMRectReadOnly,
-      isIntersecting,
-      target: anchor,
-    } as unknown as IntersectionObserverEntry;
-    ioCallback([entry], fakeObserver as unknown as IntersectionObserver);
-  }
-
-  test("FAB stays hidden when anchor is BELOW viewport (initial hero load)", () => {
-    const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
-    act(() => {
-      // Arming delay complete
-      vi.advanceTimersByTime(200);
-      // Simulate initial IO fire: anchor is below viewport (bottom > 0)
-      fireIntersection(1200, false);
-    });
-    const wrapper = container.firstElementChild as HTMLElement;
-    expect(wrapper.getAttribute("aria-hidden")).toBe("true");
-  });
-
-  test("FAB stays hidden while anchor is IN viewport", () => {
-    const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
-    act(() => {
-      vi.advanceTimersByTime(200);
-      fireIntersection(400, true);
-    });
-    const wrapper = container.firstElementChild as HTMLElement;
-    expect(wrapper.getAttribute("aria-hidden")).toBe("true");
-  });
-
-  test("FAB becomes visible after user scrolls PAST the anchor (bottom <= 0)", () => {
-    const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
-    act(() => {
-      vi.advanceTimersByTime(200);
-      fireIntersection(-50, false);
-    });
-    const wrapper = container.firstElementChild as HTMLElement;
-    expect(wrapper.getAttribute("aria-hidden")).toBe("false");
-  });
-
-  test("FAB hides again when user scrolls back up to the anchor", () => {
-    const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
-    act(() => {
-      vi.advanceTimersByTime(200);
-      // Scroll past → visible
-      fireIntersection(-50, false);
-    });
-    expect(
-      (container.firstElementChild as HTMLElement).getAttribute("aria-hidden")
-    ).toBe("false");
-
-    act(() => {
-      // Scroll back up — anchor re-enters viewport
-      fireIntersection(300, true);
-    });
-    expect(
-      (container.firstElementChild as HTMLElement).getAttribute("aria-hidden")
-    ).toBe("true");
-  });
-
-  test("disconnect runs on unmount (no leaked observer)", () => {
-    const { unmount } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
-    unmount();
-    expect(fakeObserver.disconnect).toHaveBeenCalled();
   });
 });

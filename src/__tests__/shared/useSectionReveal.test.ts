@@ -124,4 +124,57 @@ describe("useSectionReveal", () => {
 
     globalThis.IntersectionObserver = saved;
   });
+
+  test("already-in-view elements reveal immediately without waiting for IO", () => {
+    const { result } = renderHook(() => useSectionReveal());
+
+    const node = document.createElement("div");
+    // Simulate an already-in-view bounding rect (top of element is on screen).
+    node.getBoundingClientRect = () =>
+      ({
+        top: 100,
+        bottom: 400,
+        left: 0,
+        right: 200,
+        width: 200,
+        height: 300,
+      }) as DOMRect;
+
+    act(() => {
+      result.current[0](node);
+    });
+
+    expect(result.current[1]).toBe(true);
+  });
+
+  test("passes rootMargin option through to IntersectionObserver", () => {
+    const IOSpy = vi.spyOn(globalThis, "IntersectionObserver");
+
+    // Node with an out-of-view rect so the already-visible safety net
+    // falls through and the hook actually constructs an observer.
+    const node = document.createElement("div");
+    node.getBoundingClientRect = () =>
+      ({
+        top: 2000,
+        bottom: 2400,
+        left: 0,
+        right: 200,
+        width: 200,
+        height: 400,
+      }) as DOMRect;
+
+    const { result } = renderHook(() =>
+      useSectionReveal(0.5, { rootMargin: "0px 0px -10% 0px" })
+    );
+    act(() => {
+      result.current[0](node);
+    });
+
+    expect(IOSpy).toHaveBeenCalled();
+    const call = IOSpy.mock.calls[IOSpy.mock.calls.length - 1];
+    expect(call[1]?.rootMargin).toBe("0px 0px -10% 0px");
+    expect(call[1]?.threshold).toBe(0.5);
+
+    IOSpy.mockRestore();
+  });
 });

@@ -85,4 +85,30 @@ describe("V4 Diferencial", () => {
     expect(copyBlock.className).toContain("stagger");
     expect(copyBlock.className).toContain("staggerVisible");
   });
+
+  test("portraits container marks data-detached=false by default", () => {
+    const { container } = render(<V4Diferencial {...FOUNDERS} />);
+    const portraits = container.querySelector("[data-detached]");
+    expect(portraits?.getAttribute("data-detached")).toBe("false");
+  });
+
+  test("portraits container marks data-detached=true when portraitsDetached prop is true", () => {
+    const { container } = render(
+      <V4Diferencial {...FOUNDERS} portraitsDetached />
+    );
+    const portraits = container.querySelector("[data-detached]");
+    expect(portraits?.getAttribute("data-detached")).toBe("true");
+  });
+
+  test("portraits container receives detached class only when detached", () => {
+    const { container, rerender } = render(<V4Diferencial {...FOUNDERS} />);
+    const portraitsNode = container.querySelector(
+      "[data-detached]"
+    ) as HTMLElement;
+    expect(portraitsNode.className).not.toMatch(/portraitsDetached/);
+
+    rerender(<V4Diferencial {...FOUNDERS} portraitsDetached />);
+    const updated = container.querySelector("[data-detached]") as HTMLElement;
+    expect(updated.className).toMatch(/portraitsDetached/);
+  });
 });

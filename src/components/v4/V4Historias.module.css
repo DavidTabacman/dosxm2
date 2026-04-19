@@ -7,7 +7,9 @@
 
 .section {
   background: var(--v4-bg);
-  padding: clamp(5rem, 11vw, 8rem) clamp(1.5rem, 5vw, 3rem);
+  /* Extra top padding leaves room for the ochre numeral above each card. */
+  padding: clamp(5rem, 11vw, 8rem) clamp(1.5rem, 5vw, 3rem)
+    clamp(5rem, 11vw, 8rem);
   scroll-margin-top: calc(var(--v4-header-h) + 16px);
 }
 
@@ -55,8 +57,11 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: clamp(1rem, 2.5vw, 1.75rem);
+  row-gap: clamp(2.5rem, 5vw, 3.5rem);
   max-width: var(--v4-max-width);
   margin: 0 auto;
+  padding-top: 1.75rem;
+  counter-reset: historia;
 }
 
 @media (max-width: 900px) {
@@ -79,6 +84,24 @@
   cursor: pointer;
   position: relative;
   border-radius: 14px;
+  counter-increment: historia;
+}
+
+/* Decorative ochre numeral — "01", "02" sitting above each card. An
+   editorial cue that ties the card stack to the Ocre Terroso motif. */
+.card::before {
+  content: counter(historia, decimal-leading-zero);
+  position: absolute;
+  top: -1.6rem;
+  left: 0.125rem;
+  font-family: var(--v4-font-serif);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--v4-accent);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .card:focus-visible {
