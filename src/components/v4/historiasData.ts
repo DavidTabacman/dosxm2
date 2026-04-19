@@ -1,6 +1,7 @@
 /**
- * Real sold-property stories. Replace with live data as it arrives from
- * the DOSXM2 team. Each entry drives one flip card in V4Historias.
+ * Real listings and sales from DOSXM2, sourced from the team's TikTok
+ * content. Each entry drives one flip card in V4Historias. Captions and
+ * outcomes are paraphrased from the public TikTok posts at @dosxm2.
  */
 export interface HistoriaItem {
   id: string;
@@ -14,69 +15,63 @@ export interface HistoriaItem {
 
 export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
   {
-    id: "retiro-atico",
-    title: "El ático de Retiro",
-    zona: "Retiro",
-    imageUrl:
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=900&h=1100&fit=crop",
-    alt: "Ático reformado con vistas a El Retiro en Madrid",
+    id: "getafe-bajo-revista",
+    title: "El bajo de revista en Getafe",
+    zona: "Getafe Centro",
+    imageUrl: "/v4/properties/getafe-bajo-revista.webp",
+    alt: "Salón reformado con tonos cálidos en un bajo del centro de Getafe",
     story:
-      "Una pareja joven que acababa de heredar quería vender sin perder la conexión emocional con la casa. En 22 días encontramos un comprador que valoró cada historia del ático.",
-    outcome: "Vendido en 22 días — 4% por encima del precio pedido",
+      "Un bajo con reforma integral, tratamiento antihumedad y plaza de garaje a 300 m. Rodamos la visita como si fuese un editorial, no un anuncio más, para que los compradores vieran la casa y no solo los metros.",
+    outcome: "A la venta por 227.000€ — reforma integral de menos de 4 años",
   },
   {
-    id: "chamberi-clasico",
-    title: "El clásico de Chamberí",
-    zona: "Chamberí",
-    imageUrl:
-      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=900&h=1100&fit=crop",
-    alt: "Piso clásico reformado en Chamberí con molduras originales",
+    id: "getafe-garaje",
+    title: "El piso con garaje doble",
+    zona: "Getafe Centro",
+    imageUrl: "/v4/properties/getafe-garaje.webp",
+    alt: "Salón reformado de un piso de 74 m² en el centro de Getafe",
     story:
-      "Una finca histórica con molduras originales. Trabajamos con el equipo de estilistas para que cada foto contara la esencia del piso — y se vendió antes de publicarse en portales.",
-    outcome: "Vendido off-market en 11 días",
+      "74 m² totalmente reformados, tres habitaciones, y una plaza de garaje espectacular con capacidad para dos coches pequeños incluida en el precio. Trabajamos el discurso para que el garaje —que era el gran diferencial— apareciese en la primera frase del anuncio.",
+    outcome: "Piso + garaje vendido como paquete único",
   },
   {
-    id: "salamanca-senorial",
-    title: "El señorial de Salamanca",
-    zona: "Salamanca",
-    imageUrl:
-      "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=900&h=1100&fit=crop",
-    alt: "Piso señorial en el barrio de Salamanca, Madrid",
+    id: "fuenlabrada-piso",
+    title: "El ingreso de Fuenlabrada",
+    zona: "Fuenlabrada",
+    imageUrl: "/v4/properties/fuenlabrada-piso.webp",
+    alt: "Balcón con vistas al barrio en un piso a reformar en Fuenlabrada",
     story:
-      "El propietario llevaba nueve meses intentando vender con otra agencia. Rediseñamos la narrativa y cambiamos el enfoque de la visita guiada. En tres semanas, firmado.",
-    outcome: "Vendido al precio original tras 9 meses en el mercado",
+      "Piso de más de 70 m², tres habitaciones y un gran trastero. Entró como 'próximo ingreso' y lo presentamos con un tour en vivo desde la terraza antes de que llegaran los portales.",
+    outcome: "A reformar — 208.000€",
   },
   {
-    id: "malasana-loft",
-    title: "El loft de Malasaña",
-    zona: "Malasaña",
-    imageUrl:
-      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=900&h=1100&fit=crop",
-    alt: "Loft industrial con techos altos en el barrio de Malasaña",
+    id: "fuenlabrada-local",
+    title: "El local de Tomás y Valiente",
+    zona: "Fuenlabrada",
+    imageUrl: "/v4/properties/fuenlabrada-local.webp",
+    alt: "Local comercial diáfano en la zona Tomás y Valiente de Fuenlabrada",
     story:
-      "Un loft con techos de seis metros y alma industrial. Lo presentamos en formato de tour cinematográfico y el comprador se enamoró antes de visitar la casa en persona.",
-    outcome: "Vendido en 15 días — sin rebajas de precio",
+      "50 m² útiles a 100 m de la Avenida de España y a 300 m de La Serna. Para un local, el contexto vende más que el interior: rodamos desde la calle hacia dentro para que se viera el paso de gente antes del espacio vacío.",
+    outcome: "En venta por 67.000€",
   },
   {
-    id: "lavapies-reformado",
-    title: "El reformado de Lavapiés",
-    zona: "Lavapiés",
-    imageUrl:
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=900&h=1100&fit=crop",
-    alt: "Piso reformado contemporáneo en Lavapiés, Madrid",
+    id: "viso-san-juan",
+    title: "La casa de El Viso de San Juan",
+    zona: "El Viso de San Juan",
+    imageUrl: "/v4/properties/viso-san-juan.webp",
+    alt: "Cocina con azulejos rojos y blancos en una vivienda de El Viso de San Juan",
     story:
-      "Una reforma integral que había subido el valor de mercado un 40%. Nuestro trabajo fue contarle al mercado por qué — con visitas guiadas donde explicamos cada decisión.",
-    outcome: "Vendido al precio de tasación alcista",
+      "Una vivienda con personalidad —cocina ajedrezada, biblioteca con alfombra persa, detalles que no se dan en obra nueva— a pocos minutos de Madrid. La contamos como un hogar, no como un activo.",
+    outcome: "En venta — tour completo publicado",
   },
   {
-    id: "retiro-familiar",
-    title: "El familiar de Retiro",
-    zona: "Retiro",
-    imageUrl:
-      "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=900&h=1100&fit=crop",
-    alt: "Piso familiar con terraza en el barrio de Retiro",
+    id: "vendido-primer-dia",
+    title: "Vendido en el primer día de visitas",
+    zona: "Madrid Sur",
+    imageUrl: "/v4/properties/vendido-primer-dia.webp",
+    alt: "Salón amplio con sofás azules y parqué en un piso del sur de Madrid",
     story:
-      "Una familia que necesitaba vender rápido para mudarse a Valencia. Coordinamos todo — visitas, notaría, logística — para que solo se preocuparan por empezar su nueva vida.",
-    outcome: "Vendido en 18 días — firma en notaría incluida",
+      "Uno de nuestros últimos ingresos. Preparamos el material, filtramos a los compradores por teléfono y abrimos la agenda del primer día con una lista corta —la casa se fue antes de cerrar la jornada.",
+    outcome: "Vendido el primer día de visitas",
   },
 ];

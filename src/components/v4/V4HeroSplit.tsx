@@ -5,19 +5,17 @@ import VideoPlayPause from "../shared/VideoPlayPause";
 import styles from "./V4HeroSplit.module.css";
 
 /* BRD 4.1 — split-screen videos.
- * - Left: architectural / aspirational (cool detail).
- * - Right: lifestyle / warm.
- * Using Mixkit CDN for V1 parity with fallback posters from Unsplash.
- * When licensed Madrid footage is delivered, swap these URLs for
- * files under /public/v4/hero/ and update the <source type="video/webm">
- * first for broader codec support.
+ * - Left: architectural / aspirational (cool detail) — balcony w/ Madrid sun.
+ * - Right: lifestyle / warm — reformado interior with natural light.
+ * Sources are clips from DOSXM2's own TikTok @dosxm2, downsized for
+ * hero use. H.264 MP4 is universally supported and already compresses
+ * smaller than the VP9/WebM twins at this resolution, so no fallback
+ * tree is needed.
  */
-const LEFT_VIDEO = "https://assets.mixkit.co/videos/4030/4030-720.mp4";
-const LEFT_POSTER =
-  "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1600&h=1000&fit=crop";
-const RIGHT_VIDEO = "https://assets.mixkit.co/videos/4488/4488-720.mp4";
-const RIGHT_POSTER =
-  "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1600&h=1000&fit=crop";
+const LEFT_VIDEO = "/v4/hero/hero-left.mp4";
+const LEFT_POSTER = "/v4/hero/hero-left-poster.jpg";
+const RIGHT_VIDEO = "/v4/hero/hero-right.mp4";
+const RIGHT_POSTER = "/v4/hero/hero-right-poster.jpg";
 
 export default function V4HeroSplit() {
   const heroRef = useRef<HTMLElement>(null);

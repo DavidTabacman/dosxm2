@@ -38,10 +38,8 @@ describe("V4 Historias", () => {
     const { container } = render(<V4Historias />);
     const firstCard = container.querySelector("[role='button']")!;
     fireEvent.click(firstCard);
-    // The first fixture is the "Retiro ático" story; verify narrative phrase.
-    expect(container.textContent).toContain(
-      "En 22 días encontramos un comprador"
-    );
+    // Assert against the live fixture so this survives content swaps.
+    expect(container.textContent).toContain(HISTORIAS[0].story);
   });
 
   test("aria-label toggles between 'Ver historia' and 'Volver a la foto'", () => {
@@ -107,10 +105,9 @@ describe("V4 Historias", () => {
   test("outcome text appears on the flipped (back) face", () => {
     const { container } = render(<V4Historias />);
     const firstCard = container.querySelector("[role='button']")!;
+    const firstOutcome = HISTORIAS[0].outcome;
     fireEvent.click(firstCard);
-    // First fixture outcome string
-    expect(container.textContent).toContain(
-      "Vendido en 22 días"
-    );
+    expect(firstOutcome).toBeTruthy();
+    expect(container.textContent).toContain(firstOutcome as string);
   });
 });
