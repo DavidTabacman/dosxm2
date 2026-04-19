@@ -1,7 +1,9 @@
 /**
  * Real listings and sales from DOSXM2, sourced from the team's TikTok
- * content. Each entry drives one flip card in V4Historias. Captions and
- * outcomes are paraphrased from the public TikTok posts at @dosxm2.
+ * captions at @dosxm2. Every `outcome` string below is drawn directly
+ * from the public caption of the corresponding video — no process
+ * claims are invented here. Narrative color belongs in the UI chrome,
+ * not in data the site reads as factual.
  */
 export interface HistoriaItem {
   id: string;
@@ -21,8 +23,8 @@ export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
     imageUrl: "/v4/properties/getafe-bajo-revista.webp",
     alt: "Salón reformado con tonos cálidos en un bajo del centro de Getafe",
     story:
-      "Un bajo con reforma integral, tratamiento antihumedad y plaza de garaje a 300 m. Rodamos la visita como si fuese un editorial, no un anuncio más, para que los compradores vieran la casa y no solo los metros.",
-    outcome: "A la venta por 227.000€ — reforma integral de menos de 4 años",
+      "Bajo en el centro de Getafe con reforma integral de menos de cuatro años, tratamiento antihumedad hecho por la comunidad y plaza de garaje a 300 m.",
+    outcome: "A la venta por 227.000€",
   },
   {
     id: "getafe-garaje",
@@ -31,8 +33,8 @@ export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
     imageUrl: "/v4/properties/getafe-garaje.webp",
     alt: "Salón reformado de un piso de 74 m² en el centro de Getafe",
     story:
-      "74 m² totalmente reformados, tres habitaciones, y una plaza de garaje espectacular con capacidad para dos coches pequeños incluida en el precio. Trabajamos el discurso para que el garaje —que era el gran diferencial— apareciese en la primera frase del anuncio.",
-    outcome: "Piso + garaje vendido como paquete único",
+      "Piso de 74 m² totalmente reformado en el centro de Getafe. Tres habitaciones y una plaza de garaje espectacular —lugar para dos coches pequeños— incluida en el precio.",
+    outcome: "A la venta en Getafe Centro — incluye plaza de garaje",
   },
   {
     id: "fuenlabrada-piso",
@@ -41,7 +43,7 @@ export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
     imageUrl: "/v4/properties/fuenlabrada-piso.webp",
     alt: "Balcón con vistas al barrio en un piso a reformar en Fuenlabrada",
     story:
-      "Piso de más de 70 m², tres habitaciones y un gran trastero. Entró como 'próximo ingreso' y lo presentamos con un tour en vivo desde la terraza antes de que llegaran los portales.",
+      "Próximo ingreso en Fuenlabrada: piso de más de 70 m², tres habitaciones y un gran trastero, para reformar.",
     outcome: "A reformar — 208.000€",
   },
   {
@@ -51,7 +53,7 @@ export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
     imageUrl: "/v4/properties/fuenlabrada-local.webp",
     alt: "Local comercial diáfano en la zona Tomás y Valiente de Fuenlabrada",
     story:
-      "50 m² útiles a 100 m de la Avenida de España y a 300 m de La Serna. Para un local, el contexto vende más que el interior: rodamos desde la calle hacia dentro para que se viera el paso de gente antes del espacio vacío.",
+      "Local en la zona Tomás y Valiente de Fuenlabrada. 50 m² útiles, a 300 m de la estación La Serna y a 100 m de la Avenida de España.",
     outcome: "En venta por 67.000€",
   },
   {
@@ -61,17 +63,17 @@ export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
     imageUrl: "/v4/properties/viso-san-juan.webp",
     alt: "Cocina con azulejos rojos y blancos en una vivienda de El Viso de San Juan",
     story:
-      "Una vivienda con personalidad —cocina ajedrezada, biblioteca con alfombra persa, detalles que no se dan en obra nueva— a pocos minutos de Madrid. La contamos como un hogar, no como un activo.",
-    outcome: "En venta — tour completo publicado",
+      "Vivienda con personalidad en El Viso de San Juan, a pocos minutos de Madrid: cocina ajedrezada en rojo y blanco, biblioteca con alfombra persa y detalles que no aparecen en obra nueva.",
+    outcome: "A la venta",
   },
   {
     id: "vendido-primer-dia",
     title: "Vendido en el primer día de visitas",
-    zona: "Madrid Sur",
+    zona: "Madrid",
     imageUrl: "/v4/properties/vendido-primer-dia.webp",
-    alt: "Salón amplio con sofás azules y parqué en un piso del sur de Madrid",
+    alt: "Salón amplio con sofás azules y parqué en un piso a la venta en Madrid",
     story:
-      "Uno de nuestros últimos ingresos. Preparamos el material, filtramos a los compradores por teléfono y abrimos la agenda del primer día con una lista corta —la casa se fue antes de cerrar la jornada.",
+      "Uno de los últimos ingresos del equipo. Se firmó en la primera jornada de visitas.",
     outcome: "Vendido el primer día de visitas",
   },
 ];
