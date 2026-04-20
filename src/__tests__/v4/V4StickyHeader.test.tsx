@@ -116,7 +116,7 @@ describe("V4 StickyHeader", () => {
     const { container } = render(<V4StickyHeader />);
     const drawer = container.querySelector("[id='v4-mobile-drawer']");
     expect(drawer).not.toBeNull();
-    const drawerLinks = drawer!.querySelectorAll("a");
+    const drawerLinks = drawer!.querySelectorAll("a[class*='navLink']");
     expect(drawerLinks.length).toBe(V4_NAV_LINKS.length);
     drawerLinks.forEach((a) => {
       expect(a.getAttribute("tabindex")).toBe("-1");
@@ -131,7 +131,7 @@ describe("V4 StickyHeader", () => {
     fireEvent.click(toggle);
 
     const drawer = container.querySelector("[id='v4-mobile-drawer']");
-    const drawerLinks = drawer!.querySelectorAll("a");
+    const drawerLinks = drawer!.querySelectorAll("a[class*='navLink']");
     drawerLinks.forEach((a) => {
       expect(a.getAttribute("tabindex")).toBe("0");
     });

@@ -27,7 +27,7 @@ describe("V4 Footer", () => {
 
   test("renders Instagram and TikTok links with safe rel attrs", () => {
     const { container } = render(<V4Footer />);
-    const social = container.querySelectorAll("ul[class*='socialList'] a");
+    const social = container.querySelectorAll("ul[class*='contactSocials'] a");
     expect(social.length).toBe(2);
     social.forEach((link) => {
       expect(link.getAttribute("target")).toBe("_blank");
