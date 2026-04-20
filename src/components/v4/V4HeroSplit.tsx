@@ -36,8 +36,14 @@ export default function V4HeroSplit() {
   useEffect(() => {
     const el = heroRef.current;
     if (!el) return;
-    // Touch devices: leave at fixed 50%.
-    if (typeof window !== "undefined" && "ontouchstart" in window) return;
+    // Touch devices: leave at fixed 50%. Coarse-pointer + no-hover catches
+    // real phones/tablets while excluding hybrid devices (iPad + Magic
+    // Keyboard) that misfire with the legacy "ontouchstart" heuristic.
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: none) and (pointer: coarse)").matches
+    )
+      return;
 
     let rafId = 0;
 
@@ -100,7 +106,11 @@ export default function V4HeroSplit() {
       style={{ "--divider-pos": "50%" } as React.CSSProperties}
       aria-label="Introducción a DOSXM2"
     >
-      {/* Background panels (videos + veils) */}
+      {/* Background panels (videos + veils). The text layer is nested inside
+         panelLeft so on mobile (stacked flex column) the H1 + CTA sit above
+         the fold instead of trailing after both panels' worth of video. On
+         desktop, CSS absolutely positions the text inside panelLeft's
+         inset:0 containing block, preserving the overlay. */}
       <div className={styles.panelLeft}>
         {leftError ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -125,6 +135,42 @@ export default function V4HeroSplit() {
             data-asset-type="hero-bg"
           />
         )}
+        <div className={styles.textLayer}>
+          <h1 className={styles.heading}>
+            Detrás de cada casa hay{" "}
+            <span className={styles.headingAccent}>una historia.</span>
+          </h1>
+          <p className={styles.sub}>
+            Vendemos tu casa como si fuese la nuestra. Doble compromiso, trato
+            personal y resultados demostrables en Madrid.
+          </p>
+          <div className={styles.ctaRow}>
+            <a
+              href="#valorador"
+              className={styles.cta}
+              onClick={handleCtaClick}
+            >
+              Valora tu propiedad
+              <svg
+                className={styles.ctaArrow}
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M3 8h10m0 0L9 4m4 4l-4 4"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </a>
+            <VideoPlayPause videoRef={leftVideoElRef} label="V4-Hero-Left" />
+          </div>
+        </div>
       </div>
 
       <div className={styles.panelRight}>
@@ -154,46 +200,6 @@ export default function V4HeroSplit() {
       </div>
 
       <div className={styles.divider} aria-hidden="true" />
-
-      {/* Text layer — desktop: single overlay on the dark (left) panel.
-         mobile: stacked under each panel via CSS. */}
-      <div className={styles.textLayer}>
-        <h1 className={styles.heading}>
-          Detrás de cada casa hay{" "}
-          <span className={styles.headingAccent}>una historia.</span>
-        </h1>
-        <p className={styles.sub}>
-          Vendemos tu casa como si fuese la nuestra. Doble compromiso, trato
-          personal y resultados demostrables en Madrid.
-        </p>
-        <div className={styles.ctaRow}>
-          <a
-            href="#valorador"
-            className={styles.cta}
-            onClick={handleCtaClick}
-          >
-            Valora tu propiedad
-            <svg
-              className={styles.ctaArrow}
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M3 8h10m0 0L9 4m4 4l-4 4"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
-          <VideoPlayPause videoRef={leftVideoElRef} label="V4-Hero-Left" />
-        </div>
-      </div>
-
     </section>
   );
 }

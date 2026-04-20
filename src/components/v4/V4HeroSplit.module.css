@@ -10,6 +10,7 @@
 .hero {
   position: relative;
   min-height: 100vh;
+  min-height: 100svh;
   overflow: hidden;
   background: var(--v4-fg);
   color: #ffffff;
@@ -122,7 +123,7 @@
   font-family: var(--v4-font-serif);
   font-weight: 400;
   font-size: clamp(2.5rem, 6.5vw, 5.25rem);
-  line-height: 1.02;
+  line-height: 1.08;
   letter-spacing: -0.015em;
   margin: 0;
   color: #ffffff;
@@ -226,7 +227,10 @@
   }
 }
 
-/* Mobile: stacked layout, text on each half */
+/* Mobile: stacked layout. panelLeft holds the text and fills the viewport
+   so the H1 + CTA sit above the fold. panelRight is kept as a decorative
+   warm-toned continuation of the hero (video already preloads metadata
+   only, so bandwidth cost is minimal). */
 @media (max-width: 768px) {
   .hero {
     display: flex;
@@ -236,42 +240,25 @@
   .panelLeft,
   .panelRight {
     position: relative;
-    min-height: 52vh;
     width: 100%;
   }
 
+  .panelLeft {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
   .panelRight {
+    min-height: 40vh;
+    min-height: 40svh;
     clip-path: none !important;
   }
 
   .textLayer {
     padding: clamp(3rem, 9vw, 5rem) clamp(1.5rem, 5vw, 2.5rem);
-  }
-
-  .panelLeft .textLayer {
-    min-height: 52vh;
-  }
-
-  .panelRight .textLayer {
-    min-height: 48vh;
-    color: var(--v4-fg);
-    max-width: 100%;
-    align-items: flex-start;
-  }
-
-  .panelRight .heading {
-    color: var(--v4-fg);
-    font-size: clamp(1.75rem, 6vw, 3rem);
-    text-shadow: none;
-  }
-
-  .panelRight .headingAccent {
-    color: var(--v4-accent);
-  }
-
-  .panelRight .sub {
-    color: var(--v4-muted-strong);
-    text-shadow: none;
   }
 
   .scrollHint {
