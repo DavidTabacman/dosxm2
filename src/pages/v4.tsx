@@ -34,18 +34,16 @@ const inter = Inter({
 });
 
 /* Portraits pulled from frames of the founders' own tours on @dosxm2
- * (TikTok). Only Borja is referenced by name in the public captions;
- * the second founder's first name is still a placeholder pending team
- * confirmation — hence "Diego" stays until they weigh in. */
+ * (TikTok). */
 const FOUNDER_A = {
   name: "Borja",
   portraitUrl: "/v4/founders/founder-a.webp",
   alt: "Retrato de Borja, cofundador de DOSXM2, durante una visita a un piso en Getafe",
 };
 const FOUNDER_B = {
-  name: "Diego",
+  name: "Pablo",
   portraitUrl: "/v4/founders/founder-b.webp",
-  alt: "Retrato del otro cofundador de DOSXM2 presentando un piso en el sur de Madrid",
+  alt: "Retrato de Pablo, cofundador de DOSXM2, presentando un piso en el sur de Madrid",
 };
 
 /* BRD 4.3 — metrics: 30 días / 100% / 24/7.
@@ -72,6 +70,8 @@ const METRICS = [
 ] as const;
 
 const DOSXM2_PHONE = "34600000000"; // placeholder — swap with real number at launch
+const BORJA_PHONE = "34667006662";
+const PABLO_PHONE = "34674527410";
 const WA_MESSAGE =
   "Hola DOSXM2, quiero información sobre cómo vender mi casa en Madrid.";
 
@@ -116,7 +116,8 @@ export default function V4Page() {
         <V4Valorador whatsappUrl={whatsappUrl} />
         <V4Footer whatsappUrl={whatsappUrl} />
         <V4WhatsAppFAB
-          phone={DOSXM2_PHONE}
+          founderAPhone={BORJA_PHONE}
+          founderBPhone={PABLO_PHONE}
           message={WA_MESSAGE}
           visible={portraitsDetached}
           portraitAUrl={FOUNDER_A.portraitUrl}

@@ -31,38 +31,38 @@
   transition-delay: 0s;
 }
 
-.button {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  padding: 0;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--v4-fg);
-  font-family: var(--v4-font-sans);
-  text-decoration: none;
-  border-radius: 999px;
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-.button:hover,
-.button:focus-visible {
-  box-shadow: 0 0 0 3px var(--v4-accent-soft);
-  transform: translateY(-2px);
-  outline: none;
-}
-
-.button:focus-visible {
-  box-shadow:
-    0 0 0 3px var(--v4-accent-soft),
-    0 0 0 5px var(--v4-accent);
-}
-
 .portraitStack {
   display: inline-flex;
   position: relative;
   height: var(--v4-fab-size);
+}
+
+.portraitLink {
+  position: relative;
+  display: inline-block;
+  color: var(--v4-fg);
+  font-family: var(--v4-font-sans);
+  text-decoration: none;
+  border-radius: 50%;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.portraitLink + .portraitLink {
+  margin-left: calc(var(--v4-fab-size) * -0.35);
+}
+
+.portraitLink:hover,
+.portraitLink:focus-visible {
+  box-shadow: 0 0 0 3px var(--v4-accent-soft);
+  transform: translateY(-2px);
+  outline: none;
+  z-index: 1;
+}
+
+.portraitLink:focus-visible {
+  box-shadow:
+    0 0 0 3px var(--v4-accent-soft),
+    0 0 0 5px var(--v4-accent);
 }
 
 .portrait {
@@ -74,10 +74,6 @@
   background: var(--v4-surface-elevated);
   box-shadow: 0 10px 28px rgba(28, 28, 28, 0.22);
   display: block;
-}
-
-.portrait + .portrait {
-  margin-left: calc(var(--v4-fab-size) * -0.35);
 }
 
 /* Tooltip — hidden by default, revealed on hover/focus. Not a separate
@@ -100,8 +96,8 @@
   box-shadow: 0 4px 14px rgba(28, 28, 28, 0.2);
 }
 
-.button:hover .tooltip,
-.button:focus-visible .tooltip {
+.portraitLink:hover .tooltip,
+.portraitLink:focus-visible .tooltip {
   opacity: 1;
   transform: translateY(-50%) translateX(0);
 }
@@ -136,8 +132,8 @@
     transform: translateX(-50%) translateY(4px);
   }
 
-  .button:hover .tooltip,
-  .button:focus-visible .tooltip {
+  .portraitLink:hover .tooltip,
+  .portraitLink:focus-visible .tooltip {
     transform: translateX(-50%) translateY(0);
   }
 }
@@ -149,7 +145,7 @@
     transition-delay: 0s;
   }
 
-  .button,
+  .portraitLink,
   .tooltip {
     transition: none;
   }

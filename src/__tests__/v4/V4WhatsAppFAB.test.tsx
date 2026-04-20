@@ -3,7 +3,8 @@ import { render, act, fireEvent } from "@testing-library/react";
 import V4WhatsAppFAB from "@/components/v4/V4WhatsAppFAB";
 
 const DEFAULT_PROPS = {
-  phone: "34600123456",
+  founderAPhone: "34667006662",
+  founderBPhone: "34674527410",
   message: "Hola DOSXM2",
   visible: true,
   portraitAUrl: "https://example.com/a.jpg",
@@ -11,7 +12,7 @@ const DEFAULT_PROPS = {
   portraitBUrl: "https://example.com/b.jpg",
   portraitBAlt: "Retrato B",
   founderAName: "Borja",
-  founderBName: "Diego",
+  founderBName: "Pablo",
 };
 
 describe("V4 WhatsAppFAB", () => {
@@ -23,26 +24,35 @@ describe("V4 WhatsAppFAB", () => {
     vi.useRealTimers();
   });
 
-  test("renders a link with a wa.me URL including the phone", () => {
+  test("renders two links, one per founder, each with its own wa.me URL", () => {
     const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
-    const link = container.querySelector("a");
-    expect(link).not.toBeNull();
-    expect(link?.getAttribute("href")).toContain("https://wa.me/34600123456");
+    const links = container.querySelectorAll("a");
+    expect(links).toHaveLength(2);
+    expect(links[0].getAttribute("href")).toContain("https://wa.me/34667006662");
+    expect(links[1].getAttribute("href")).toContain("https://wa.me/34674527410");
   });
 
-  test("encodes the prefilled message in the wa.me URL", () => {
+  test("encodes the prefilled message in both wa.me URLs", () => {
     const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
-    const href = container.querySelector("a")?.getAttribute("href") ?? "";
-    expect(href).toContain("text=");
-    expect(href).toContain(encodeURIComponent("Hola DOSXM2"));
+    const links = container.querySelectorAll("a");
+    links.forEach((link) => {
+      const href = link.getAttribute("href") ?? "";
+      expect(href).toContain("text=");
+      expect(href).toContain(encodeURIComponent("Hola DOSXM2"));
+    });
   });
 
-  test("strips non-digit characters from the phone", () => {
+  test("strips non-digit characters from each founder's phone", () => {
     const { container } = render(
-      <V4WhatsAppFAB {...DEFAULT_PROPS} phone="+34 (600) 123-456" />
+      <V4WhatsAppFAB
+        {...DEFAULT_PROPS}
+        founderAPhone="+34 (667) 00-66-62"
+        founderBPhone="+34 674 52 74 10"
+      />
     );
-    const href = container.querySelector("a")?.getAttribute("href") ?? "";
-    expect(href).toContain("https://wa.me/34600123456");
+    const links = container.querySelectorAll("a");
+    expect(links[0].getAttribute("href")).toContain("https://wa.me/34667006662");
+    expect(links[1].getAttribute("href")).toContain("https://wa.me/34674527410");
   });
 
   test("renders two portrait images with correct alt text", () => {
@@ -55,36 +65,34 @@ describe("V4 WhatsAppFAB", () => {
     expect(portraits[1].getAttribute("alt")).toBe("Retrato B");
   });
 
-  test("does NOT render the 'Hablemos por WhatsApp' label as a visible pill", () => {
-    // BRD 4.2: portraits themselves are the affordance, no separate pill.
-    // The tooltip CONTAINS the text but it's role=tooltip and visually
-    // hidden until hover/focus — the FAB itself should never show it as
-    // a persistent label next to a WhatsApp icon.
+  test("does NOT render a WhatsApp SVG icon alongside the portraits", () => {
+    // BRD 4.2: portraits themselves are the affordance, no separate pill/icon.
     const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
-    // There must be no WhatsApp SVG icon rendered alongside the portraits.
     const svgs = container.querySelectorAll("svg");
     expect(svgs.length).toBe(0);
   });
 
-  test("exposes the accessible label naming both founders", () => {
+  test("each link exposes an accessible label naming its founder", () => {
     const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
-    const link = container.querySelector("a");
-    const ariaLabel = link?.getAttribute("aria-label") ?? "";
-    expect(ariaLabel).toContain("Borja");
-    expect(ariaLabel).toContain("Diego");
-    expect(ariaLabel).toContain("WhatsApp");
+    const links = container.querySelectorAll("a");
+    const labelA = links[0].getAttribute("aria-label") ?? "";
+    const labelB = links[1].getAttribute("aria-label") ?? "";
+    expect(labelA).toContain("Borja");
+    expect(labelA).toContain("WhatsApp");
+    expect(labelB).toContain("Pablo");
+    expect(labelB).toContain("WhatsApp");
   });
 
-  test("includes a tooltip element for hover discoverability", () => {
+  test("renders a per-founder tooltip on each link", () => {
     const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
-    const tooltip = container.querySelector("[role='tooltip']");
-    expect(tooltip).not.toBeNull();
-    expect(tooltip?.textContent).toContain("Hablemos por WhatsApp");
+    const tooltips = container.querySelectorAll("[role='tooltip']");
+    expect(tooltips).toHaveLength(2);
+    expect(tooltips[0].textContent).toContain("Borja");
+    expect(tooltips[1].textContent).toContain("Pablo");
   });
 
   test("FAB is hidden before mount delay (armed flag false)", () => {
     const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
-    // Immediately after render, armed is false → aria-hidden=true
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.getAttribute("aria-hidden")).toBe("true");
   });
@@ -118,19 +126,23 @@ describe("V4 WhatsAppFAB", () => {
     expect(portrait.style.visibility).toBe("hidden");
   });
 
-  test("link has target=_blank and rel=noopener noreferrer for security", () => {
+  test("both links have target=_blank and rel=noopener noreferrer for security", () => {
     const { container } = render(<V4WhatsAppFAB {...DEFAULT_PROPS} />);
-    const link = container.querySelector("a")!;
-    expect(link.getAttribute("target")).toBe("_blank");
-    expect(link.getAttribute("rel")).toBe("noopener noreferrer");
+    const links = container.querySelectorAll("a");
+    links.forEach((link) => {
+      expect(link.getAttribute("target")).toBe("_blank");
+      expect(link.getAttribute("rel")).toBe("noopener noreferrer");
+    });
   });
 
-  test("link tabIndex is -1 while hidden, 0 when visible", () => {
+  test("link tabIndex is -1 while hidden", () => {
     const { container } = render(
       <V4WhatsAppFAB {...DEFAULT_PROPS} visible={false} />
     );
-    const link = container.querySelector("a")!;
-    expect(link.getAttribute("tabindex")).toBe("-1");
+    const links = container.querySelectorAll("a");
+    links.forEach((link) => {
+      expect(link.getAttribute("tabindex")).toBe("-1");
+    });
   });
 
   test("tabIndex is 0 once armed and visible", () => {
@@ -138,15 +150,18 @@ describe("V4 WhatsAppFAB", () => {
     act(() => {
       vi.advanceTimersByTime(200);
     });
-    const link = container.querySelector("a")!;
-    expect(link.getAttribute("tabindex")).toBe("0");
+    const links = container.querySelectorAll("a");
+    links.forEach((link) => {
+      expect(link.getAttribute("tabindex")).toBe("0");
+    });
   });
 
-  test("no message prop renders a URL without text= parameter", () => {
+  test("no message prop renders URLs without text= parameter", () => {
     const { container } = render(
       <V4WhatsAppFAB {...DEFAULT_PROPS} message={undefined} />
     );
-    const href = container.querySelector("a")?.getAttribute("href") ?? "";
-    expect(href).toBe("https://wa.me/34600123456");
+    const links = container.querySelectorAll("a");
+    expect(links[0].getAttribute("href")).toBe("https://wa.me/34667006662");
+    expect(links[1].getAttribute("href")).toBe("https://wa.me/34674527410");
   });
 });
