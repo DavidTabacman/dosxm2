@@ -123,6 +123,22 @@ export default function V4StickyHeader() {
     };
   }, [menuOpen]);
 
+  // When the drawer is open the body is position:fixed, so any smooth scroll
+  // (scrollIntoView or window.scrollTo) silently no-ops — the document isn't
+  // scrollable while locked, and the lock effect's cleanup later restores the
+  // original scrollY, stranding the user at their pre-open position. Defer
+  // the scroll until after React flushes the cleanup that unfixes body.
+  const scrollAfterDrawerCloses = useCallback(
+    (fn: () => void) => {
+      if (menuOpen && typeof requestAnimationFrame !== "undefined") {
+        requestAnimationFrame(fn);
+      } else {
+        fn();
+      }
+    },
+    [menuOpen]
+  );
+
   const handleNavClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
       e.preventDefault();
@@ -131,21 +147,23 @@ export default function V4StickyHeader() {
       if (typeof history !== "undefined") {
         history.replaceState(null, "", href);
       }
-      scrollToAnchor(href);
       setMenuOpen(false);
+      scrollAfterDrawerCloses(() => scrollToAnchor(href));
       console.log(`[V4-StickyHeader] 🔗 Nav click — scrolling to ${href}`);
     },
-    []
+    [scrollAfterDrawerCloses]
   );
 
   const handleLogoClick = useCallback(() => {
     if (typeof window === "undefined") return;
-    window.scrollTo({ top: 0, behavior: "smooth" });
     if (typeof history !== "undefined") {
       history.replaceState(null, "", window.location.pathname);
     }
     setMenuOpen(false);
-  }, []);
+    scrollAfterDrawerCloses(() =>
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    );
+  }, [scrollAfterDrawerCloses]);
 
   return (
     <>

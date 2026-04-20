@@ -203,4 +203,68 @@ describe("V4 StickyHeader", () => {
     expect(document.body.style.top).toBe("");
     expect(scrollSpy).toHaveBeenCalledWith(0, 180);
   });
+
+  test("drawer nav-link defers scrollIntoView until body is unfixed (P1-10 regression guard)", () => {
+    vi.useFakeTimers();
+    Object.defineProperty(window, "scrollY", { value: 500, configurable: true });
+    const section = document.createElement("section");
+    section.id = "diferencial";
+    document.body.appendChild(section);
+    const spy = vi.spyOn(section, "scrollIntoView");
+
+    const { container } = render(<V4StickyHeader />);
+    const toggle = container.querySelector(
+      "button[aria-label='Abrir menú']"
+    ) as HTMLButtonElement;
+    fireEvent.click(toggle);
+    expect(document.body.style.position).toBe("fixed");
+
+    // Click the drawer's nav link (the one inside #v4-mobile-drawer).
+    const drawer = container.querySelector("[id='v4-mobile-drawer']");
+    const drawerLink = drawer!.querySelector(
+      "a[href='#diferencial']"
+    ) as HTMLAnchorElement;
+    fireEvent.click(drawerLink);
+
+    // Body must be unfixed BEFORE scrollIntoView is called (otherwise the
+    // scroll silently no-ops and the cleanup's scrollTo(0,500) stranded us).
+    expect(document.body.style.position).toBe("");
+    expect(spy).not.toHaveBeenCalled();
+
+    // Flush the deferred scrollIntoView — rAF in jsdom is a setTimeout(16).
+    vi.advanceTimersByTime(20);
+    expect(spy).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
+
+    document.body.removeChild(section);
+    vi.useRealTimers();
+  });
+
+  test("logo click from open drawer defers scroll-to-top the same way", () => {
+    vi.useFakeTimers();
+    Object.defineProperty(window, "scrollY", { value: 240, configurable: true });
+    const scrollSpy = vi.spyOn(window, "scrollTo");
+    const { container } = render(<V4StickyHeader />);
+    const toggle = container.querySelector(
+      "button[aria-label='Abrir menú']"
+    ) as HTMLButtonElement;
+    fireEvent.click(toggle); // open drawer
+
+    const logo = container.querySelector(
+      "button[aria-label*='DOSXM2']"
+    ) as HTMLButtonElement;
+    fireEvent.click(logo);
+
+    // Cleanup should have restored scroll to the pre-open position (240).
+    expect(scrollSpy).toHaveBeenCalledWith(0, 240);
+    // But the "go to top" smooth scroll must not fire until rAF flushes.
+    const preFlushCalls = scrollSpy.mock.calls.length;
+
+    vi.advanceTimersByTime(20);
+    // Now the deferred smooth scroll-to-top fires.
+    const postFlushCalls = scrollSpy.mock.calls.length;
+    expect(postFlushCalls).toBeGreaterThan(preFlushCalls);
+    const last = scrollSpy.mock.calls[scrollSpy.mock.calls.length - 1];
+    expect(last[0]).toEqual({ top: 0, behavior: "smooth" });
+    vi.useRealTimers();
+  });
 });
