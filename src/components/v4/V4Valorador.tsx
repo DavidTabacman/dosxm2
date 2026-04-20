@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSectionReveal } from "../shared/useSectionReveal";
 import styles from "./V4Valorador.module.css";
 import anim from "./v4-animations.module.css";
@@ -44,7 +44,7 @@ const DEFAULT_STEPS: Step[] = [
   {
     id: "contacto",
     label: "¿Cómo te podemos contactar?",
-    type: "tel",
+    type: "text",
     placeholder: "Tu teléfono o email",
     validate: (v) => {
       const trimmed = v.trim();
@@ -87,6 +87,21 @@ export default function V4Valorador({
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null>(
+    null
+  );
+  const prevStepRef = useRef<number | null>(null);
+
+  // Move focus only on actual step changes, never on mount. Auto-focusing
+  // on mount would yank the viewport to the valorador the moment the
+  // section scrolls into view, which broke the cinematic hero flow.
+  useEffect(() => {
+    if (prevStepRef.current !== null && prevStepRef.current !== currentStep) {
+      inputRef.current?.focus();
+    }
+    prevStepRef.current = currentStep;
+  }, [currentStep]);
 
   const step = steps[currentStep];
 
@@ -264,6 +279,9 @@ export default function V4Valorador({
               <div className={styles.selectWrap}>
                 <select
                   id={`v4-step-${step.id}`}
+                  ref={(el) => {
+                    inputRef.current = el;
+                  }}
                   className={`${styles.select} ${shakeField ? styles.shake : ""}`}
                   value={answers[currentStep]}
                   onChange={(e) => handleChange(e.target.value)}
@@ -283,6 +301,9 @@ export default function V4Valorador({
             ) : step.type === "textarea" ? (
               <textarea
                 id={`v4-step-${step.id}`}
+                ref={(el) => {
+                  inputRef.current = el;
+                }}
                 className={`${styles.textarea} ${shakeField ? styles.shake : ""}`}
                 placeholder={step.placeholder}
                 value={answers[currentStep]}
@@ -293,12 +314,16 @@ export default function V4Valorador({
             ) : (
               <input
                 id={`v4-step-${step.id}`}
+                ref={(el) => {
+                  inputRef.current = el;
+                }}
                 className={`${styles.input} ${shakeField ? styles.shake : ""}`}
                 type={step.type}
+                inputMode={step.id === "contacto" ? "email" : undefined}
+                autoComplete={step.id === "contacto" ? "email tel" : undefined}
                 placeholder={step.placeholder}
                 value={answers[currentStep]}
                 onChange={(e) => handleChange(e.target.value)}
-                autoFocus
                 aria-invalid={hasError || undefined}
                 aria-describedby={hasError ? "v4-step-error" : undefined}
               />

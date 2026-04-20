@@ -224,4 +224,33 @@ describe("V4 Valorador", () => {
     const selectInside = wrap!.querySelector("select");
     expect(selectInside).not.toBeNull();
   });
+
+  test("does NOT auto-focus the input on mount (avoids yanking viewport)", () => {
+    const { container } = render(<V4Valorador />);
+    const input = container.querySelector("input");
+    expect(input).not.toBeNull();
+    expect(document.activeElement).not.toBe(input);
+  });
+
+  test("focuses the input on step transition (after a Siguiente click)", () => {
+    const { container } = render(<V4Valorador />);
+    nextStep(container, "Chamberí");
+    // Advance to meters step: select with "Piso" then click Siguiente.
+    fillActiveInput(container, "Piso");
+    clickByText(container, "Siguiente");
+    const nextInput = container.querySelector("input");
+    expect(nextInput).not.toBeNull();
+    expect(document.activeElement).toBe(nextInput);
+  });
+
+  test("contact step input uses inputMode=email for combined phone/email UX", () => {
+    const { container } = render(<V4Valorador />);
+    nextStep(container, "Chamberí");
+    nextStep(container, "Piso");
+    nextStep(container, "85");
+    const input = container.querySelector("input");
+    expect(input?.getAttribute("inputmode")).toBe("email");
+    expect(input?.getAttribute("autocomplete")).toBe("email tel");
+    expect(input?.getAttribute("type")).toBe("text");
+  });
 });
