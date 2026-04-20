@@ -76,7 +76,7 @@
 .linkList a {
   color: var(--v4-on-dark-primary);
   font-family: var(--v4-font-sans);
-  font-size: 0.95rem;
+  font-size: 1rem;
   text-decoration: none;
   transition: color 0.2s ease;
   display: inline-block;

@@ -18,7 +18,7 @@ interface Step {
 const DEFAULT_STEPS: Step[] = [
   {
     id: "zona",
-    label: "Empecemos por conocer tu casa. ¿Dónde está ubicada?",
+    label: "Empecemos por conocer tu casa.\u00A0¿Dónde está ubicada?",
     type: "text",
     placeholder: "Ej: Chamberí, Salamanca, Retiro...",
   },

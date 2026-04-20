@@ -30,10 +30,43 @@ const SERIF_CLASSES = [
   "tagline",
 ];
 
-describe("V4 type-scale token adoption (Phase 4)", () => {
-  function readCss(name: string) {
-    return readFileSync(resolve(V4_COMPONENTS_DIR, name), "utf-8");
+function readCss(name: string) {
+  return readFileSync(resolve(V4_COMPONENTS_DIR, name), "utf-8");
+}
+
+describe("V4 body-copy 16px floor (P2-5)", () => {
+  function firstClampArg(css: string, selectorRegex: RegExp): string {
+    const match = css.match(selectorRegex);
+    if (!match) throw new Error("rule not found");
+    return match[1];
   }
+
+  test("HeroSplit .sub body text starts at 1rem", () => {
+    const css = readCss("V4HeroSplit.module.css");
+    const arg = firstClampArg(
+      css,
+      /\.sub\s*{[^}]*font-size:\s*clamp\(([^,]+),/
+    );
+    expect(arg.trim()).toBe("1rem");
+  });
+
+  test("Resenas .message body text is at least 1rem", () => {
+    const css = readCss("V4Resenas.module.css");
+    expect(css).toMatch(/\.message\s*{[^}]*font-size:\s*1rem/);
+  });
+
+  test("Historias .backStory body text is at least 1rem", () => {
+    const css = readCss("V4Historias.module.css");
+    expect(css).toMatch(/\.backStory\s*{[^}]*font-size:\s*1rem/);
+  });
+
+  test("Footer .linkList a body text is at least 1rem", () => {
+    const css = readCss("V4Footer.module.css");
+    expect(css).toMatch(/\.linkList a\s*{[^}]*font-size:\s*1rem/);
+  });
+});
+
+describe("V4 type-scale token adoption (Phase 4)", () => {
 
   test("Hero heading uses --v4-type-display", () => {
     const css = readCss("V4HeroSplit.module.css");
@@ -66,6 +99,20 @@ describe("V4 type-scale token adoption (Phase 4)", () => {
     const css = readCss("V4Metrics.module.css");
     expect(css).toMatch(
       /\.value\s*{[^}]*font-size:\s*var\(--v4-type-metric\)/
+    );
+  });
+});
+
+describe("V4 Phase 8 typography polish", () => {
+  test("Historias heading relaxed to 26ch (was 22ch — orphan line fix)", () => {
+    const css = readCss("V4Historias.module.css");
+    expect(css).toMatch(/\.heading\s*{[^}]*max-width:\s*26ch/);
+  });
+
+  test("Resenas senderName relaxed to 0.08em tracking below 600px", () => {
+    const css = readCss("V4Resenas.module.css");
+    expect(css).toMatch(
+      /@media \(max-width:\s*600px\)\s*{[^}]*\.senderName\s*{[^}]*letter-spacing:\s*0\.08em/
     );
   });
 });

@@ -243,6 +243,14 @@ describe("V4 Valorador", () => {
     expect(document.activeElement).toBe(nextInput);
   });
 
+  test("first-step label uses nbsp before ¿ to avoid a line-orphan question mark", () => {
+    const { container } = render(<V4Valorador />);
+    const label = container.querySelector("label");
+    // A non-breaking space (\u00A0) — not the ordinary ASCII space — should
+    // glue "casa." to "¿Dónde".
+    expect(label?.textContent).toMatch(/casa\.\u00A0¿Dónde/);
+  });
+
   test("contact step input uses inputMode=email for combined phone/email UX", () => {
     const { container } = render(<V4Valorador />);
     nextStep(container, "Chamberí");

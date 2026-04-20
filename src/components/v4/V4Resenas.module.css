@@ -129,7 +129,7 @@
 
 .message {
   font-family: var(--v4-font-sans);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   line-height: 1.55;
   margin: 0;
 }
@@ -205,5 +205,13 @@
 @media (max-width: 400px) {
   .bubble {
     max-width: 92%;
+  }
+}
+
+/* Uppercase senderName at 0.14em tracking clips on tight mobile widths;
+   relax the tracking below 600px so names like "CARMEN L." fit. */
+@media (max-width: 600px) {
+  .senderName {
+    letter-spacing: 0.08em;
   }
 }
