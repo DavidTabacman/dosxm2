@@ -128,3 +128,16 @@
     transition: none;
   }
 }
+
+/* Landscape phones: enough horizontal room to re-expand to 3 columns
+   even though the width-based breakpoint would step down. Shrinks the
+   value type so three metrics fit in the available height. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .value {
+    font-size: clamp(2rem, 5vw, 3rem);
+  }
+}

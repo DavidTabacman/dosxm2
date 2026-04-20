@@ -288,6 +288,34 @@
   }
 }
 
+/* Landscape phones (~852x393): the stacked portrait layout wastes a full
+   viewport on decorative video. Force the side-by-side layout back and
+   compress type so the H1 + CTA fit in one visual frame. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero {
+    flex-direction: row;
+    min-height: 100svh;
+  }
+
+  .panelLeft,
+  .panelRight {
+    min-height: 100svh;
+  }
+
+  .heading {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    line-height: 1.1;
+  }
+
+  .sub {
+    font-size: 0.95rem;
+  }
+
+  .textLayer {
+    padding: 1rem 1.5rem;
+  }
+}
+
 /* Users with prefers-reduced-data opt into lower-bandwidth UIs; we hide
    the decorative hero videos and fill with a solid surface instead. */
 @media (prefers-reduced-data: reduce) {

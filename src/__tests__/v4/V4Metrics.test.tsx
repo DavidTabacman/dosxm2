@@ -163,4 +163,12 @@ describe("V4 Metrics", () => {
     const afterHeader = container.querySelector("h2")?.parentElement;
     expect(afterHeader?.className).toMatch(/staggerVisible/);
   });
+
+  test("Metrics CSS declares a landscape-phone 3-col branch", async () => {
+    const { readV4Css } = await import("../utils/readCss");
+    const css = readV4Css("V4Metrics.module.css");
+    expect(css).toMatch(
+      /@media\s*\(max-height:\s*500px\)\s*and\s*\(orientation:\s*landscape\)/
+    );
+  });
 });

@@ -148,6 +148,13 @@ describe("V4 HeroSplit", () => {
     expect(css).toMatch(/@media \(prefers-reduced-data:\s*reduce\)/);
   });
 
+  test("hero CSS declares a landscape-phone compression branch", () => {
+    const css = readV4Css("V4HeroSplit.module.css");
+    expect(css).toMatch(
+      /@media\s*\(max-height:\s*500px\)\s*and\s*\(orientation:\s*landscape\)/
+    );
+  });
+
   test("heading line-height relaxed for accented Spanish glyphs", () => {
     const css = readV4Css("V4HeroSplit.module.css");
     // Match the heading rule body and look for line-height >= 1.08.
