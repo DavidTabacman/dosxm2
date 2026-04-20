@@ -99,6 +99,17 @@ describe("V4 Page (integration)", () => {
     expect(fabLink).not.toBeNull();
   });
 
+  test("declares viewport meta with viewport-fit=cover for safe-area support", () => {
+    // React 19 hoists <meta> into document.head automatically; the next/head
+    // mock renders children as a fragment, so the viewport meta lands there.
+    render(<V4Page />);
+    const viewport =
+      document.querySelector("meta[name='viewport']") ??
+      document.head.querySelector("meta[name='viewport']");
+    expect(viewport).not.toBeNull();
+    expect(viewport?.getAttribute("content")).toContain("viewport-fit=cover");
+  });
+
   test("renders the footer with 'DOSXM2' branding", () => {
     const { container } = render(<V4Page />);
     const footer = container.querySelector("footer[role='contentinfo']");

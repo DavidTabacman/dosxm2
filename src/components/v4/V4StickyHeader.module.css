@@ -23,7 +23,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: max(clamp(1.25rem, 4vw, 2.5rem), env(safe-area-inset-left));
+  padding-right: max(clamp(1.25rem, 4vw, 2.5rem), env(safe-area-inset-right));
   background: transparent;
   border-bottom: 1px solid transparent;
   transition:
@@ -262,7 +265,10 @@
   background: var(--v4-bg);
   border-left: 1px solid var(--v4-border);
   z-index: 59;
-  padding: clamp(1.5rem, 4vw, 2rem);
+  padding-top: clamp(1.5rem, 4vw, 2rem);
+  padding-left: clamp(1.5rem, 4vw, 2rem);
+  padding-right: max(clamp(1.5rem, 4vw, 2rem), env(safe-area-inset-right));
+  padding-bottom: max(clamp(1.5rem, 4vw, 2rem), env(safe-area-inset-bottom));
   transform: translateX(100%);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;

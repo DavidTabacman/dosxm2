@@ -10,8 +10,8 @@
 .fab {
   position: fixed;
   z-index: 55;
-  bottom: clamp(1rem, 3vw, 1.5rem);
-  right: clamp(1rem, 3vw, 1.5rem);
+  bottom: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-bottom));
+  right: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-right));
   transition:
     opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);

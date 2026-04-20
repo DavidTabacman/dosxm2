@@ -94,7 +94,7 @@ export default function V4Page() {
           name="description"
           content="DOSXM2: dos expertos que venden tu casa en Madrid con trato personal, doble compromiso y resultados demostrables."
         />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta httpEquiv="content-language" content="es" />
         <meta property="og:title" content="DOSXM2 — Elegancia cinematográfica con empatía conversacional" />
         <meta
