@@ -92,16 +92,35 @@ export default function V4StickyHeader() {
     };
   }, [menuOpen]);
 
-  // Lock body scroll while drawer is open (mobile UX).
+  // Lock body scroll while drawer is open (mobile UX). iOS Safari ignores
+  // `overflow: hidden` on <body>, so we use the fixed-position technique:
+  // pin the body with a negative `top` equal to the current scroll, and
+  // restore the scroll position on close.
   useEffect(() => {
     if (typeof document === "undefined") return;
-    if (menuOpen) {
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = prev;
-      };
-    }
+    if (!menuOpen) return;
+    const scrollY = window.scrollY;
+    const b = document.body.style;
+    const prev = {
+      position: b.position,
+      top: b.top,
+      left: b.left,
+      right: b.right,
+      overflow: b.overflow,
+    };
+    b.position = "fixed";
+    b.top = `-${scrollY}px`;
+    b.left = "0";
+    b.right = "0";
+    b.overflow = "hidden";
+    return () => {
+      b.position = prev.position;
+      b.top = prev.top;
+      b.left = prev.left;
+      b.right = prev.right;
+      b.overflow = prev.overflow;
+      window.scrollTo(0, scrollY);
+    };
   }, [menuOpen]);
 
   const handleNavClick = useCallback(

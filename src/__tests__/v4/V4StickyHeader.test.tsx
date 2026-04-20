@@ -11,6 +11,14 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  // Reset body styles touched by the scroll-lock effect so tests don't leak
+  // into each other.
+  const b = document.body.style;
+  b.position = "";
+  b.top = "";
+  b.left = "";
+  b.right = "";
+  b.overflow = "";
 });
 
 describe("V4 StickyHeader", () => {
@@ -163,5 +171,36 @@ describe("V4 StickyHeader", () => {
     const css = readV4Css("V4StickyHeader.module.css");
     const body = extractRuleBody(css, [".iconLink"]);
     assertMinTapTarget(body, ".iconLink");
+  });
+
+  test("opening the drawer applies iOS-safe fixed-position body lock", () => {
+    // Simulate a scrolled page so the lock has something to preserve.
+    Object.defineProperty(window, "scrollY", { value: 320, configurable: true });
+    const { container } = render(<V4StickyHeader />);
+    const toggle = container.querySelector(
+      "button[aria-label='Abrir menú']"
+    ) as HTMLButtonElement;
+
+    fireEvent.click(toggle);
+
+    expect(document.body.style.position).toBe("fixed");
+    expect(document.body.style.top).toBe("-320px");
+    expect(document.body.style.overflow).toBe("hidden");
+  });
+
+  test("closing the drawer restores body styles and scroll position", () => {
+    Object.defineProperty(window, "scrollY", { value: 180, configurable: true });
+    const scrollSpy = vi.spyOn(window, "scrollTo");
+    const { container } = render(<V4StickyHeader />);
+    const toggle = container.querySelector(
+      "button[aria-label='Abrir menú']"
+    ) as HTMLButtonElement;
+
+    fireEvent.click(toggle); // open
+    fireEvent.click(toggle); // close
+
+    expect(document.body.style.position).toBe("");
+    expect(document.body.style.top).toBe("");
+    expect(scrollSpy).toHaveBeenCalledWith(0, 180);
   });
 });
