@@ -1,5 +1,6 @@
 import { useCountUp } from "../shared/useCountUp";
 import { useSectionReveal } from "../shared/useSectionReveal";
+import { useSectionVisible } from "../shared/useSectionVisible";
 import styles from "./V4Metrics.module.css";
 import anim from "./v4-animations.module.css";
 
@@ -33,9 +34,15 @@ function Tile({ metric, animate }: { metric: V4Metric; animate: boolean }) {
   const { value, staticValue, prefix, suffix, label, caption, decimals = 0 } =
     metric;
 
-  // useCountUp is fire-once via internal hasAnimated ref — animation never
-  // resets even if the section re-enters the viewport (BRD 4.3 requirement).
-  const count = useCountUp(value ?? 0, 2000, animate && value !== null, decimals);
+  // replay=true so the count-up restarts every time the grid re-enters
+  // the viewport. Requested behavior: counters animate on every scroll-in.
+  const count = useCountUp(
+    value ?? 0,
+    2000,
+    animate && value !== null,
+    decimals,
+    { replay: true }
+  );
   const displayValue =
     value === null
       ? staticValue ?? ""
@@ -63,35 +70,44 @@ export default function V4Metrics({
   sub = "Lo que pasa cuando dos expertos se dedican a tu casa como si fuese la suya.",
   metrics,
 }: V4MetricsProps) {
-  // useSectionReveal is fire-once — isRevealed goes true and stays true.
-  // Lower threshold + negative bottom rootMargin so short-viewport users
-  // still trigger the count-up animation; the hook also has an
-  // already-in-view safety net for direct-link nav (/v4#resultados).
-  const [ref, isRevealed] = useSectionReveal(0.15, {
+  // Header entrance is fire-once — the editorial h2/sub should not
+  // re-slide in every time the user scrolls past and back.
+  const [headerRef, isHeaderRevealed] = useSectionReveal(0.15, {
     rootMargin: "0px 0px -10% 0px",
   });
+
+  // Grid visibility is repeatable — drives count-up replay on every
+  // viewport entry. Separate observer, separate target.
+  const [gridRef, isGridVisible] = useSectionVisible(
+    0.15,
+    "0px 0px -10% 0px"
+  );
 
   return (
     <section
       id={id}
       className={styles.section}
-      ref={ref}
       aria-labelledby="v4-metrics-heading"
     >
-      <div className={`${styles.inner} ${anim.stagger} ${isRevealed ? anim.staggerVisible : ""}`}>
-        <div>
+      <div className={styles.inner}>
+        <div
+          ref={headerRef}
+          className={`${styles.headerBlock} ${anim.stagger} ${
+            isHeaderRevealed ? anim.staggerVisible : ""
+          }`}
+        >
           <div className={styles.eyebrow}>{eyebrow}</div>
           <h2 id="v4-metrics-heading" className={styles.heading}>
             {heading}
           </h2>
           <p className={styles.sub}>{sub}</p>
         </div>
-        <div className={styles.grid}>
+        <div ref={gridRef} className={styles.grid}>
           {metrics.map((metric) => (
             <Tile
               key={metric.label}
               metric={metric}
-              animate={isRevealed}
+              animate={isGridVisible}
             />
           ))}
         </div>

@@ -17,6 +17,13 @@
   margin: 0 auto;
 }
 
+/* Header block owns the editorial stagger entrance. Kept separate from
+   the grid so the counters can independently replay on scroll-in without
+   dragging the heading's slide-up with them. */
+.headerBlock {
+  margin-bottom: 0;
+}
+
 .heading {
   font-family: var(--v4-font-serif);
   font-weight: 400;

@@ -27,7 +27,8 @@ describe("useCountUp", () => {
     expect(result.current).toBe(45);
   });
 
-  test("does not re-animate after trigger changes from true to false and back", () => {
+  test("does not re-animate after trigger changes from true to false and back (default fire-once)", () => {
+    // Regression guard for V1/V2/V3 callers that rely on fire-once.
     const { result, rerender } = renderHook(
       ({ trigger }) => useCountUp(100, 2000, trigger),
       { initialProps: { trigger: true } }
@@ -51,5 +52,100 @@ describe("useCountUp", () => {
     const { result } = renderHook(() => useCountUp(50, 2000, true));
     // Before any RAF fires, value is 0
     expect(result.current).toBe(0);
+  });
+
+  describe("replay option", () => {
+    test("resets value to 0 when trigger goes false", () => {
+      const { result, rerender } = renderHook(
+        ({ trigger }) =>
+          useCountUp(45, 2000, trigger, 0, { replay: true }),
+        { initialProps: { trigger: true } }
+      );
+      act(() => {
+        vi.advanceTimersByTime(2100);
+      });
+      expect(result.current).toBe(45);
+
+      rerender({ trigger: false });
+      // Effect runs and resets value to 0
+      expect(result.current).toBe(0);
+    });
+
+    test("restarts animation on true → false → true cycle", () => {
+      const { result, rerender } = renderHook(
+        ({ trigger }) =>
+          useCountUp(45, 2000, trigger, 0, { replay: true }),
+        { initialProps: { trigger: true } }
+      );
+      act(() => {
+        vi.advanceTimersByTime(2100);
+      });
+      expect(result.current).toBe(45);
+
+      // Scroll out
+      rerender({ trigger: false });
+      expect(result.current).toBe(0);
+
+      // Scroll back in — animation restarts
+      rerender({ trigger: true });
+      act(() => {
+        vi.advanceTimersByTime(2100);
+      });
+      expect(result.current).toBe(45);
+    });
+
+    test("multiple cycles all animate cleanly (not fire-once)", () => {
+      const { result, rerender } = renderHook(
+        ({ trigger }) =>
+          useCountUp(30, 2000, trigger, 0, { replay: true }),
+        { initialProps: { trigger: true } }
+      );
+
+      for (let cycle = 0; cycle < 3; cycle++) {
+        act(() => {
+          vi.advanceTimersByTime(2100);
+        });
+        expect(result.current).toBe(30);
+        rerender({ trigger: false });
+        expect(result.current).toBe(0);
+        rerender({ trigger: true });
+      }
+    });
+
+    test("staying at trigger=true after completion does NOT restart (no infinite loop)", () => {
+      const { result, rerender } = renderHook(
+        ({ end }) => useCountUp(end, 2000, true, 0, { replay: true }),
+        { initialProps: { end: 45 } }
+      );
+      act(() => {
+        vi.advanceTimersByTime(2100);
+      });
+      expect(result.current).toBe(45);
+
+      // Rerender without toggling trigger — animation should not restart.
+      rerender({ end: 45 });
+      expect(result.current).toBe(45);
+    });
+
+    test("respects decimals during replay runs", () => {
+      const { result, rerender } = renderHook(
+        ({ trigger }) =>
+          useCountUp(12.5, 2000, trigger, 1, { replay: true }),
+        { initialProps: { trigger: true } }
+      );
+      act(() => {
+        vi.advanceTimersByTime(2100);
+      });
+      expect(result.current).toBe(12.5);
+
+      rerender({ trigger: false });
+      expect(result.current).toBe(0);
+
+      rerender({ trigger: true });
+      act(() => {
+        vi.advanceTimersByTime(2100);
+      });
+      expect(result.current).toBe(12.5);
+    });
   });
 });

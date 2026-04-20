@@ -2,10 +2,18 @@ import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { render, act } from "@testing-library/react";
 import V4Metrics from "@/components/v4/V4Metrics";
 
-// Mock the section-reveal hook so tests don't depend on IntersectionObserver
-// or scroll position. The hook is unit-tested separately in shared/.
+// V4Metrics uses TWO visibility hooks:
+// - useSectionReveal (fire-once) for the editorial header block
+// - useSectionVisible (repeatable) for the counter grid
+// Tests control each independently via shared mutable refs.
+const headerRevealedRef = { current: true };
 vi.mock("@/components/shared/useSectionReveal", () => ({
-  useSectionReveal: () => [() => {}, true],
+  useSectionReveal: () => [() => {}, headerRevealedRef.current],
+}));
+
+const gridVisibleRef = { current: true };
+vi.mock("@/components/shared/useSectionVisible", () => ({
+  useSectionVisible: () => [() => {}, gridVisibleRef.current],
 }));
 
 const METRICS = [
@@ -22,6 +30,8 @@ const METRICS = [
 describe("V4 Metrics", () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    headerRevealedRef.current = true;
+    gridVisibleRef.current = true;
   });
 
   afterEach(() => {
@@ -63,7 +73,6 @@ describe("V4 Metrics", () => {
   test("numeric metrics animate to final value after count-up duration", () => {
     const { container } = render(<V4Metrics metrics={METRICS} />);
 
-    // Drive the count-up RAF loop to completion (2000ms duration + buffer).
     act(() => {
       vi.advanceTimersByTime(2200);
     });
@@ -91,15 +100,14 @@ describe("V4 Metrics", () => {
 
   test("renders exactly one tile per metric", () => {
     const { container } = render(<V4Metrics metrics={METRICS} />);
-    const grid = container.querySelector("section")!.querySelector("div > div:last-child");
-    const tiles = grid?.children ?? [];
-    expect(tiles.length).toBe(METRICS.length);
+    // Grid is the second child of .inner (header block is first).
+    const inner = container.querySelector("section")!.firstElementChild!;
+    const grid = inner.children[inner.children.length - 1];
+    expect(grid.children.length).toBe(METRICS.length);
   });
 
-  test("count-up does NOT reset when the component re-renders", () => {
-    // Regression for BRD 4.3: once counted, the numbers stay fixed —
-    // rerender of the parent (e.g. surrounding page state change) must
-    // not restart the animation from zero.
+  test("count-up resets to 0 when the grid leaves the viewport", () => {
+    gridVisibleRef.current = true;
     const { container, rerender } = render(<V4Metrics metrics={METRICS} />);
     act(() => {
       vi.advanceTimersByTime(2200);
@@ -107,9 +115,52 @@ describe("V4 Metrics", () => {
     expect(container.textContent).toContain("30");
     expect(container.textContent).toContain("100");
 
+    gridVisibleRef.current = false;
     rerender(<V4Metrics metrics={METRICS} />);
-    // No further timer advance — numbers must still read the final value.
+    act(() => {
+      vi.advanceTimersByTime(0);
+    });
+    expect(container.textContent).not.toContain("30");
+    expect(container.textContent).not.toContain("100");
+  });
+
+  test("count-up replays on every re-entry (not fire-once)", () => {
+    gridVisibleRef.current = true;
+    const { container, rerender } = render(<V4Metrics metrics={METRICS} />);
+    act(() => {
+      vi.advanceTimersByTime(2200);
+    });
+    expect(container.textContent).toContain("30");
+
+    gridVisibleRef.current = false;
+    rerender(<V4Metrics metrics={METRICS} />);
+    act(() => {
+      vi.advanceTimersByTime(0);
+    });
+
+    gridVisibleRef.current = true;
+    rerender(<V4Metrics metrics={METRICS} />);
+    act(() => {
+      vi.advanceTimersByTime(2200);
+    });
     expect(container.textContent).toContain("30");
     expect(container.textContent).toContain("100");
+  });
+
+  test("header block stays revealed across grid visibility toggles (header is fire-once)", () => {
+    // Header should NOT re-animate on scroll-in — only the counters should.
+    headerRevealedRef.current = true;
+    gridVisibleRef.current = true;
+
+    const { container, rerender } = render(<V4Metrics metrics={METRICS} />);
+    const initialHeader = container.querySelector("h2")?.parentElement;
+    expect(initialHeader?.className).toMatch(/staggerVisible/);
+
+    // Simulate grid scrolling out (counter replay resets), but header
+    // reveal is fire-once so it stays revealed.
+    gridVisibleRef.current = false;
+    rerender(<V4Metrics metrics={METRICS} />);
+    const afterHeader = container.querySelector("h2")?.parentElement;
+    expect(afterHeader?.className).toMatch(/staggerVisible/);
   });
 });
