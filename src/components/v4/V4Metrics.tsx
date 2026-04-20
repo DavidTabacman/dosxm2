@@ -24,7 +24,6 @@ export interface V4Metric {
 
 export interface V4MetricsProps {
   id?: string;
-  eyebrow?: string;
   heading?: string;
   sub?: string;
   metrics: ReadonlyArray<V4Metric>;
@@ -65,7 +64,6 @@ function Tile({ metric, animate }: { metric: V4Metric; animate: boolean }) {
 
 export default function V4Metrics({
   id = "resultados",
-  eyebrow = "Resultados",
   heading = "Números que hablan por sí solos.",
   sub = "Lo que pasa cuando dos expertos se dedican a tu casa como si fuese la suya.",
   metrics,
@@ -96,7 +94,6 @@ export default function V4Metrics({
             isHeaderRevealed ? anim.staggerVisible : ""
           }`}
         >
-          <div className={styles.eyebrow}>{eyebrow}</div>
           <h2 id="v4-metrics-heading" className={styles.heading}>
             {heading}
           </h2>

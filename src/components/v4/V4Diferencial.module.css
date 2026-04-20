@@ -33,16 +33,6 @@
   max-width: 560px;
 }
 
-.eyebrow {
-  font-family: var(--v4-font-sans);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: var(--v4-accent);
-  margin-bottom: 1rem;
-  font-weight: 600;
-}
-
 .heading {
   font-family: var(--v4-font-serif);
   font-weight: 400;

@@ -116,20 +116,6 @@
   }
 }
 
-.eyebrow {
-  font-family: var(--v4-font-sans);
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.75);
-  margin-bottom: 1.25rem;
-  padding: 0.375rem 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 999px;
-  background: rgba(28, 28, 28, 0.28);
-  backdrop-filter: blur(4px);
-}
-
 .heading {
   font-family: var(--v4-font-serif);
   font-weight: 400;
@@ -284,12 +270,6 @@
   .panelRight .sub {
     color: var(--v4-muted-strong);
     text-shadow: none;
-  }
-
-  .panelRight .eyebrow {
-    color: var(--v4-muted-strong);
-    border-color: var(--v4-border-strong);
-    background: var(--v4-surface-elevated);
   }
 
   .scrollHint {

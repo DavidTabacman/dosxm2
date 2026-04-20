@@ -110,7 +110,6 @@ export default function V4Historias({
           isRevealed ? anim.revealTargetVisible : ""
         }`}
       >
-        <div className={styles.eyebrow}>Historias Vendidas</div>
         <h2 id="v4-historias-heading" className={styles.heading}>
           Cada casa tiene{" "}
           <span className={styles.headingAccent}>su historia.</span>

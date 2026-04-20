@@ -139,7 +139,6 @@ export default function V4Resenas({
           isHeaderRevealed ? anim.revealTargetVisible : ""
         }`}
       >
-        <div className={styles.eyebrow}>Prueba Social</div>
         <h2 id="v4-resenas-heading" className={styles.heading}>
           Lo que dicen{" "}
           <span className={styles.headingAccent}>nuestros clientes.</span>

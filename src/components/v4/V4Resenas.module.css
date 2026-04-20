@@ -16,16 +16,6 @@
   text-align: center;
 }
 
-.eyebrow {
-  font-family: var(--v4-font-sans);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  color: var(--v4-accent);
-  font-weight: 600;
-  margin-bottom: 0.875rem;
-}
-
 .heading {
   font-family: var(--v4-font-serif);
   font-weight: 400;

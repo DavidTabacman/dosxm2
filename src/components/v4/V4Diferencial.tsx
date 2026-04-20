@@ -42,7 +42,6 @@ export default function V4Diferencial({
             isRevealed ? anim.staggerVisible : ""
           }`}
         >
-          <div className={styles.eyebrow}>Por qué DOSXM2</div>
           <h2 id="v4-diferencial-heading" className={styles.heading}>
             Dos visiones,{" "}
             <span className={styles.headingAccent}>un único objetivo.</span>

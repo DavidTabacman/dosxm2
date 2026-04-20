@@ -158,7 +158,6 @@ export default function V4HeroSplit() {
       {/* Text layer — desktop: single overlay on the dark (left) panel.
          mobile: stacked under each panel via CSS. */}
       <div className={styles.textLayer}>
-        <span className={styles.eyebrow}>Inmobiliaria Madrid</span>
         <h1 className={styles.heading}>
           Detrás de cada casa hay{" "}
           <span className={styles.headingAccent}>una historia.</span>

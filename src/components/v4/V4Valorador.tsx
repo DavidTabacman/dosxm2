@@ -229,7 +229,6 @@ export default function V4Valorador({
           sectionRevealed ? anim.staggerVisible : ""
         }`}
       >
-        <div className={styles.eyebrow}>Valorador</div>
         <h2 id="v4-valorador-heading" className={styles.heading}>
           Cuéntanos sobre tu casa{" "}
           <span className={styles.headingAccent}>en menos de un minuto.</span>
