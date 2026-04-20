@@ -2,6 +2,9 @@ import { expect, test, describe } from "vitest";
 import { render } from "@testing-library/react";
 import V4Footer from "@/components/v4/V4Footer";
 import { V4_NAV_LINKS } from "@/components/v4/V4StickyHeader";
+import { readV4Css } from "../utils/readCss";
+import { contrastRatio, flattenRgba } from "../utils/contrast";
+import { extractRuleBody, assertMinTapTarget, assertMinHeight44 } from "../utils/touchTargets";
 
 describe("V4 Footer", () => {
   test("renders as a contentinfo landmark", () => {
@@ -54,5 +57,38 @@ describe("V4 Footer", () => {
     const year = String(new Date().getFullYear());
     expect(container.textContent).toContain(year);
     expect(container.textContent).toContain("DOSXM2");
+  });
+
+  test("block h3 uses the primary on-dark text color (not raw accent) for AA contrast", () => {
+    const css = readV4Css("V4Footer.module.css");
+    const body = extractRuleBody(css, [".block h3"]);
+    expect(body).not.toBeNull();
+    expect(body!).toMatch(/color:\s*var\(--v4-on-dark-primary\)/);
+  });
+
+  test("--v4-on-dark-primary flattened on carbón profundo meets AA 4.5:1", () => {
+    const ratio = contrastRatio(
+      flattenRgba("rgba(250, 249, 246, 0.95)", "#1c1c1c"),
+      "#1c1c1c"
+    );
+    expect(ratio).toBeGreaterThanOrEqual(4.5);
+  });
+
+  test(".linkList a meets the 44px min-height tap target", () => {
+    const css = readV4Css("V4Footer.module.css");
+    const body = extractRuleBody(css, [".linkList", "a"]);
+    assertMinHeight44(body, ".linkList a");
+  });
+
+  test(".contactSocials .iconLink meets 44x44 tap target", () => {
+    const css = readV4Css("V4Footer.module.css");
+    const body = extractRuleBody(css, [".contactSocials", ".iconLink"]);
+    assertMinTapTarget(body, ".contactSocials .iconLink");
+  });
+
+  test("footer responsive breakpoint is 768 (aligned with hamburger cutover)", () => {
+    const css = readV4Css("V4Footer.module.css");
+    expect(css).toMatch(/@media\s*\(max-width:\s*768px\)/);
+    expect(css).not.toMatch(/max-width:\s*820px/);
   });
 });
