@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { InstagramIcon, TikTokIcon } from "../shared/SocialIcons";
 import styles from "./V4StickyHeader.module.css";
 
 export const V4_NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
@@ -8,6 +9,11 @@ export const V4_NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
   { href: "#resenas", label: "Reseñas" },
   { href: "#valorador", label: "Valorador" },
 ];
+
+export const V4_SOCIAL_URLS = {
+  instagram: "https://www.instagram.com/dosxm2/",
+  tiktok: "https://www.tiktok.com/@dosxm2",
+} as const;
 
 function scrollToAnchor(hash: string) {
   if (typeof document === "undefined") return;
@@ -153,6 +159,27 @@ export default function V4StickyHeader() {
           ))}
         </nav>
 
+        <div className={styles.headerSocials} aria-label="Redes sociales">
+          <a
+            className={styles.iconLink}
+            href={V4_SOCIAL_URLS.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram de DOSXM2"
+          >
+            <InstagramIcon />
+          </a>
+          <a
+            className={styles.iconLink}
+            href={V4_SOCIAL_URLS.tiktok}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok de DOSXM2"
+          >
+            <TikTokIcon />
+          </a>
+        </div>
+
         <button
           ref={toggleButtonRef}
           type="button"
@@ -192,6 +219,29 @@ export default function V4StickyHeader() {
             {link.label}
           </a>
         ))}
+
+        <div className={styles.drawerSocials} aria-label="Redes sociales">
+          <a
+            className={styles.iconLink}
+            href={V4_SOCIAL_URLS.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram de DOSXM2"
+            tabIndex={menuOpen ? 0 : -1}
+          >
+            <InstagramIcon />
+          </a>
+          <a
+            className={styles.iconLink}
+            href={V4_SOCIAL_URLS.tiktok}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok de DOSXM2"
+            tabIndex={menuOpen ? 0 : -1}
+          >
+            <TikTokIcon />
+          </a>
+        </div>
       </div>
     </>
   );

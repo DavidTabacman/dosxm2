@@ -117,6 +117,67 @@
   border-radius: 4px;
 }
 
+/* Social icons — desktop header & mobile drawer */
+.headerSocials {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+  padding-left: clamp(1rem, 2vw, 1.5rem);
+  margin-left: clamp(0.5rem, 1.5vw, 1rem);
+}
+
+.headerSocials::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 16px;
+  background: currentColor;
+  opacity: 0.25;
+}
+
+.iconLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  padding: 0.375rem;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+
+.iconLink:hover,
+.iconLink:focus-visible {
+  color: var(--v4-accent);
+}
+
+.headerSolid .iconLink:hover,
+.headerSolid .iconLink:focus-visible {
+  color: var(--v4-accent-strong);
+}
+
+.iconLink:focus-visible {
+  outline: 2px solid var(--v4-accent);
+  outline-offset: 4px;
+}
+
+.iconLink svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.drawerSocials {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--v4-border);
+}
+
 /* Mobile hamburger */
 .menuToggle {
   display: none;
@@ -228,7 +289,8 @@
 
 /* Responsive switch */
 @media (max-width: 768px) {
-  .nav {
+  .nav,
+  .headerSocials {
     display: none;
   }
 
@@ -241,7 +303,8 @@
   .header,
   .drawer,
   .drawerBackdrop,
-  .navLink::after {
+  .navLink::after,
+  .iconLink {
     transition: none;
   }
 }

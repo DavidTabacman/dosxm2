@@ -70,6 +70,10 @@ const METRICS = [
 const DOSXM2_PHONE = "34600000000"; // placeholder — swap with real number at launch
 const BORJA_PHONE = "34667006662";
 const PABLO_PHONE = "34674527410";
+const FOUNDERS = [
+  { name: "Borja", phone: BORJA_PHONE },
+  { name: "Pablo", phone: PABLO_PHONE },
+] as const;
 const WA_MESSAGE =
   "Hola DOSXM2, quiero información sobre cómo vender mi casa en Madrid.";
 
@@ -112,7 +116,7 @@ export default function V4Page() {
         <V4Historias />
         <V4Resenas />
         <V4Valorador whatsappUrl={whatsappUrl} />
-        <V4Footer whatsappUrl={whatsappUrl} />
+        <V4Footer whatsappUrl={whatsappUrl} founders={FOUNDERS} />
         <V4WhatsAppFAB
           founderAPhone={BORJA_PHONE}
           founderBPhone={PABLO_PHONE}
