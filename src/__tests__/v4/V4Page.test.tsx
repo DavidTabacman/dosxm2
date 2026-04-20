@@ -99,6 +99,15 @@ describe("V4 Page (integration)", () => {
     expect(fabLink).not.toBeNull();
   });
 
+  test("Fraunces loads only weight 400 to trim ~30KB gzip (P3-1)", () => {
+    // The Fraunces stub doesn't expose the weight option — this is a source
+    // read against src/pages/v4.tsx to guard the trim.
+    const { readFileSync } = eval("require('fs')") as typeof import("fs");
+    const { resolve } = eval("require('path')") as typeof import("path");
+    const src = readFileSync(resolve(process.cwd(), "src/pages/v4.tsx"), "utf8");
+    expect(src).toMatch(/Fraunces\(\s*{[^}]*weight:\s*\[\s*"400"\s*\]/);
+  });
+
   test("declares viewport meta with viewport-fit=cover for safe-area support", () => {
     // React 19 hoists <meta> into document.head automatically; the next/head
     // mock renders children as a fragment, so the viewport meta lands there.

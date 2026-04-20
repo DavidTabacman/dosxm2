@@ -20,7 +20,7 @@ import { buildWhatsAppUrl } from "@/components/shared/whatsApp";
 const fraunces = Fraunces({
   variable: "--font-v4-serif",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400"],
   style: ["normal", "italic"],
   display: "swap",
 });
