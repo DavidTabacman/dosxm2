@@ -287,3 +287,17 @@
     transition: none;
   }
 }
+
+/* Users with prefers-reduced-data opt into lower-bandwidth UIs; we hide
+   the decorative hero videos and fill with a solid surface instead. */
+@media (prefers-reduced-data: reduce) {
+  .panelLeft video.panelBg,
+  .panelRight video.panelBg {
+    display: none;
+  }
+
+  .panelLeft,
+  .panelRight {
+    background: var(--v4-surface-elevated);
+  }
+}

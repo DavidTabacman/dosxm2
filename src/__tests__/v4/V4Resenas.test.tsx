@@ -182,6 +182,11 @@ describe("V4 Resenas", () => {
     );
   });
 
+  test("Resenas CSS declares a prefers-reduced-data branch", () => {
+    const css = readV4Css("V4Resenas.module.css");
+    expect(css).toMatch(/@media \(prefers-reduced-data:\s*reduce\)/);
+  });
+
   test("chat log keeps role=log but drops aria-live=polite to avoid announcement cascade", () => {
     const { container } = render(<V4Resenas />);
     const log = container.querySelector("[role='log']");

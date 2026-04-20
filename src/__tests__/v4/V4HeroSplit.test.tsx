@@ -143,6 +143,11 @@ describe("V4 HeroSplit", () => {
     expect(css).toContain("100vh");
   });
 
+  test("hero CSS declares a prefers-reduced-data branch that hides videos", () => {
+    const css = readV4Css("V4HeroSplit.module.css");
+    expect(css).toMatch(/@media \(prefers-reduced-data:\s*reduce\)/);
+  });
+
   test("heading line-height relaxed for accented Spanish glyphs", () => {
     const css = readV4Css("V4HeroSplit.module.css");
     // Match the heading rule body and look for line-height >= 1.08.

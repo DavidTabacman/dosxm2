@@ -215,3 +215,19 @@
     letter-spacing: 0.08em;
   }
 }
+
+/* Under prefers-reduced-data, collapse the cascade: show all bubbles at
+   once with no slide/typing animation. No data is saved (CSS only), but
+   it matches the low-motion, low-spectacle spirit users have opted into. */
+@media (prefers-reduced-data: reduce) {
+  .slideLeft,
+  .slideRight {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .typingDot {
+    animation: none;
+  }
+}
