@@ -20,6 +20,41 @@
   --v4-muted: rgba(28, 28, 28, 0.62);
   --v4-muted-strong: rgba(28, 28, 28, 0.78);
 
+  /* Error token — darker than the original rose for 6:1 contrast on the
+     warm paper background. */
+  --v4-error: #a8371f;
+  --v4-error-soft: rgba(168, 55, 31, 0.1);
+
+  /* Warm accent family — reused in hero/historias/resenas instead of
+     per-file hex literals. */
+  --v4-accent-warm: #e9c996;
+  --v4-accent-cream: #f3e3c9;
+
+  /* Text-on-dark + text-on-accent scale. Flattened over the dark carbon
+     base these meet AA/AAA per WCAG. */
+  --v4-on-accent: #ffffff;
+  --v4-on-dark-primary: rgba(250, 249, 246, 0.95);
+  --v4-on-dark-secondary: rgba(250, 249, 246, 0.75);
+  --v4-on-dark-tertiary: rgba(250, 249, 246, 0.55);
+  --v4-on-dark-hairline: rgba(250, 249, 246, 0.12);
+  /* Translucent paper — used for the sticky header solid-scroll background
+     so the blur filter can shine through. */
+  --v4-bg-translucent: rgba(250, 249, 246, 0.92);
+
+  /* Decorative veil stops for hero panel gradients. Keep these separate
+     from the on-dark text scale so downstream refactors don't accidentally
+     re-purpose them for body copy (contrast-checked text). */
+  --v4-veil-paper-strong: rgba(250, 249, 246, 0.55);
+  --v4-veil-paper-mid: rgba(250, 249, 246, 0.25);
+  --v4-veil-paper-faint: rgba(250, 249, 246, 0.05);
+
+  /* Type-scale tokens — single source of truth for the V4 headings.
+     Raw clamp() values in sections are replaced with these. */
+  --v4-type-display: clamp(2.5rem, 6.5vw, 5.25rem);
+  --v4-type-h1: clamp(2rem, 4.5vw, 3.5rem);
+  --v4-type-h2: clamp(2rem, 4.5vw, 3.25rem);
+  --v4-type-metric: clamp(2.75rem, 7.5vw, 5.25rem);
+
   /* Layout tokens */
   --v4-header-h: 64px;
   --v4-fab-size: 52px;

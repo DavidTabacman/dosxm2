@@ -215,4 +215,13 @@ describe("V4 Valorador", () => {
     expect(progress?.getAttribute("aria-valuemin")).toBe("0");
     expect(progress?.getAttribute("aria-valuenow")).toBe("1");
   });
+
+  test("select step wraps the <select> in a .selectWrap for mask-chevron", () => {
+    const { container } = render(<V4Valorador />);
+    nextStep(container, "Chamberí"); // advance to select step
+    const wrap = container.querySelector("[class*='selectWrap']");
+    expect(wrap).not.toBeNull();
+    const selectInside = wrap!.querySelector("select");
+    expect(selectInside).not.toBeNull();
+  });
 });

@@ -36,7 +36,7 @@
 .heading {
   font-family: var(--v4-font-serif);
   font-weight: 400;
-  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-size: var(--v4-type-h1);
   line-height: 1.1;
   letter-spacing: -0.01em;
   margin: 0 0 1.25rem;
@@ -140,7 +140,7 @@
   left: 0.875rem;
   bottom: 0.75rem;
   right: 0.875rem;
-  color: #ffffff;
+  color: var(--v4-on-accent);
   font-family: var(--v4-font-sans);
   font-size: 0.75rem;
   font-weight: 600;

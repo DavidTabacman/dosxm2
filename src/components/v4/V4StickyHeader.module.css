@@ -34,7 +34,7 @@
     backdrop-filter 0.35s ease,
     border-color 0.35s ease,
     box-shadow 0.35s ease;
-  color: #ffffff;
+  color: var(--v4-on-accent);
   font-family: var(--v4-font-sans);
 }
 
@@ -53,7 +53,7 @@
 }
 
 .headerSolid {
-  background-color: rgba(250, 249, 246, 0.92);
+  background-color: var(--v4-bg-translucent);
   backdrop-filter: saturate(140%) blur(10px);
   -webkit-backdrop-filter: saturate(140%) blur(10px);
   border-bottom-color: var(--v4-border);

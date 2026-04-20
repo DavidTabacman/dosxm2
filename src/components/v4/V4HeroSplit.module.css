@@ -13,7 +13,7 @@
   min-height: 100svh;
   overflow: hidden;
   background: var(--v4-fg);
-  color: #ffffff;
+  color: var(--v4-on-accent);
 }
 
 /* Background panels */
@@ -88,9 +88,9 @@
 .panelRight::after {
   background: linear-gradient(
     240deg,
-    rgba(250, 249, 246, 0.55) 0%,
-    rgba(250, 249, 246, 0.25) 55%,
-    rgba(250, 249, 246, 0.05) 100%
+    var(--v4-veil-paper-strong) 0%,
+    var(--v4-veil-paper-mid) 55%,
+    var(--v4-veil-paper-faint) 100%
   );
 }
 
@@ -122,17 +122,17 @@
 .heading {
   font-family: var(--v4-font-serif);
   font-weight: 400;
-  font-size: clamp(2.5rem, 6.5vw, 5.25rem);
+  font-size: var(--v4-type-display);
   line-height: 1.08;
   letter-spacing: -0.015em;
   margin: 0;
-  color: #ffffff;
+  color: var(--v4-on-accent);
   text-shadow: 0 2px 28px rgba(0, 0, 0, 0.45);
 }
 
 .headingAccent {
   font-style: italic;
-  color: #f3e3c9;
+  color: var(--v4-accent-cream);
 }
 
 .sub {
@@ -157,7 +157,7 @@
   align-items: center;
   gap: 0.5rem;
   background: var(--v4-accent);
-  color: #ffffff;
+  color: var(--v4-on-accent);
   font-family: var(--v4-font-sans);
   font-weight: 600;
   font-size: 0.95rem;
@@ -177,7 +177,7 @@
 }
 
 .cta:focus-visible {
-  outline: 2px solid #ffffff;
+  outline: 2px solid var(--v4-on-accent);
   outline-offset: 3px;
 }
 

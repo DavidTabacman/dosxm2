@@ -19,7 +19,7 @@
 .heading {
   font-family: var(--v4-font-serif);
   font-weight: 400;
-  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  font-size: var(--v4-type-h2);
   line-height: 1.1;
   letter-spacing: -0.01em;
   margin: 0 0 0.75rem;
@@ -111,7 +111,7 @@
 }
 
 .rowRight .senderName {
-  color: #e9c996;
+  color: var(--v4-accent-warm);
 }
 
 .location {
@@ -124,7 +124,7 @@
 }
 
 .rowRight .location {
-  color: rgba(250, 249, 246, 0.55);
+  color: var(--v4-on-dark-tertiary);
 }
 
 .message {
@@ -144,7 +144,7 @@
 }
 
 .rowRight .time {
-  color: rgba(250, 249, 246, 0.55);
+  color: var(--v4-on-dark-tertiary);
 }
 
 /* Typing indicator */
@@ -176,7 +176,7 @@
 }
 
 .rowRight .typingDot {
-  background: rgba(250, 249, 246, 0.75);
+  background: var(--v4-on-dark-secondary);
 }
 
 .typingDot:nth-child(2) { animation-delay: 0.2s; }

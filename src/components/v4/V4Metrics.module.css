@@ -39,7 +39,7 @@
   font-family: var(--v4-font-sans);
   font-size: clamp(0.9375rem, 1.55vw, 1rem);
   line-height: 1.6;
-  color: rgba(250, 249, 246, 0.72);
+  color: var(--v4-on-dark-secondary);
   margin: 0 0 clamp(2.5rem, 6vw, 4rem);
   max-width: 48ch;
 }
@@ -62,7 +62,7 @@
   flex-direction: column;
   gap: 0.75rem;
   padding-top: 1.25rem;
-  border-top: 1px solid rgba(250, 249, 246, 0.12);
+  border-top: 1px solid var(--v4-on-dark-hairline);
   position: relative;
 }
 
@@ -83,7 +83,7 @@
 .value {
   font-family: var(--v4-font-sans);
   font-weight: 600;
-  font-size: clamp(2.75rem, 7.5vw, 5.25rem);
+  font-size: var(--v4-type-metric);
   line-height: 1;
   color: var(--v4-bg);
   letter-spacing: -0.03em;
@@ -101,14 +101,14 @@
   font-size: clamp(0.8125rem, 1.4vw, 0.95rem);
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: rgba(250, 249, 246, 0.75);
+  color: var(--v4-on-dark-secondary);
   font-weight: 500;
 }
 
 .caption {
   font-family: var(--v4-font-sans);
   font-size: 0.8125rem;
-  color: rgba(250, 249, 246, 0.5);
+  color: var(--v4-on-dark-tertiary);
   line-height: 1.5;
   max-width: 26ch;
 }

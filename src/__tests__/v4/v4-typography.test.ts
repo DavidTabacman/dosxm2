@@ -30,6 +30,46 @@ const SERIF_CLASSES = [
   "tagline",
 ];
 
+describe("V4 type-scale token adoption (Phase 4)", () => {
+  function readCss(name: string) {
+    return readFileSync(resolve(V4_COMPONENTS_DIR, name), "utf-8");
+  }
+
+  test("Hero heading uses --v4-type-display", () => {
+    const css = readCss("V4HeroSplit.module.css");
+    expect(css).toMatch(
+      /\.heading\s*{[^}]*font-size:\s*var\(--v4-type-display\)/
+    );
+  });
+
+  test("Diferencial heading uses --v4-type-h1", () => {
+    const css = readCss("V4Diferencial.module.css");
+    expect(css).toMatch(/\.heading\s*{[^}]*font-size:\s*var\(--v4-type-h1\)/);
+  });
+
+  test("Historias heading uses --v4-type-h2", () => {
+    const css = readCss("V4Historias.module.css");
+    expect(css).toMatch(/\.heading\s*{[^}]*font-size:\s*var\(--v4-type-h2\)/);
+  });
+
+  test("Resenas heading uses --v4-type-h2", () => {
+    const css = readCss("V4Resenas.module.css");
+    expect(css).toMatch(/\.heading\s*{[^}]*font-size:\s*var\(--v4-type-h2\)/);
+  });
+
+  test("Valorador heading uses --v4-type-h2", () => {
+    const css = readCss("V4Valorador.module.css");
+    expect(css).toMatch(/\.heading\s*{[^}]*font-size:\s*var\(--v4-type-h2\)/);
+  });
+
+  test("Metrics value uses --v4-type-metric", () => {
+    const css = readCss("V4Metrics.module.css");
+    expect(css).toMatch(
+      /\.value\s*{[^}]*font-size:\s*var\(--v4-type-metric\)/
+    );
+  });
+});
+
 describe("V4 typography (BRD 2.2)", () => {
   const cssFiles = readdirSync(V4_COMPONENTS_DIR).filter((f) =>
     f.endsWith(".module.css")

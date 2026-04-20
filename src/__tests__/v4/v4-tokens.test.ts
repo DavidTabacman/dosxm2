@@ -28,6 +28,40 @@ describe("V4 design tokens (BRD 2.1)", () => {
   test("defines a sticky-header height token", () => {
     expect(css).toMatch(/--v4-header-h/);
   });
+
+  test("declares --v4-error at AA-capable strength", () => {
+    expect(css).toMatch(/--v4-error:\s*#a8371f/i);
+  });
+
+  test("declares --v4-error-soft focus-ring scaffold", () => {
+    expect(css).toMatch(/--v4-error-soft:\s*rgba\(168,\s*55,\s*31,\s*0\.1\)/);
+  });
+
+  test("declares --v4-accent-warm cream family token", () => {
+    expect(css).toMatch(/--v4-accent-warm:\s*#e9c996/i);
+  });
+
+  test("declares --v4-accent-cream italic-accent token", () => {
+    expect(css).toMatch(/--v4-accent-cream:\s*#f3e3c9/i);
+  });
+
+  test("declares --v4-on-accent white text-over-accent token", () => {
+    expect(css).toMatch(/--v4-on-accent:\s*#ffffff/i);
+  });
+
+  test("declares the on-dark text scale (primary/secondary/tertiary)", () => {
+    expect(css).toMatch(/--v4-on-dark-primary:\s*rgba\(250,\s*249,\s*246,\s*0\.95\)/);
+    expect(css).toMatch(/--v4-on-dark-secondary:\s*rgba\(250,\s*249,\s*246,\s*0\.75\)/);
+    expect(css).toMatch(/--v4-on-dark-tertiary:\s*rgba\(250,\s*249,\s*246,\s*0\.55\)/);
+    expect(css).toMatch(/--v4-on-dark-hairline:\s*rgba\(250,\s*249,\s*246,\s*0\.12\)/);
+  });
+
+  test("declares type-scale tokens (display/h1/h2/metric)", () => {
+    expect(css).toMatch(/--v4-type-display:\s*clamp\(2\.5rem,\s*6\.5vw,\s*5\.25rem\)/);
+    expect(css).toMatch(/--v4-type-h1:\s*clamp\(2rem,\s*4\.5vw,\s*3\.5rem\)/);
+    expect(css).toMatch(/--v4-type-h2:\s*clamp\(2rem,\s*4\.5vw,\s*3\.25rem\)/);
+    expect(css).toMatch(/--v4-type-metric:\s*clamp\(2\.75rem,\s*7\.5vw,\s*5\.25rem\)/);
+  });
 });
 
 describe("V4 animation primitives (motion-first pattern)", () => {

@@ -261,23 +261,25 @@ export default function V4Valorador({
             </label>
 
             {step.type === "select" ? (
-              <select
-                id={`v4-step-${step.id}`}
-                className={`${styles.select} ${shakeField ? styles.shake : ""}`}
-                value={answers[currentStep]}
-                onChange={(e) => handleChange(e.target.value)}
-                aria-invalid={hasError || undefined}
-                aria-describedby={hasError ? "v4-step-error" : undefined}
-              >
-                <option value="" disabled>
-                  Selecciona una opción
-                </option>
-                {step.options?.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
+              <div className={styles.selectWrap}>
+                <select
+                  id={`v4-step-${step.id}`}
+                  className={`${styles.select} ${shakeField ? styles.shake : ""}`}
+                  value={answers[currentStep]}
+                  onChange={(e) => handleChange(e.target.value)}
+                  aria-invalid={hasError || undefined}
+                  aria-describedby={hasError ? "v4-step-error" : undefined}
+                >
+                  <option value="" disabled>
+                    Selecciona una opción
                   </option>
-                ))}
-              </select>
+                  {step.options?.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              </div>
             ) : step.type === "textarea" ? (
               <textarea
                 id={`v4-step-${step.id}`}
