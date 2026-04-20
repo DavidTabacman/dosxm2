@@ -1,6 +1,8 @@
 import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { render, fireEvent, act } from "@testing-library/react";
 import V4StickyHeader, { V4_NAV_LINKS } from "@/components/v4/V4StickyHeader";
+import { readV4Css } from "../utils/readCss";
+import { extractRuleBody, assertMinTapTarget } from "../utils/touchTargets";
 
 // jsdom doesn't implement scrollIntoView — stub it so nav clicks don't crash.
 beforeEach(() => {
@@ -155,5 +157,11 @@ describe("V4 StickyHeader", () => {
 
     const nav = container.querySelector("nav");
     expect(nav?.getAttribute("aria-label")).toBe("Navegación principal");
+  });
+
+  test(".iconLink meets 44x44 tap target (header + drawer socials)", () => {
+    const css = readV4Css("V4StickyHeader.module.css");
+    const body = extractRuleBody(css, [".iconLink"]);
+    assertMinTapTarget(body, ".iconLink");
   });
 });

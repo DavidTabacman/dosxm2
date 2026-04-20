@@ -166,7 +166,9 @@
   align-items: center;
   justify-content: center;
   color: inherit;
-  padding: 0.375rem;
+  padding: 0.625rem;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 4px;
   transition: color 0.2s ease;
 }
