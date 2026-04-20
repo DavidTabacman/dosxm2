@@ -2,6 +2,7 @@ import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { render, act } from "@testing-library/react";
 import V4Resenas from "@/components/v4/V4Resenas";
 import { RESENAS } from "@/components/v4/resenasData";
+import { readV4Css } from "../utils/readCss";
 
 // The header uses the fire-once reveal (should NOT replay).
 vi.mock("@/components/shared/useSectionReveal", () => ({
@@ -172,5 +173,12 @@ describe("V4 Resenas", () => {
     RESENAS.forEach((r) => {
       expect(container.textContent).toContain(r.text);
     });
+  });
+
+  test("widens bubbles below 400px so iPhone SE chat doesn't crumple", () => {
+    const css = readV4Css("V4Resenas.module.css");
+    expect(css).toMatch(
+      /@media \(max-width:\s*400px\)\s*{[^}]*\.bubble\s*{[^}]*max-width:\s*92%/
+    );
   });
 });

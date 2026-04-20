@@ -199,3 +199,11 @@
     animation: none;
   }
 }
+
+/* iPhone SE and similarly narrow screens: widen bubbles to stop two-word
+   "wrap-per-bubble" from shrinking the chat to an awkward column. */
+@media (max-width: 400px) {
+  .bubble {
+    max-width: 92%;
+  }
+}
