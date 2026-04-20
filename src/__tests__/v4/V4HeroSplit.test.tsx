@@ -10,7 +10,38 @@ beforeEach(() => {
 afterEach(() => {
   vi.restoreAllMocks();
   (window as Window).__setMatchMedia?.(null);
+  // Remove navigator.connection stubs between tests.
+  if ("connection" in navigator) {
+    try {
+      delete (navigator as unknown as { connection?: unknown }).connection;
+    } catch {
+      // non-configurable in some engines; ignore
+    }
+  }
 });
+
+function stubConnection(value: {
+  saveData?: boolean;
+  effectiveType?: string;
+} | null) {
+  if (value === null) {
+    try {
+      delete (navigator as unknown as { connection?: unknown }).connection;
+    } catch {
+      // ignore
+    }
+    return;
+  }
+  Object.defineProperty(navigator, "connection", {
+    value: {
+      saveData: value.saveData,
+      effectiveType: value.effectiveType,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    },
+    configurable: true,
+  });
+}
 
 describe("V4 HeroSplit", () => {
   test("renders the BRD headline", () => {
@@ -142,6 +173,38 @@ describe("V4 HeroSplit", () => {
     // means the cb simply never fires.
     const after = section.style.getPropertyValue("--divider-pos");
     expect(after).toBe(before);
+  });
+
+  test("Save-Data connection swaps both hero videos for poster images", () => {
+    stubConnection({ saveData: true });
+    const { container } = render(<V4HeroSplit />);
+    const videos = container.querySelectorAll("video[data-asset-type='hero-bg']");
+    expect(videos).toHaveLength(0);
+    const posterImgs = container.querySelectorAll(
+      "img[data-asset-type='hero-bg-fallback']"
+    );
+    expect(posterImgs.length).toBe(2);
+  });
+
+  test("2g effectiveType also swaps videos for poster images", () => {
+    stubConnection({ effectiveType: "2g" });
+    const { container } = render(<V4HeroSplit />);
+    const videos = container.querySelectorAll("video[data-asset-type='hero-bg']");
+    expect(videos).toHaveLength(0);
+  });
+
+  test("fast connection keeps videos mounted", () => {
+    stubConnection({ saveData: false, effectiveType: "4g" });
+    const { container } = render(<V4HeroSplit />);
+    const videos = container.querySelectorAll("video[data-asset-type='hero-bg']");
+    expect(videos).toHaveLength(2);
+  });
+
+  test("missing navigator.connection defaults to rendering videos", () => {
+    stubConnection(null);
+    const { container } = render(<V4HeroSplit />);
+    const videos = container.querySelectorAll("video[data-asset-type='hero-bg']");
+    expect(videos).toHaveLength(2);
   });
 
   test("non-coarse pointer registers mousemove scrub", () => {

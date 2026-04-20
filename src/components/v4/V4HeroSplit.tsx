@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
 import { useVideoPlayback } from "../shared/useVideoPlayback";
 import VideoPlayPause from "../shared/VideoPlayPause";
@@ -30,6 +30,35 @@ export default function V4HeroSplit() {
     useVideoPlayback("V4-Hero-Left");
   const { ref: rightPlaybackRef, hasError: rightError } =
     useVideoPlayback("V4-Hero-Right");
+
+  // Respect Save-Data / 2G — skip the hero videos on metered or slow
+  // connections. navigator.connection is non-standard and Safari returns
+  // undefined, in which case we keep the default video render.
+  const [lowData, setLowData] = useState(false);
+  useEffect(() => {
+    if (typeof navigator === "undefined") return;
+    type Conn = {
+      saveData?: boolean;
+      effectiveType?: string;
+      addEventListener?: (type: string, cb: () => void) => void;
+      removeEventListener?: (type: string, cb: () => void) => void;
+    };
+    const conn = (navigator as unknown as { connection?: Conn }).connection;
+    if (!conn) return;
+    const update = () => {
+      setLowData(
+        conn.saveData === true ||
+          conn.effectiveType === "2g" ||
+          conn.effectiveType === "slow-2g"
+      );
+    };
+    update();
+    conn.addEventListener?.("change", update);
+    return () => conn.removeEventListener?.("change", update);
+  }, []);
+
+  const skipLeftVideo = leftError || lowData;
+  const skipRightVideo = rightError || lowData;
 
   // Direct DOM mutation — updates the --divider-pos CSS variable based on
   // cursor X. No React state, no re-renders. Mirrors V1's proven approach.
@@ -112,7 +141,7 @@ export default function V4HeroSplit() {
          desktop, CSS absolutely positions the text inside panelLeft's
          inset:0 containing block, preserving the overlay. */}
       <div className={styles.panelLeft}>
-        {leftError ? (
+        {skipLeftVideo ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             className={styles.panelBg}
@@ -174,7 +203,7 @@ export default function V4HeroSplit() {
       </div>
 
       <div className={styles.panelRight}>
-        {rightError ? (
+        {skipRightVideo ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             className={styles.panelBg}
