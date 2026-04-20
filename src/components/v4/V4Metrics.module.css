@@ -50,10 +50,19 @@
   gap: clamp(1.5rem, 4vw, 3rem);
 }
 
-@media (max-width: 820px) {
+/* Step down 3-col -> 2-col at 1024, then -> 1-col at 600. The 2-col
+   intermediate prevents the 770-1024 range from regressing to a single
+   column while the viewport still has room for two. */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 600px) {
   .grid {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
   }
 }
 
