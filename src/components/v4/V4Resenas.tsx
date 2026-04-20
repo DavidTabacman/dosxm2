@@ -153,7 +153,6 @@ export default function V4Resenas({
         ref={chatRef}
         className={styles.chat}
         role="log"
-        aria-live="polite"
         aria-label="Reseñas de clientes de DOSXM2"
       >
         {items.map((review, index) =>

@@ -181,4 +181,11 @@ describe("V4 Resenas", () => {
       /@media \(max-width:\s*400px\)\s*{[^}]*\.bubble\s*{[^}]*max-width:\s*92%/
     );
   });
+
+  test("chat log keeps role=log but drops aria-live=polite to avoid announcement cascade", () => {
+    const { container } = render(<V4Resenas />);
+    const log = container.querySelector("[role='log']");
+    expect(log).not.toBeNull();
+    expect(log?.getAttribute("aria-live")).toBeNull();
+  });
 });
