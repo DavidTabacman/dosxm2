@@ -33,17 +33,15 @@ const inter = Inter({
   display: "swap",
 });
 
-/* Portraits pulled from frames of the founders' own tours on @dosxm2
- * (TikTok). */
 const FOUNDER_A = {
   name: "Borja",
-  portraitUrl: "/v4/founders/founder-a.webp",
-  alt: "Retrato de Borja, cofundador de DOSXM2, durante una visita a un piso en Getafe",
+  portraitUrl: "/v4/founders/founder_borja.webp",
+  alt: "Retrato de Borja, cofundador de DOSXM2",
 };
 const FOUNDER_B = {
   name: "Pablo",
-  portraitUrl: "/v4/founders/founder-b.webp",
-  alt: "Retrato de Pablo, cofundador de DOSXM2, presentando un piso en el sur de Madrid",
+  portraitUrl: "/v4/founders/founder_pablo.webp",
+  alt: "Retrato de Pablo, cofundador de DOSXM2",
 };
 
 /* BRD 4.3 — metrics: 30 días / 100% / 24/7.
