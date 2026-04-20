@@ -42,6 +42,19 @@ export function useCountUp(
       return;
     }
 
+    // Respect prefers-reduced-motion: snap to final value without animation.
+    // Applies to both fire-once (V1/V2/V3) and replay (V4Metrics) semantics
+    // by setting hasAnimated so the fire-once branch doesn't re-run.
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setValue(end);
+      hasAnimated.current = true;
+      return;
+    }
+
     // Fire-once semantics — used by V1/V2/V3 and (by default) V4 dark
     // metrics. Once animated, stays at `end` even if trigger flickers.
     if (!replay && hasAnimated.current) return;

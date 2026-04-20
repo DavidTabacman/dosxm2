@@ -9,6 +9,7 @@ describe("useCountUp", () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    (window as Window).__setMatchMedia?.(null);
   });
 
   test("returns 0 when trigger is false", () => {
@@ -146,6 +147,72 @@ describe("useCountUp", () => {
         vi.advanceTimersByTime(2100);
       });
       expect(result.current).toBe(12.5);
+    });
+  });
+
+  describe("reduced motion support", () => {
+    function mockReducedMotion(matches: boolean) {
+      (window as Window).__setMatchMedia?.((q) => ({
+        matches: q.includes("prefers-reduced-motion") ? matches : false,
+        media: q,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => false,
+      }));
+    }
+
+    test("snaps to end immediately when reduced-motion matches (fire-once)", () => {
+      mockReducedMotion(true);
+      const rafSpy = vi.spyOn(window, "requestAnimationFrame");
+      const { result } = renderHook(() => useCountUp(100, 2000, true));
+      expect(result.current).toBe(100);
+      expect(rafSpy).not.toHaveBeenCalled();
+      rafSpy.mockRestore();
+    });
+
+    test("subsequent trigger toggles do NOT restart (fire-once preserved)", () => {
+      mockReducedMotion(true);
+      const { result, rerender } = renderHook(
+        ({ trigger }) => useCountUp(100, 2000, trigger),
+        { initialProps: { trigger: true } }
+      );
+      expect(result.current).toBe(100);
+      rerender({ trigger: false });
+      rerender({ trigger: true });
+      expect(result.current).toBe(100);
+    });
+
+    test("reduced-motion off (default) runs the RAF animation (regression guard for V1/V2/V3)", () => {
+      mockReducedMotion(false);
+      const { result } = renderHook(() => useCountUp(45, 2000, true));
+      expect(result.current).toBe(0);
+      act(() => {
+        vi.advanceTimersByTime(2100);
+      });
+      expect(result.current).toBe(45);
+    });
+
+    test("reduced-motion + trigger:false stays at 0 (no snap before trigger)", () => {
+      mockReducedMotion(true);
+      const { result } = renderHook(() => useCountUp(100, 2000, false));
+      expect(result.current).toBe(0);
+    });
+
+    test("reduced-motion + replay: snaps to end on trigger-on, resets on trigger-off", () => {
+      mockReducedMotion(true);
+      const { result, rerender } = renderHook(
+        ({ trigger }) =>
+          useCountUp(30, 2000, trigger, 0, { replay: true }),
+        { initialProps: { trigger: true } }
+      );
+      expect(result.current).toBe(30);
+      rerender({ trigger: false });
+      expect(result.current).toBe(0);
+      rerender({ trigger: true });
+      expect(result.current).toBe(30);
     });
   });
 });

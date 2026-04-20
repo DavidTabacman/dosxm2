@@ -11,8 +11,12 @@ export function useMousePosition(ref: RefObject<HTMLElement | null>): Position {
   const isTouchDevice = useRef(false);
 
   useEffect(() => {
+    // Coarse-pointer + no-hover catches real phones/tablets while excluding
+    // hybrid devices (iPad + Magic Keyboard) that misfire with the legacy
+    // "ontouchstart" heuristic.
     isTouchDevice.current =
-      typeof window !== "undefined" && "ontouchstart" in window;
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 
     if (isTouchDevice.current || !ref.current) return;
 
