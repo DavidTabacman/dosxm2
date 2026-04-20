@@ -1,6 +1,7 @@
 import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { render, act, fireEvent } from "@testing-library/react";
 import V4WhatsAppFAB from "@/components/v4/V4WhatsAppFAB";
+import { readV4Css } from "../utils/readCss";
 
 const DEFAULT_PROPS = {
   founderAPhone: "34667006662",
@@ -154,6 +155,13 @@ describe("V4 WhatsAppFAB", () => {
     links.forEach((link) => {
       expect(link.getAttribute("tabindex")).toBe("0");
     });
+  });
+
+  test("portrait overlap reduced to -0.2 so the left portrait exposes >=44px tap area", () => {
+    const css = readV4Css("V4WhatsAppFAB.module.css");
+    expect(css).toMatch(
+      /\.portraitLink \+ \.portraitLink\s*{[^}]*margin-left:\s*calc\(var\(--v4-fab-size\) \* -0\.2\)/
+    );
   });
 
   test("no message prop renders URLs without text= parameter", () => {

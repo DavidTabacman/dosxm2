@@ -48,7 +48,7 @@
 }
 
 .portraitLink + .portraitLink {
-  margin-left: calc(var(--v4-fab-size) * -0.35);
+  margin-left: calc(var(--v4-fab-size) * -0.2);
 }
 
 .portraitLink:hover,
