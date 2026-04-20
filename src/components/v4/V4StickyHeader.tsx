@@ -181,14 +181,27 @@ export default function V4StickyHeader() {
           onClick={handleLogoClick}
           aria-label="DOSXM2 — Volver al inicio"
         >
-          <Image
-            src="/Nuevo Logo sin fondo.png"
-            alt="DOSXM2 — Dos por metro cuadrado"
-            width={200}
-            height={100}
-            className={styles.logoImage}
-            priority
-          />
+          <span className={styles.logoStack}>
+            <Image
+              src="/Nuevo Logo sin fondo.png"
+              alt="DOSXM2 — Dos por metro cuadrado"
+              width={200}
+              height={100}
+              className={styles.logoImage}
+              priority
+            />
+            {/* Dark variant cross-fades in when header goes solid — the light
+                logo's silvery "X" loses contrast against the translucent beige
+                background, so we swap to dark letters (gold house preserved). */}
+            <Image
+              src="/Nuevo Logo oscuro.png"
+              alt=""
+              aria-hidden="true"
+              width={200}
+              height={100}
+              className={`${styles.logoImage} ${styles.logoImageDark}`}
+            />
+          </span>
         </button>
 
         <nav className={styles.nav} aria-label="Navegación principal">
