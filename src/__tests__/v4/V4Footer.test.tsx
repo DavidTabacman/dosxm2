@@ -38,15 +38,11 @@ describe("V4 Footer", () => {
     });
   });
 
-  test("renders WhatsApp link when URL is provided", () => {
-    const { container } = render(
-      <V4Footer whatsappUrl="https://wa.me/34600" />
-    );
-    const wa = container.querySelector("a[href='https://wa.me/34600']");
-    expect(wa).not.toBeNull();
-  });
-
-  test("omits WhatsApp link when URL is absent", () => {
+  test("never renders a WhatsApp link in the contact block", () => {
+    // Footer intentionally has no WhatsApp entry — the two founder-portrait
+    // buttons live in V4WhatsAppFAB and the valorador success state, both of
+    // which use real founder numbers. Keeping a generic WhatsApp link here
+    // invited a placeholder number to creep in, so it's gone on purpose.
     const { container } = render(<V4Footer />);
     const wa = container.querySelector("a[href*='wa.me']");
     expect(wa).toBeNull();

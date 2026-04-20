@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSectionReveal } from "../shared/useSectionReveal";
+import V4FounderLinks from "./V4FounderLinks";
 import styles from "./V4Valorador.module.css";
 import anim from "./v4-animations.module.css";
 
@@ -63,20 +64,35 @@ const DEFAULT_STEPS: Step[] = [
   },
 ];
 
+interface FounderContact {
+  name: string;
+  phone: string;
+  portraitUrl: string;
+  portraitAlt: string;
+}
+
 export interface V4ValoradorProps {
   id?: string;
   steps?: ReadonlyArray<Step>;
   /** Called with collected answers on final submit. Throw to trigger an error state. */
   onSubmit?: (answers: Record<string, string>) => Promise<void> | void;
-  /** WhatsApp fallback shown in success state. */
-  whatsappUrl?: string;
+  /**
+   * Founder contact pair shown in the success state as two portrait WhatsApp
+   * buttons (matching the floating FAB). When omitted, the success state
+   * renders the thank-you copy alone with no CTA.
+   */
+  founders?: {
+    a: FounderContact;
+    b: FounderContact;
+    message?: string;
+  };
 }
 
 export default function V4Valorador({
   id = "valorador",
   steps = DEFAULT_STEPS,
   onSubmit,
-  whatsappUrl,
+  founders,
 }: V4ValoradorProps) {
   const [sectionRef, sectionRevealed] = useSectionReveal(0.15);
 
@@ -214,15 +230,24 @@ export default function V4Valorador({
               En menos de 24 horas tendrás una valoración y un plan para
               vender tu casa.
             </p>
-            {whatsappUrl ? (
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.successCta}
-              >
-                Hablemos ahora por WhatsApp
-              </a>
+            {founders ? (
+              <div className={styles.successFounders}>
+                <p className={styles.successInvite}>
+                  Mientras tanto, escríbele directamente a{" "}
+                  {founders.a.name} o a {founders.b.name} por WhatsApp.
+                </p>
+                <V4FounderLinks
+                  founderAPhone={founders.a.phone}
+                  founderBPhone={founders.b.phone}
+                  founderAName={founders.a.name}
+                  founderBName={founders.b.name}
+                  portraitAUrl={founders.a.portraitUrl}
+                  portraitAAlt={founders.a.portraitAlt}
+                  portraitBUrl={founders.b.portraitUrl}
+                  portraitBAlt={founders.b.portraitAlt}
+                  message={founders.message}
+                />
+              </div>
             ) : null}
           </div>
         </div>

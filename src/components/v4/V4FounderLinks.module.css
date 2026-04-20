@@ -1,0 +1,109 @@
+/* =========================================================
+   V4 Founder Links — the two circular WhatsApp portrait buttons
+   shared between V4WhatsAppFAB (fixed corner dock) and
+   V4Valorador's post-submit success state. Presentation only —
+   positioning / visibility is the parent's job.
+   ========================================================= */
+
+.portraitStack {
+  display: inline-flex;
+  position: relative;
+  height: var(--v4-fab-size);
+}
+
+.portraitLink {
+  position: relative;
+  display: inline-block;
+  color: var(--v4-fg);
+  font-family: var(--v4-font-sans);
+  text-decoration: none;
+  border-radius: 50%;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.portraitLink + .portraitLink {
+  margin-left: calc(var(--v4-fab-size) * -0.2);
+}
+
+.portraitLink:hover,
+.portraitLink:focus-visible {
+  box-shadow: 0 0 0 3px var(--v4-accent-soft);
+  transform: translateY(-2px);
+  outline: none;
+  z-index: 1;
+}
+
+.portraitLink:focus-visible {
+  box-shadow:
+    0 0 0 3px var(--v4-accent-soft),
+    0 0 0 5px var(--v4-accent);
+}
+
+.portrait {
+  width: var(--v4-fab-size);
+  height: var(--v4-fab-size);
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--v4-bg);
+  background: var(--v4-surface-elevated);
+  box-shadow: 0 10px 28px rgba(28, 28, 28, 0.22);
+  display: block;
+}
+
+/* Tooltip — hidden by default, revealed on hover/focus. Not a separate
+   visible button; it only reinforces discoverability. */
+.tooltip {
+  position: absolute;
+  right: calc(100% + 0.5rem);
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
+  background: var(--v4-fg);
+  color: var(--v4-bg);
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 14px rgba(28, 28, 28, 0.2);
+}
+
+.portraitLink:hover .tooltip,
+.portraitLink:focus-visible .tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+@media (max-width: 600px) {
+  .portrait {
+    width: 56px;
+    height: 56px;
+  }
+
+  .portraitStack {
+    height: 56px;
+  }
+
+  /* Tooltip flips above on mobile to avoid clipping off-screen right edge. */
+  .tooltip {
+    right: auto;
+    left: 50%;
+    top: auto;
+    bottom: calc(100% + 0.5rem);
+    transform: translateX(-50%) translateY(4px);
+  }
+
+  .portraitLink:hover .tooltip,
+  .portraitLink:focus-visible .tooltip {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portraitLink,
+  .tooltip {
+    transition: none;
+  }
+}

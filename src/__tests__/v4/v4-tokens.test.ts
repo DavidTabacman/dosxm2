@@ -101,13 +101,6 @@ describe("V4 ochre presence (BRD 2.1 brand motif)", () => {
     expect(css).toMatch(/\.btnPrimary\s*{[^}]*background:\s*var\(--v4-accent\)/);
   });
 
-  test("Valorador success CTA uses ochre background", () => {
-    const css = readCss("V4Valorador.module.css");
-    expect(css).toMatch(
-      /\.successCta\s*{[^}]*background:\s*var\(--v4-accent\)/
-    );
-  });
-
   test("Sticky header nav underline uses ochre", () => {
     const css = readCss("V4StickyHeader.module.css");
     expect(css).toMatch(
@@ -129,8 +122,10 @@ describe("V4 ochre presence (BRD 2.1 brand motif)", () => {
     );
   });
 
-  test("WhatsApp FAB uses a soft ochre halo on focus", () => {
-    const css = readCss("V4WhatsAppFAB.module.css");
+  test("founder portrait links use a soft ochre halo on focus", () => {
+    // Halo rule moved from V4WhatsAppFAB.module.css to V4FounderLinks.module.css
+    // when the portrait-stack markup was shared with the valorador success state.
+    const css = readCss("V4FounderLinks.module.css");
     expect(css).toMatch(/var\(--v4-accent-soft\)/);
   });
 });

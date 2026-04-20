@@ -5,7 +5,6 @@ import styles from "./V4Footer.module.css";
 export interface V4FooterProps {
   instagramUrl?: string;
   tiktokUrl?: string;
-  whatsappUrl?: string;
   email?: string;
   founders?: ReadonlyArray<{ name: string; phone: string }>;
 }
@@ -18,7 +17,6 @@ function formatEsPhone(phone: string): string {
 export default function V4Footer({
   instagramUrl = V4_SOCIAL_URLS.instagram,
   tiktokUrl = V4_SOCIAL_URLS.tiktok,
-  whatsappUrl,
   email = "hola@dosxm2.com",
   founders = [],
 }: V4FooterProps) {
@@ -60,13 +58,6 @@ export default function V4Footer({
                 </a>
               </li>
             ))}
-            {whatsappUrl ? (
-              <li>
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                  WhatsApp
-                </a>
-              </li>
-            ) : null}
           </ul>
           <ul className={styles.contactSocials}>
             <li>

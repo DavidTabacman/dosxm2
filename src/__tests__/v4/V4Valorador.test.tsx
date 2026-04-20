@@ -193,10 +193,23 @@ describe("V4 Valorador", () => {
     expect(alert?.textContent).toContain("red de pruebas");
   });
 
-  test("success state exposes WhatsApp CTA when whatsappUrl is provided", async () => {
-    const { container } = render(
-      <V4Valorador whatsappUrl="https://wa.me/34600" />
-    );
+  test("success state exposes both founder WhatsApp links when founders are provided", async () => {
+    const founders = {
+      a: {
+        name: "Borja",
+        phone: "34667006662",
+        portraitUrl: "/founders/a.webp",
+        portraitAlt: "Retrato de Borja",
+      },
+      b: {
+        name: "Pablo",
+        phone: "34674527410",
+        portraitUrl: "/founders/b.webp",
+        portraitAlt: "Retrato de Pablo",
+      },
+      message: "Hola DOSXM2",
+    };
+    const { container } = render(<V4Valorador founders={founders} />);
     nextStep(container, "Chamberí");
     nextStep(container, "Piso");
     nextStep(container, "85");
@@ -204,8 +217,27 @@ describe("V4 Valorador", () => {
     await act(async () => {
       clickByText(container, "Enviar");
     });
-    const link = container.querySelector("a[href='https://wa.me/34600']");
-    expect(link).not.toBeNull();
+    const links = container.querySelectorAll("a[href*='wa.me/']");
+    expect(links).toHaveLength(2);
+    expect(links[0].getAttribute("href")).toContain("wa.me/34667006662");
+    expect(links[1].getAttribute("href")).toContain("wa.me/34674527410");
+    // Invitation copy names both founders so the two portraits read as
+    // a single invitation rather than a pair of unexplained avatars.
+    expect(container.textContent).toContain("Borja");
+    expect(container.textContent).toContain("Pablo");
+  });
+
+  test("success state renders no WhatsApp links when founders are absent", async () => {
+    const { container } = render(<V4Valorador />);
+    nextStep(container, "Chamberí");
+    nextStep(container, "Piso");
+    nextStep(container, "85");
+    fillActiveInput(container, "cliente@example.com");
+    await act(async () => {
+      clickByText(container, "Enviar");
+    });
+    expect(container.textContent).toContain("¡Gracias!");
+    expect(container.querySelector("a[href*='wa.me']")).toBeNull();
   });
 
   test("progress bar has ARIA attributes for step progress", () => {

@@ -158,7 +158,9 @@ describe("V4 WhatsAppFAB", () => {
   });
 
   test("portrait overlap reduced to -0.2 so the left portrait exposes >=44px tap area", () => {
-    const css = readV4Css("V4WhatsAppFAB.module.css");
+    // Rule lives in V4FounderLinks.module.css since the portrait-stack markup
+    // is shared between the FAB and the valorador success state.
+    const css = readV4Css("V4FounderLinks.module.css");
     expect(css).toMatch(
       /\.portraitLink \+ \.portraitLink\s*{[^}]*margin-left:\s*calc\(var\(--v4-fab-size\) \* -0\.2\)/
     );

@@ -11,7 +11,6 @@ import V4Valorador from "@/components/v4/V4Valorador";
 import V4Footer from "@/components/v4/V4Footer";
 import V4WhatsAppFAB from "@/components/v4/V4WhatsAppFAB";
 import { useScrollPastAnchor } from "@/components/shared/useScrollPastAnchor";
-import { buildWhatsAppUrl } from "@/components/shared/whatsApp";
 
 /* BRD 2.2 — "Ogg o Canela" are licensed faces. Fraunces is the closest
  * open substitute (Google Fonts) for a contrasted editorial serif. Swap
@@ -67,7 +66,6 @@ const METRICS = [
   },
 ] as const;
 
-const DOSXM2_PHONE = "34600000000"; // placeholder — swap with real number at launch
 const BORJA_PHONE = "34667006662";
 const PABLO_PHONE = "34674527410";
 const FOUNDERS = [
@@ -77,9 +75,23 @@ const FOUNDERS = [
 const WA_MESSAGE =
   "Hola DOSXM2, quiero información sobre cómo vender mi casa en Madrid.";
 
-export default function V4Page() {
-  const whatsappUrl = buildWhatsAppUrl(DOSXM2_PHONE, WA_MESSAGE);
+const VALORADOR_FOUNDERS = {
+  a: {
+    name: FOUNDER_A.name,
+    phone: BORJA_PHONE,
+    portraitUrl: FOUNDER_A.portraitUrl,
+    portraitAlt: FOUNDER_A.alt,
+  },
+  b: {
+    name: FOUNDER_B.name,
+    phone: PABLO_PHONE,
+    portraitUrl: FOUNDER_B.portraitUrl,
+    portraitAlt: FOUNDER_B.alt,
+  },
+  message: WA_MESSAGE,
+};
 
+export default function V4Page() {
   /* Single source of truth for the "portraits have detached" handoff.
    * Both V4Diferencial (to fade its portraits out) and V4WhatsAppFAB
    * (to rise into view) read this boolean, so their transitions stay
@@ -115,8 +127,8 @@ export default function V4Page() {
         <V4Metrics metrics={METRICS} />
         <V4Historias />
         <V4Resenas />
-        <V4Valorador whatsappUrl={whatsappUrl} />
-        <V4Footer whatsappUrl={whatsappUrl} founders={FOUNDERS} />
+        <V4Valorador founders={VALORADOR_FOUNDERS} />
+        <V4Footer founders={FOUNDERS} />
         <V4WhatsAppFAB
           founderAPhone={BORJA_PHONE}
           founderBPhone={PABLO_PHONE}

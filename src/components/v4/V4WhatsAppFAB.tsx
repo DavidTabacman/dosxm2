@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { buildWhatsAppUrl } from "../shared/whatsApp";
+import V4FounderLinks from "./V4FounderLinks";
 import styles from "./V4WhatsAppFAB.module.css";
 
 export interface V4WhatsAppFABProps {
@@ -62,8 +62,6 @@ export default function V4WhatsAppFAB({
   }, []);
 
   const show = armed && visible;
-  const urlA = buildWhatsAppUrl(founderAPhone, message);
-  const urlB = buildWhatsAppUrl(founderBPhone, message);
 
   return (
     <div
@@ -71,62 +69,18 @@ export default function V4WhatsAppFAB({
       aria-hidden={!show}
       data-testid="v4-whatsapp-fab"
     >
-      <div className={styles.portraitStack}>
-        <a
-          href={urlA}
-          className={styles.portraitLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          tabIndex={show ? 0 : -1}
-          aria-label={`Escribir a ${founderAName} por WhatsApp`}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className={styles.portrait}
-            src={portraitAUrl}
-            alt={portraitAAlt}
-            data-asset-type="founder-portrait"
-            loading="lazy"
-            onError={(e) => {
-              console.error(
-                `[V4-WhatsAppFAB] ❌ Portrait A load FAILED — src: ${e.currentTarget.src}. ` +
-                  `Reason: image URL unreachable or blocked. Hiding element to keep UI consistent.`
-              );
-              e.currentTarget.style.visibility = "hidden";
-            }}
-          />
-          <span className={styles.tooltip} role="tooltip">
-            Escribir a {founderAName}
-          </span>
-        </a>
-        <a
-          href={urlB}
-          className={styles.portraitLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          tabIndex={show ? 0 : -1}
-          aria-label={`Escribir a ${founderBName} por WhatsApp`}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className={styles.portrait}
-            src={portraitBUrl}
-            alt={portraitBAlt}
-            data-asset-type="founder-portrait"
-            loading="lazy"
-            onError={(e) => {
-              console.error(
-                `[V4-WhatsAppFAB] ❌ Portrait B load FAILED — src: ${e.currentTarget.src}. ` +
-                  `Reason: image URL unreachable or blocked. Hiding element to keep UI consistent.`
-              );
-              e.currentTarget.style.visibility = "hidden";
-            }}
-          />
-          <span className={styles.tooltip} role="tooltip">
-            Escribir a {founderBName}
-          </span>
-        </a>
-      </div>
+      <V4FounderLinks
+        founderAPhone={founderAPhone}
+        founderBPhone={founderBPhone}
+        founderAName={founderAName}
+        founderBName={founderBName}
+        portraitAUrl={portraitAUrl}
+        portraitAAlt={portraitAAlt}
+        portraitBUrl={portraitBUrl}
+        portraitBAlt={portraitBAlt}
+        message={message}
+        focusable={show}
+      />
     </div>
   );
 }
