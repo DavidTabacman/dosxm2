@@ -28,7 +28,9 @@ describe("V4 StickyHeader", () => {
     const { container } = render(<V4StickyHeader />);
     const logo = container.querySelector("button[aria-label*='DOSXM2']");
     expect(logo).not.toBeNull();
-    expect(logo?.textContent).toContain("DOSXM2");
+    const logoImage = logo?.querySelector("img");
+    expect(logoImage).not.toBeNull();
+    expect(logoImage?.getAttribute("alt")).toContain("DOSXM2");
   });
 
   test("renders all nav link anchors in desktop nav", () => {

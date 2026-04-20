@@ -113,6 +113,7 @@
     bottom: 0;
     left: 0;
     width: min(620px, 55vw);
+    padding-top: calc(var(--v4-header-h) + clamp(1rem, 2vw, 1.75rem));
   }
 }
 

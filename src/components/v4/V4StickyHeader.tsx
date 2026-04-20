@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { InstagramIcon, TikTokIcon } from "../shared/SocialIcons";
 import styles from "./V4StickyHeader.module.css";
@@ -143,7 +144,14 @@ export default function V4StickyHeader() {
           onClick={handleLogoClick}
           aria-label="DOSXM2 — Volver al inicio"
         >
-          DOSXM2
+          <Image
+            src="/Nuevo Logo sin fondo.png"
+            alt="DOSXM2 — Dos por metro cuadrado"
+            width={200}
+            height={100}
+            className={styles.logoImage}
+            priority
+          />
         </button>
 
         <nav className={styles.nav} aria-label="Navegación principal">
