@@ -30,7 +30,7 @@ describe("V4 StickyHeader", () => {
       "#resultados",
       "#historias",
       "#resenas",
-      "#valorador",
+      "#contacto",
     ]);
   });
 

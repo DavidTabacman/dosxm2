@@ -49,7 +49,7 @@ describe("V4 Page (integration)", () => {
 
   test("contains all BRD section anchors", () => {
     const { container } = render(<V4Page />);
-    const ids = ["diferencial", "resultados", "historias", "resenas", "valorador"];
+    const ids = ["diferencial", "resultados", "historias", "resenas", "contacto"];
     const sectionIds = Array.from(container.querySelectorAll("section"))
       .map((s) => s.id)
       .filter(Boolean);
@@ -81,10 +81,13 @@ describe("V4 Page (integration)", () => {
     expect(container.textContent).toContain("100");
   });
 
-  test("renders valorador CTA linking to #valorador", () => {
+  test("renders hero CTA linking to the external Lystos valuation tool", () => {
     const { container } = render(<V4Page />);
-    const cta = container.querySelector("a[href='#valorador']");
+    const cta = container.querySelector(
+      "a[href*='valuation.lystos.com']",
+    );
     expect(cta).not.toBeNull();
+    expect(cta?.getAttribute("target")).toBe("_blank");
   });
 
   test("renders exactly one h1 on the page (accessibility)", () => {
@@ -129,7 +132,7 @@ describe("V4 Page (integration)", () => {
   test("every BRD section has a scrollable id target", () => {
     const { container } = render(<V4Page />);
     // The sticky header nav links should each resolve to a real section.
-    const ids = ["diferencial", "resultados", "historias", "resenas", "valorador"];
+    const ids = ["diferencial", "resultados", "historias", "resenas", "contacto"];
     const sectionIds = new Set(
       Array.from(container.querySelectorAll("section[id]")).map((s) => s.id)
     );

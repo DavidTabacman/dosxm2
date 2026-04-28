@@ -1,6 +1,8 @@
 /* =========================================================
-   V4 Valorador — conversational step-by-step form (BRD 4.6).
-   Typeform-ish feel with V4 palette.
+   V4 Contacto — single-step contact form. The valorador form
+   was retired in favor of an external Lystos-hosted tool linked
+   from the hero CTA, so this section is now a plain contact
+   surface: name, email-or-phone, free-text message.
    ========================================================= */
 
 .section {
@@ -38,56 +40,27 @@
   max-width: 56ch;
 }
 
-.progress {
+.form {
   display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 2rem;
-}
-
-.dot {
-  flex: 1;
-  height: 3px;
-  background: var(--v4-border-strong);
-  border-radius: 2px;
-  transition: background 0.3s ease;
-}
-
-.dotActive {
-  background: var(--v4-accent);
-}
-
-.stepWrapper {
-  position: relative;
-  min-height: 220px;
-}
-
-.step {
-  animation: slideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .label {
-  font-family: var(--v4-font-serif);
-  font-weight: 400;
-  font-size: clamp(1.25rem, 2.6vw, 1.75rem);
-  line-height: 1.3;
-  margin: 0 0 1.25rem;
+  font-family: var(--v4-font-sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
   color: var(--v4-fg);
-  display: block;
+  letter-spacing: 0.01em;
 }
 
 .input,
-.select,
 .textarea {
   width: 100%;
   padding: 0.9rem 1rem;
@@ -103,7 +76,6 @@
 }
 
 .input:focus,
-.select:focus,
 .textarea:focus {
   outline: none;
   border-color: var(--v4-accent);
@@ -111,36 +83,10 @@
 }
 
 .textarea {
-  min-height: 120px;
+  min-height: 140px;
   resize: vertical;
-}
-
-.selectWrap {
-  position: relative;
-}
-
-.select {
-  appearance: none;
-  padding-right: 2.5rem;
-  cursor: pointer;
-}
-
-.selectWrap::after {
-  content: "";
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 12px;
-  height: 8px;
-  background-color: var(--v4-fg);
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='black' fill='none' stroke-width='1.6'/%3E%3C/svg%3E");
-  mask-repeat: no-repeat;
-  mask-size: 12px 8px;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='black' fill='none' stroke-width='1.6'/%3E%3C/svg%3E");
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: 12px 8px;
-  pointer-events: none;
+  font-family: var(--v4-font-sans);
+  line-height: 1.5;
 }
 
 @keyframes shake {
@@ -166,7 +112,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 1.5rem;
+  margin-top: 0.5rem;
   align-items: center;
 }
 
@@ -198,35 +144,10 @@
   outline-offset: 3px;
 }
 
-.btnSecondary {
-  padding: 0.95rem 1.4rem;
-  background: transparent;
-  color: var(--v4-fg);
-  border: 1.5px solid var(--v4-border-strong);
-  border-radius: 999px;
-  font-family: var(--v4-font-sans);
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease;
-}
-
-.btnSecondary:hover,
-.btnSecondary:focus-visible {
-  border-color: var(--v4-accent);
-  color: var(--v4-accent);
-}
-
-.btnSecondary:focus-visible {
-  outline: 2px solid var(--v4-accent);
-  outline-offset: 3px;
-}
-
-.stepMeta {
-  font-family: var(--v4-font-sans);
-  font-size: 0.75rem;
-  color: var(--v4-muted);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+.btnPrimary:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
 }
 
 /* Success state */
@@ -305,7 +226,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .step,
+  .form,
   .success,
   .successHeading,
   .successText,

@@ -115,8 +115,7 @@ export default function V4Historias({
           <span className={styles.headingAccent}>su historia.</span>
         </h2>
         <p className={styles.sub}>
-          Toca una tarjeta para leer cómo acompañamos a cada familia desde la
-          decisión de vender hasta la firma en notaría.
+          Pincha en cada casa para ver su historia.
         </p>
       </div>
 

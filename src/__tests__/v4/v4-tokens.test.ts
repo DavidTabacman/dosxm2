@@ -96,8 +96,8 @@ describe("V4 ochre presence (BRD 2.1 brand motif)", () => {
     expect(css).toMatch(/\.cta\s*{[^}]*background:\s*var\(--v4-accent\)/);
   });
 
-  test("Valorador submit button uses ochre background", () => {
-    const css = readCss("V4Valorador.module.css");
+  test("Contacto submit button uses ochre background", () => {
+    const css = readCss("V4Contacto.module.css");
     expect(css).toMatch(/\.btnPrimary\s*{[^}]*background:\s*var\(--v4-accent\)/);
   });
 

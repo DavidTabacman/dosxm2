@@ -90,8 +90,8 @@ describe("V4 type-scale token adoption (Phase 4)", () => {
     expect(css).toMatch(/\.heading\s*{[^}]*font-size:\s*var\(--v4-type-h2\)/);
   });
 
-  test("Valorador heading uses --v4-type-h2", () => {
-    const css = readCss("V4Valorador.module.css");
+  test("Contacto heading uses --v4-type-h2", () => {
+    const css = readCss("V4Contacto.module.css");
     expect(css).toMatch(/\.heading\s*{[^}]*font-size:\s*var\(--v4-type-h2\)/);
   });
 

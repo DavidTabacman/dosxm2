@@ -56,31 +56,36 @@ describe("V4 HeroSplit", () => {
     expect(container.textContent).toContain("Doble compromiso");
   });
 
-  test("renders an anchor CTA pointing to #valorador", () => {
+  test("renders the CTA pointing to the external Lystos valuation tool", () => {
     const { container } = render(<V4HeroSplit />);
-    const cta = container.querySelector("a[href='#valorador']");
+    const cta = container.querySelector(
+      "a[href*='valuation.lystos.com']",
+    );
     expect(cta).not.toBeNull();
     expect(cta?.textContent).toContain("Valora tu propiedad");
   });
 
-  test("CTA click smooth-scrolls to the valorador section", () => {
-    const section = document.createElement("section");
-    section.id = "valorador";
-    document.body.appendChild(section);
-    const spy = vi.spyOn(section, "scrollIntoView");
-
+  test("CTA opens in a new tab with safe rel attributes", () => {
     const { container } = render(<V4HeroSplit />);
-    const cta = container.querySelector("a[href='#valorador']")!;
-    fireEvent.click(cta);
-
-    expect(spy).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
-    document.body.removeChild(section);
+    const cta = container.querySelector(
+      "a[href*='valuation.lystos.com']",
+    );
+    expect(cta?.getAttribute("target")).toBe("_blank");
+    const rel = cta?.getAttribute("rel") ?? "";
+    expect(rel).toContain("noopener");
+    expect(rel).toContain("noreferrer");
   });
 
-  test("CTA click does not throw when #valorador is missing", () => {
+  test("CTA URL carries the agreed clientId and web utm tags", () => {
     const { container } = render(<V4HeroSplit />);
-    const cta = container.querySelector("a[href='#valorador']")!;
-    expect(() => fireEvent.click(cta)).not.toThrow();
+    const cta = container.querySelector(
+      "a[href*='valuation.lystos.com']",
+    );
+    const href = cta?.getAttribute("href") ?? "";
+    expect(href).toContain("clientId=cadc5d64-196d-4b14-a542-0858ecf58bd0");
+    expect(href).toContain("utm_source=web");
+    expect(href).toContain("utm_medium=cta");
+    expect(href).toContain("utm_content=hero");
   });
 
   test("renders two background videos with data-asset-type='hero-bg'", () => {

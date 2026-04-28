@@ -216,6 +216,55 @@
   }
 }
 
+/* CTA below testimonials — invites visitors to leave a Google review. */
+.reviewCtaWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.reviewCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  background: var(--v4-bg);
+  color: var(--v4-fg);
+  font-family: var(--v4-font-sans);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.875rem 1.5rem 0.875rem 1.25rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--v4-border-strong);
+  box-shadow: 0 8px 22px rgba(28, 28, 28, 0.06);
+  text-decoration: none;
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.reviewCta:hover,
+.reviewCta:focus-visible {
+  border-color: var(--v4-accent);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(28, 28, 28, 0.1);
+}
+
+.reviewCta:focus-visible {
+  outline: 2px solid var(--v4-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reviewCta {
+    transition: none;
+  }
+  .reviewCta:hover,
+  .reviewCta:focus-visible {
+    transform: none;
+  }
+}
+
 /* Under prefers-reduced-data, collapse the cascade: show all bubbles at
    once with no slide/typing animation. No data is saved (CSS only), but
    it matches the low-motion, low-spectacle spirit users have opted into. */

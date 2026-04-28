@@ -4,11 +4,11 @@ import { InstagramIcon, TikTokIcon } from "../shared/SocialIcons";
 import styles from "./V4StickyHeader.module.css";
 
 export const V4_NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
-  { href: "#diferencial", label: "El Diferencial" },
+  { href: "#diferencial", label: "Por qué elegirnos" },
   { href: "#resultados", label: "Resultados" },
   { href: "#historias", label: "Historias" },
   { href: "#resenas", label: "Reseñas" },
-  { href: "#valorador", label: "Valorador" },
+  { href: "#contacto", label: "Contacto" },
 ];
 
 export const V4_SOCIAL_URLS = {
@@ -175,6 +175,42 @@ export default function V4StickyHeader() {
         data-solid={isSolid}
         role="banner"
       >
+        <div className={styles.headerLeft}>
+          <nav className={styles.nav} aria-label="Navegación principal">
+            {V4_NAV_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className={styles.navLink}
+                onClick={(e) => handleNavClick(e, link.href)}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className={styles.headerSocials} aria-label="Redes sociales">
+            <a
+              className={styles.iconLink}
+              href={V4_SOCIAL_URLS.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram de DOSXM2"
+            >
+              <InstagramIcon />
+            </a>
+            <a
+              className={styles.iconLink}
+              href={V4_SOCIAL_URLS.tiktok}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="TikTok de DOSXM2"
+            >
+              <TikTokIcon />
+            </a>
+          </div>
+        </div>
+
         <button
           type="button"
           className={styles.logo}
@@ -203,40 +239,6 @@ export default function V4StickyHeader() {
             />
           </span>
         </button>
-
-        <nav className={styles.nav} aria-label="Navegación principal">
-          {V4_NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className={styles.navLink}
-              onClick={(e) => handleNavClick(e, link.href)}
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-
-        <div className={styles.headerSocials} aria-label="Redes sociales">
-          <a
-            className={styles.iconLink}
-            href={V4_SOCIAL_URLS.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram de DOSXM2"
-          >
-            <InstagramIcon />
-          </a>
-          <a
-            className={styles.iconLink}
-            href={V4_SOCIAL_URLS.tiktok}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="TikTok de DOSXM2"
-          >
-            <TikTokIcon />
-          </a>
-        </div>
 
         <button
           ref={toggleButtonRef}

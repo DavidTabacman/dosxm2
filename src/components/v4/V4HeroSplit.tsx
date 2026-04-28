@@ -110,24 +110,6 @@ export default function V4HeroSplit() {
     [rightPlaybackRef, rightInViewRef]
   );
 
-  function handleCtaClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    e.preventDefault();
-    if (typeof document === "undefined") return;
-    const target = document.querySelector("#valorador");
-    if (!target) {
-      console.warn(
-        `[V4-HeroSplit] ⚠️ CTA target "#valorador" not found — smooth scroll skipped. ` +
-          `Reason: Valorador section has not mounted yet.`
-      );
-      return;
-    }
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
-    if (typeof history !== "undefined") {
-      history.replaceState(null, "", "#valorador");
-    }
-    console.log(`[V4-HeroSplit] 🔗 CTA clicked — scrolling to valorador`);
-  }
-
   return (
     <section
       className={styles.hero}
@@ -175,9 +157,10 @@ export default function V4HeroSplit() {
           </p>
           <div className={styles.ctaRow}>
             <a
-              href="#valorador"
+              href="https://valuation.lystos.com/?clientId=cadc5d64-196d-4b14-a542-0858ecf58bd0&utm_source=web&utm_medium=cta&utm_content=hero"
               className={styles.cta}
-              onClick={handleCtaClick}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Valora tu propiedad
               <svg

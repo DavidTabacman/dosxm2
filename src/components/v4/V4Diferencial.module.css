@@ -128,11 +128,22 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center center;
+  animation: v4KenBurns 14s ease-in-out infinite alternate;
+  will-change: transform;
 }
 
-.portraitFrame:hover .portrait {
-  transform: scale(1.03);
+.portraitFrame:nth-of-type(2) .portrait {
+  animation-delay: -7s;
+}
+
+@keyframes v4KenBurns {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.06) translate3d(-1.5%, -1.2%, 0);
+  }
 }
 
 .portraitName {
@@ -184,7 +195,9 @@
     transform: none;
   }
 
-  .portraitFrame:hover .portrait {
+  .portrait,
+  .portraitFrame:nth-of-type(2) .portrait {
+    animation: none;
     transform: none;
   }
 

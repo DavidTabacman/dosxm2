@@ -40,6 +40,10 @@
   /* Translucent paper — used for the sticky header solid-scroll background
      so the blur filter can shine through. */
   --v4-bg-translucent: rgba(250, 249, 246, 0.92);
+  /* Glass paper — more translucent variant for the mobile drawer, where we
+     want the page content to read faintly behind the menu (with backdrop
+     blur on top). */
+  --v4-bg-glass: rgba(250, 249, 246, 0.78);
 
   /* Decorative veil stops for hero panel gradients. Keep these separate
      from the on-dark text scale so downstream refactors don't accidentally
@@ -56,7 +60,7 @@
   --v4-type-metric: clamp(2.75rem, 7.5vw, 5.25rem);
 
   /* Layout tokens */
-  --v4-header-h: 64px;
+  --v4-header-h: 120px;
   --v4-fab-size: 52px;
   --v4-max-width: 1180px;
 

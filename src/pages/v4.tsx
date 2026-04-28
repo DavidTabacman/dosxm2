@@ -7,7 +7,7 @@ import V4Diferencial from "@/components/v4/V4Diferencial";
 import V4Metrics from "@/components/v4/V4Metrics";
 import V4Historias from "@/components/v4/V4Historias";
 import V4Resenas from "@/components/v4/V4Resenas";
-import V4Valorador from "@/components/v4/V4Valorador";
+import V4Contacto from "@/components/v4/V4Contacto";
 import V4Footer from "@/components/v4/V4Footer";
 import V4WhatsAppFAB from "@/components/v4/V4WhatsAppFAB";
 import { useScrollPastAnchor } from "@/components/shared/useScrollPastAnchor";
@@ -75,7 +75,7 @@ const FOUNDERS = [
 const WA_MESSAGE =
   "Hola DOSXM2, quiero información sobre cómo vender mi casa en Madrid.";
 
-const VALORADOR_FOUNDERS = {
+const CONTACTO_FOUNDERS = {
   a: {
     name: FOUNDER_A.name,
     phone: BORJA_PHONE,
@@ -127,7 +127,7 @@ export default function V4Page() {
         <V4Metrics metrics={METRICS} />
         <V4Historias />
         <V4Resenas />
-        <V4Valorador founders={VALORADOR_FOUNDERS} />
+        <V4Contacto founders={CONTACTO_FOUNDERS} />
         <V4Footer founders={FOUNDERS} />
         <V4WhatsAppFAB
           founderAPhone={BORJA_PHONE}
