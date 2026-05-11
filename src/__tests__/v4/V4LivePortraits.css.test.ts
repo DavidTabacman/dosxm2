@@ -34,13 +34,13 @@ describe("V4 live portraits — CSS source", () => {
 
   test("breath wrapper carries the breath animation", () => {
     expect(css).toMatch(
-      /\.portraitBreath\s*\{[^}]*animation:\s*v4PortraitBreath\s+10s\s+ease-in-out\s+infinite\s+alternate/
+      /\.portraitBreath\s*\{[^}]*animation:\s*v4PortraitBreath\s+8s\s+ease-in-out\s+infinite\s+alternate/
     );
   });
 
-  test("second founder uses Alt keyframe with -5s phase offset", () => {
+  test("second founder uses Alt keyframe with -4s phase offset (half of 8s period)", () => {
     expect(css).toMatch(
-      /\.portraitFrame:nth-of-type\(2\)\s+\.portraitBreath\s*\{[^}]*animation-name:\s*v4PortraitBreathAlt[^}]*animation-delay:\s*-5s/
+      /\.portraitFrame:nth-of-type\(2\)\s+\.portraitBreath\s*\{[^}]*animation-name:\s*v4PortraitBreathAlt[^}]*animation-delay:\s*-4s/
     );
   });
 
@@ -49,8 +49,8 @@ describe("V4 live portraits — CSS source", () => {
     expect(mobile).not.toBeNull();
     expect(mobile!).toMatch(/@keyframes\s+v4PortraitBreath\b/);
     expect(mobile!).toMatch(/@keyframes\s+v4PortraitBreathAlt\b/);
-    expect(mobile!).toMatch(/scale\(1\.03\)/);
-    expect(mobile!).not.toMatch(/scale\(1\.06\)/);
+    expect(mobile!).toMatch(/scale\(1\.05\)/);
+    expect(mobile!).not.toMatch(/scale\(1\.1\)/);
   });
 
   test("reduced-motion block disables breath animation and clears will-change", () => {
@@ -70,12 +70,13 @@ describe("V4 live portraits — CSS source", () => {
     );
   });
 
-  test("breath amplitudes stay within tuned caps (scale <=1.06, translate <=1.2%)", () => {
+  test("breath amplitudes stay within tuned caps (scale <=1.10, translate <=3%)", () => {
     // Slice the first (desktop) v4PortraitBreath keyframes — the mobile
     // copy lives inside the @media block and uses smaller amplitudes.
-    // Caps were raised from the original BRD draft (1.03 / 0.6%) after
-    // diagnostic logs showed the smaller values were below the
-    // perceptibility threshold on the live site.
+    // Caps were raised in two passes from the original BRD draft
+    // (1.03 / 0.6% → 1.06 / 1.2% → 1.10 / 3%) after live-site diagnostic
+    // logs confirmed the smaller values were below the perceptibility
+    // threshold on a 253×337 frame.
     const breathDesktop = sliceBalancedBlock(
       css,
       /@keyframes\s+v4PortraitBreath\s*\{/
@@ -87,15 +88,15 @@ describe("V4 live portraits — CSS source", () => {
     expect(scaleMatches.length).toBeGreaterThanOrEqual(2);
     scaleMatches.forEach((s) => {
       expect(s).toBeGreaterThanOrEqual(1);
-      expect(s).toBeLessThanOrEqual(1.06);
+      expect(s).toBeLessThanOrEqual(1.1);
     });
     const translateMatches = Array.from(
       breathDesktop!.matchAll(/translate3d\(\s*(-?[\d.]+)%\s*,\s*(-?[\d.]+)%/g)
     );
     expect(translateMatches.length).toBeGreaterThanOrEqual(2);
     translateMatches.forEach(([, x, y]) => {
-      expect(Math.abs(parseFloat(x))).toBeLessThanOrEqual(1.2);
-      expect(Math.abs(parseFloat(y))).toBeLessThanOrEqual(1.2);
+      expect(Math.abs(parseFloat(x))).toBeLessThanOrEqual(3);
+      expect(Math.abs(parseFloat(y))).toBeLessThanOrEqual(3);
     });
   });
 });

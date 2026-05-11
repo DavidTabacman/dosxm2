@@ -135,12 +135,12 @@
   display: block;
   transform-origin: center center;
   will-change: transform;
-  animation: v4PortraitBreath 10s ease-in-out infinite alternate;
+  animation: v4PortraitBreath 8s ease-in-out infinite alternate;
 }
 
 .portraitFrame:nth-of-type(2) .portraitBreath {
   animation-name: v4PortraitBreathAlt;
-  animation-delay: -5s;
+  animation-delay: -4s;
 }
 
 .portrait {
@@ -214,28 +214,29 @@
   }
 }
 
-/* Breath keyframes: scale band 1.00 → 1.06 + asymmetric translate sway
-   (X=1.2%, Y=0.8%) so the composed motion never zeros out on both
-   axes simultaneously when stacked on the inner img's larger pan.
-   Earlier values (1.03 / 0.6%) were too subtle to be perceptible on
-   a 253×337 frame — the photo barely moved 1.5px over 5s. Doubled
-   amplitudes give visible ambient motion while staying well clear
-   of any "twitchy" feel. */
+/* Breath keyframes: scale band 1.00 → 1.10 + asymmetric translate sway
+   (X=3%, Y=2%) so the composed motion never zeros out on both axes
+   simultaneously when stacked on the inner img's larger pan.
+   Calibrated against live-site diagnostic: earlier 1.06/1.2% values
+   produced only ~1.3 px/sec drift, below conscious perception. Current
+   ~3 px/sec drift + 25px peak scale-delta on a 253px frame reads as
+   genuine ambient motion. Period dropped from 10s → 8s for a more
+   natural "breath-per-minute" cadence. */
 @keyframes v4PortraitBreath {
   from {
-    transform: scale(1) translate3d(-1.2%, -0.8%, 0);
+    transform: scale(1) translate3d(-3%, -2%, 0);
   }
   to {
-    transform: scale(1.06) translate3d(1.2%, 0.8%, 0);
+    transform: scale(1.1) translate3d(3%, 2%, 0);
   }
 }
 
 @keyframes v4PortraitBreathAlt {
   from {
-    transform: scale(1.06) translate3d(1.2%, -0.8%, 0);
+    transform: scale(1.1) translate3d(3%, -2%, 0);
   }
   to {
-    transform: scale(1) translate3d(-1.2%, 0.8%, 0);
+    transform: scale(1) translate3d(-3%, 2%, 0);
   }
 }
 
@@ -246,18 +247,18 @@
 @media (max-width: 600px) {
   @keyframes v4PortraitBreath {
     from {
-      transform: scale(1) translate3d(-0.6%, -0.4%, 0);
+      transform: scale(1) translate3d(-1.5%, -1%, 0);
     }
     to {
-      transform: scale(1.03) translate3d(0.6%, 0.4%, 0);
+      transform: scale(1.05) translate3d(1.5%, 1%, 0);
     }
   }
   @keyframes v4PortraitBreathAlt {
     from {
-      transform: scale(1.03) translate3d(0.6%, -0.4%, 0);
+      transform: scale(1.05) translate3d(1.5%, -1%, 0);
     }
     to {
-      transform: scale(1) translate3d(-0.6%, 0.4%, 0);
+      transform: scale(1) translate3d(-1.5%, 1%, 0);
     }
   }
 }
