@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSectionReveal } from "../shared/useSectionReveal";
 import styles from "./V4Diferencial.module.css";
 import anim from "./v4-animations.module.css";
@@ -28,6 +29,117 @@ export default function V4Diferencial({
   portraitsDetached = false,
 }: V4DiferencialProps) {
   const [ref, isRevealed] = useSectionReveal(0.15);
+
+  /* ============================================================
+     TEMP DIAGNOSTIC — remove once the breath effect is confirmed
+     working on the live site. Runs once on mount, dumps the full
+     state of the portrait DOM + CSS + Web Animations, then samples
+     computed `transform` every 1s for 10 ticks to prove (or
+     disprove) that the animation is actually progressing.
+     ============================================================ */
+  useEffect(() => {
+    const TAG = "[V4-Diferencial Breath DIAG]";
+    const log = (label: string, ...rest: unknown[]) =>
+      console.log(`${TAG} ${label}`, ...rest);
+
+    log("== mount: starting diagnostic ==");
+    log("UA:", navigator.userAgent);
+    log("viewport:", window.innerWidth, "x", window.innerHeight);
+    log(
+      "viewport <= 600 (mobile breakpoint active):",
+      window.innerWidth <= 600
+    );
+    log(
+      "prefers-reduced-motion matches:",
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    );
+    log(
+      "CSS.supports animation-timeline view():",
+      typeof CSS !== "undefined" && CSS.supports
+        ? CSS.supports("animation-timeline: view()")
+        : "CSS.supports unavailable"
+    );
+    log("CSS module styles.portraitBreath =", styles.portraitBreath);
+    log("CSS module styles.portrait       =", styles.portrait);
+    log("CSS module styles.portraitFrame  =", styles.portraitFrame);
+
+    const wrappers = document.querySelectorAll(
+      `.${styles.portraitBreath}`
+    ) as NodeListOf<HTMLElement>;
+    const wrappersByAttr = document.querySelectorAll(
+      "[class*='portraitBreath']"
+    );
+    log(
+      `wrappers via styles class (${styles.portraitBreath}):`,
+      wrappers.length
+    );
+    log(
+      "wrappers via [class*='portraitBreath']:",
+      wrappersByAttr.length
+    );
+
+    if (wrappers.length === 0) {
+      log(
+        "❌ FAIL: no .portraitBreath elements matched the hashed class. " +
+          "Either the JSX wrapper is missing, the className didn't resolve, " +
+          "or the CSS module hash drifted between bundle and runtime."
+      );
+      return;
+    }
+
+    wrappers.forEach((el, i) => {
+      const cs = window.getComputedStyle(el);
+      log(`--- wrapper #${i + 1} (${el.className}) ---`);
+      log(`  offset size: ${el.offsetWidth} x ${el.offsetHeight}`);
+      log(`  animation-name:           ${cs.animationName}`);
+      log(`  animation-duration:       ${cs.animationDuration}`);
+      log(`  animation-delay:          ${cs.animationDelay}`);
+      log(`  animation-iteration-count:${cs.animationIterationCount}`);
+      log(`  animation-direction:      ${cs.animationDirection}`);
+      log(`  animation-play-state:     ${cs.animationPlayState}`);
+      log(`  animation-timing-function:${cs.animationTimingFunction}`);
+      log(`  will-change:              ${cs.willChange}`);
+      log(`  position:                 ${cs.position}`);
+      log(`  inset:                    ${cs.inset}`);
+      log(`  transform:                ${cs.transform}`);
+
+      const getAnims = (el as HTMLElement & {
+        getAnimations?: () => Animation[];
+      }).getAnimations;
+      if (typeof getAnims === "function") {
+        const anims = getAnims.call(el);
+        log(`  getAnimations() count: ${anims.length}`);
+        anims.forEach((a, j) => {
+          const cssAnim = a as Animation & { animationName?: string };
+          log(
+            `    anim[${j}] name=${cssAnim.animationName ?? "?"} ` +
+              `playState=${a.playState} ` +
+              `currentTime=${a.currentTime}`
+          );
+        });
+      } else {
+        log("  getAnimations() unsupported in this browser");
+      }
+    });
+
+    let tick = 0;
+    const TOTAL_TICKS = 10;
+    const interval = window.setInterval(() => {
+      tick += 1;
+      const t0 = window.getComputedStyle(wrappers[0]).transform;
+      const t1 =
+        wrappers.length > 1
+          ? window.getComputedStyle(wrappers[1]).transform
+          : "(no wrapper #2)";
+      log(`tick ${tick}/${TOTAL_TICKS} transforms — A: ${t0} | B: ${t1}`);
+      if (tick >= TOTAL_TICKS) {
+        window.clearInterval(interval);
+        log("== diagnostic complete ==");
+      }
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, []);
 
   return (
     <section
