@@ -115,6 +115,12 @@
 .portraitOuter {
   position: relative;
   display: block;
+  /* Don't stretch vertically inside the grid: the asymmetric editorial
+     margin-top on the second card makes the grid row taller than the
+     frame's aspect-ratio-locked height, and a stretched outer would put
+     the breath's transform-origin off the frame's actual center
+     (asymmetric wobble on the first card only). */
+  align-self: start;
   transform-origin: center center;
   will-change: transform;
   animation: v4PortraitBreath 7s linear infinite alternate;
