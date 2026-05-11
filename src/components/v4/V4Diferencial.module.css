@@ -214,24 +214,28 @@
   }
 }
 
-/* Breath keyframes: tiny scale band (1.00 → 1.03) + asymmetric translate
-   sway (X=0.6%, Y=0.4%) so the composed motion never zeros out on both
-   axes simultaneously when stacked on the inner img's larger pan. */
+/* Breath keyframes: scale band 1.00 → 1.06 + asymmetric translate sway
+   (X=1.2%, Y=0.8%) so the composed motion never zeros out on both
+   axes simultaneously when stacked on the inner img's larger pan.
+   Earlier values (1.03 / 0.6%) were too subtle to be perceptible on
+   a 253×337 frame — the photo barely moved 1.5px over 5s. Doubled
+   amplitudes give visible ambient motion while staying well clear
+   of any "twitchy" feel. */
 @keyframes v4PortraitBreath {
   from {
-    transform: scale(1) translate3d(-0.6%, -0.4%, 0);
+    transform: scale(1) translate3d(-1.2%, -0.8%, 0);
   }
   to {
-    transform: scale(1.03) translate3d(0.6%, 0.4%, 0);
+    transform: scale(1.06) translate3d(1.2%, 0.8%, 0);
   }
 }
 
 @keyframes v4PortraitBreathAlt {
   from {
-    transform: scale(1.03) translate3d(0.6%, -0.4%, 0);
+    transform: scale(1.06) translate3d(1.2%, -0.8%, 0);
   }
   to {
-    transform: scale(1) translate3d(-0.6%, 0.4%, 0);
+    transform: scale(1) translate3d(-1.2%, 0.8%, 0);
   }
 }
 
@@ -242,18 +246,18 @@
 @media (max-width: 600px) {
   @keyframes v4PortraitBreath {
     from {
-      transform: scale(1) translate3d(-0.3%, -0.2%, 0);
+      transform: scale(1) translate3d(-0.6%, -0.4%, 0);
     }
     to {
-      transform: scale(1.015) translate3d(0.3%, 0.2%, 0);
+      transform: scale(1.03) translate3d(0.6%, 0.4%, 0);
     }
   }
   @keyframes v4PortraitBreathAlt {
     from {
-      transform: scale(1.015) translate3d(0.3%, -0.2%, 0);
+      transform: scale(1.03) translate3d(0.6%, -0.4%, 0);
     }
     to {
-      transform: scale(1) translate3d(-0.3%, 0.2%, 0);
+      transform: scale(1) translate3d(-0.6%, 0.4%, 0);
     }
   }
 }

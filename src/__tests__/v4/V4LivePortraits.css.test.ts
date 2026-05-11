@@ -49,8 +49,8 @@ describe("V4 live portraits — CSS source", () => {
     expect(mobile).not.toBeNull();
     expect(mobile!).toMatch(/@keyframes\s+v4PortraitBreath\b/);
     expect(mobile!).toMatch(/@keyframes\s+v4PortraitBreathAlt\b/);
-    expect(mobile!).toMatch(/scale\(1\.015\)/);
-    expect(mobile!).not.toMatch(/scale\(1\.03\)/);
+    expect(mobile!).toMatch(/scale\(1\.03\)/);
+    expect(mobile!).not.toMatch(/scale\(1\.06\)/);
   });
 
   test("reduced-motion block disables breath animation and clears will-change", () => {
@@ -70,9 +70,12 @@ describe("V4 live portraits — CSS source", () => {
     );
   });
 
-  test("breath amplitudes stay within BRD caps (scale <=1.03, translate <=0.6%)", () => {
+  test("breath amplitudes stay within tuned caps (scale <=1.06, translate <=1.2%)", () => {
     // Slice the first (desktop) v4PortraitBreath keyframes — the mobile
     // copy lives inside the @media block and uses smaller amplitudes.
+    // Caps were raised from the original BRD draft (1.03 / 0.6%) after
+    // diagnostic logs showed the smaller values were below the
+    // perceptibility threshold on the live site.
     const breathDesktop = sliceBalancedBlock(
       css,
       /@keyframes\s+v4PortraitBreath\s*\{/
@@ -84,15 +87,15 @@ describe("V4 live portraits — CSS source", () => {
     expect(scaleMatches.length).toBeGreaterThanOrEqual(2);
     scaleMatches.forEach((s) => {
       expect(s).toBeGreaterThanOrEqual(1);
-      expect(s).toBeLessThanOrEqual(1.03);
+      expect(s).toBeLessThanOrEqual(1.06);
     });
     const translateMatches = Array.from(
       breathDesktop!.matchAll(/translate3d\(\s*(-?[\d.]+)%\s*,\s*(-?[\d.]+)%/g)
     );
     expect(translateMatches.length).toBeGreaterThanOrEqual(2);
     translateMatches.forEach(([, x, y]) => {
-      expect(Math.abs(parseFloat(x))).toBeLessThanOrEqual(0.6);
-      expect(Math.abs(parseFloat(y))).toBeLessThanOrEqual(0.6);
+      expect(Math.abs(parseFloat(x))).toBeLessThanOrEqual(1.2);
+      expect(Math.abs(parseFloat(y))).toBeLessThanOrEqual(1.2);
     });
   });
 });

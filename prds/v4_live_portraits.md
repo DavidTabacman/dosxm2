@@ -69,7 +69,7 @@ The strip is the only place on V4 where the founders look the visitor in the eye
 |---|---|
 | Motion reads as "twitchy" on small mobile screens | Reduce amplitude (~50%) under `@media (max-width: 600px)` (aligns with the V4 consolidated breakpoint set enforced by [v4-breakpoints.test.ts](../src/__tests__/v4/v4-breakpoints.test.ts)) |
 | Two stacked transforms (breathing + Ken Burns) cancel or fight | Layered DOM: outer frame stays still, inner wrapper breathes, `<img>` does Ken Burns |
-| Looks gimmicky to a serious buyer demographic | Cap scale delta at 1.03 and period at ≥8s; hold ease-in-out so the loop never feels mechanical |
+| Looks gimmicky to a serious buyer demographic | Cap scale delta at 1.06 and period at ≥8s; hold ease-in-out so the loop never feels mechanical. (Initial 1.03 cap proved too subtle to perceive on the live site — see commit history.) |
 | Battery / CPU on low-end Android | Pure `transform` keeps it on the compositor; ship behind `prefers-reduced-motion` opt-out anyway |
 
 ## 9. Out of scope (future)
