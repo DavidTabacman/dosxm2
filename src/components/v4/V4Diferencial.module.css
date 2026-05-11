@@ -101,6 +101,38 @@
   pointer-events: none;
 }
 
+/* Ambient "presence" wrapper. Lives OUTSIDE the frame so the whole
+   photo card (frame + shadow + gradient + name + media) moves as one
+   unit — fixes the perceptual aperture problem documented in
+   prds/v4_live_portraits_DEBUGGING.md §4 + research notes.
+   When a cinemagraph <video> is rendered inside, this wrapper adds
+   subtle whole-card presence on top of the video's internal motion.
+   When only a still <img> is rendered, this wrapper IS the motion —
+   tuned with a slight rotation to break the rigid-translation reading
+   that perception research (Johansson biological motion) flagged.
+   Don't add overflow:hidden here — the breath transform extends ~2%
+   beyond the box and nothing should clip it. */
+.portraitOuter {
+  position: relative;
+  display: block;
+  transform-origin: center center;
+  will-change: transform;
+  animation: v4PortraitBreath 7s linear infinite alternate;
+}
+
+.portraitOuter:first-child {
+  margin-top: 0;
+}
+
+.portraitOuter:last-child {
+  margin-top: clamp(2rem, 6vw, 4rem);
+}
+
+.portraitOuterAlt {
+  animation: v4PortraitBreathAlt 9s linear infinite alternate;
+  animation-delay: -2.4s;
+}
+
 .portraitFrame {
   position: relative;
   overflow: hidden;
@@ -111,36 +143,8 @@
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.portraitFrame:first-child {
-  margin-top: 0;
-}
-
-.portraitFrame:last-child {
-  margin-top: clamp(2rem, 6vw, 4rem);
-}
-
 .portraitFrame:hover {
   transform: translateY(-4px);
-}
-
-/* Ambient "breathing" wrapper. Runs an always-on micro pan + zoom so the
-   portraits feel alive even when the user isn't scrolling. The wrapper
-   transform concatenates with the inner img's Ken Burns / scroll-driven
-   transform during compositing — they don't fight because they live on
-   different DOM nodes. Founder B uses the Alt keyframe with a -5s delay
-   (half-period) so the two portraits are always in opposing phases. */
-.portraitBreath {
-  position: absolute;
-  inset: 0;
-  display: block;
-  transform-origin: center center;
-  will-change: transform;
-  animation: v4PortraitBreath 8s ease-in-out infinite alternate;
-}
-
-.portraitFrame:nth-of-type(2) .portraitBreath {
-  animation-name: v4PortraitBreathAlt;
-  animation-delay: -4s;
 }
 
 .portrait {
@@ -156,7 +160,7 @@
   animation: v4KenBurns 8s ease-in-out infinite alternate;
 }
 
-.portraitFrame:nth-of-type(2) .portrait {
+.portraitOuterAlt .portrait {
   animation-delay: -4s;
   animation-name: v4KenBurnsAlt;
 }
@@ -190,7 +194,7 @@
     animation-timeline: view();
     animation-range: cover 0% cover 100%;
   }
-  .portraitFrame:nth-of-type(2) .portrait {
+  .portraitOuterAlt .portrait {
     animation-name: v4PortraitScrollAlt;
     animation-delay: 0s;
   }
@@ -214,29 +218,38 @@
   }
 }
 
-/* Breath keyframes: scale band 1.00 → 1.10 + asymmetric translate sway
-   (X=3%, Y=2%) so the composed motion never zeros out on both axes
-   simultaneously when stacked on the inner img's larger pan.
-   Calibrated against live-site diagnostic: earlier 1.06/1.2% values
-   produced only ~1.3 px/sec drift, below conscious perception. Current
-   ~3 px/sec drift + 25px peak scale-delta on a 253px frame reads as
-   genuine ambient motion. Period dropped from 10s → 8s for a more
-   natural "breath-per-minute" cadence. */
+/* Breath keyframes — research-informed values.
+   Keep @keyframes v4PortraitBreath/Alt in this file — never move them
+   to v4-animations.module.css or they leak into FAB portraits
+   (V4FounderLinks). Guarded by V4LivePortraits.css.test.ts.
+
+   Tuning (per perception research, after three failed CSS passes):
+   • scale band 1.00 → 1.04 — whole card now moves; subtler reads better
+     than the earlier 1.10 because the visible unit (frame + shadow)
+     gives the eye a coherent object to track instead of content drift
+     behind a static aperture.
+   • translate ±2% X, ±1.2% Y — asymmetric so motion never zeros on
+     both axes simultaneously.
+   • rotate ±0.3deg — small but the *differential* between corners and
+     center breaks the rigid-translation reading that Johansson
+     biological-motion research warned about.
+   • 7s + 9s decoupled periods (not 8s/-4s phase offset) — identical
+     periods read as a synchronised wobble (uncanny "page glitch"). */
 @keyframes v4PortraitBreath {
   from {
-    transform: scale(1) translate3d(-3%, -2%, 0);
+    transform: scale(1) translate3d(-2%, -1.2%, 0) rotate(-0.3deg);
   }
   to {
-    transform: scale(1.1) translate3d(3%, 2%, 0);
+    transform: scale(1.04) translate3d(2%, 1.2%, 0) rotate(0.3deg);
   }
 }
 
 @keyframes v4PortraitBreathAlt {
   from {
-    transform: scale(1.1) translate3d(3%, -2%, 0);
+    transform: scale(1.04) translate3d(2%, -1.2%, 0) rotate(0.3deg);
   }
   to {
-    transform: scale(1) translate3d(-3%, 2%, 0);
+    transform: scale(1) translate3d(-2%, 1.2%, 0) rotate(-0.3deg);
   }
 }
 
@@ -247,18 +260,18 @@
 @media (max-width: 600px) {
   @keyframes v4PortraitBreath {
     from {
-      transform: scale(1) translate3d(-1.5%, -1%, 0);
+      transform: scale(1) translate3d(-1%, -0.6%, 0) rotate(-0.15deg);
     }
     to {
-      transform: scale(1.05) translate3d(1.5%, 1%, 0);
+      transform: scale(1.02) translate3d(1%, 0.6%, 0) rotate(0.15deg);
     }
   }
   @keyframes v4PortraitBreathAlt {
     from {
-      transform: scale(1.05) translate3d(1.5%, -1%, 0);
+      transform: scale(1.02) translate3d(1%, -0.6%, 0) rotate(0.15deg);
     }
     to {
-      transform: scale(1) translate3d(-1.5%, 1%, 0);
+      transform: scale(1) translate3d(-1%, 0.6%, 0) rotate(-0.15deg);
     }
   }
 }
@@ -300,13 +313,16 @@
   margin-bottom: 1.5rem;
 }
 
-/* Reduced motion — kill ambient ken-burns, scroll-driven animation, and
-   any hover transforms. Photos stay completely still. */
+/* Reduced motion — kill ambient ken-burns, scroll-driven animation, the
+   outer card breath, and any hover transforms. The component-level
+   useReducedMotion hook also swaps <video> for <img> in this case —
+   this CSS block is the belt-and-braces guarantee even if the JS hook
+   runs late on hydration. */
 @media (prefers-reduced-motion: reduce) {
   .portraits,
+  .portraitOuter,
   .portraitFrame,
-  .portrait,
-  .portraitBreath {
+  .portrait {
     transition: none;
   }
 
@@ -315,9 +331,9 @@
   }
 
   .portrait,
-  .portraitFrame:nth-of-type(2) .portrait,
-  .portraitBreath,
-  .portraitFrame:nth-of-type(2) .portraitBreath {
+  .portraitOuter,
+  .portraitOuterAlt,
+  .portraitOuterAlt .portrait {
     animation: none;
     animation-timeline: auto;
     transform: none;

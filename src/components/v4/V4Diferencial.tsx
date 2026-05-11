@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useSectionReveal } from "../shared/useSectionReveal";
+import { useReducedMotion } from "../shared/useReducedMotion";
 import styles from "./V4Diferencial.module.css";
 import anim from "./v4-animations.module.css";
 
@@ -7,6 +8,21 @@ export interface Founder {
   name: string;
   portraitUrl: string;
   alt: string;
+  /**
+   * Optional cinemagraph loop. When provided AND reduced-motion is off,
+   * the founder card renders a `<video>` instead of the still `<img>` —
+   * the only DOM technique that actually engages the brain's biological
+   * motion pathway (per Johansson 1973 + PNAS biological-motion research).
+   * Without this, we degrade to a still `<img>` animated by the outer
+   * card breath (visible motion, but rigid — see debug brief).
+   *
+   * Both formats SHOULD be provided so Safari (no AV1 on older versions)
+   * can fall back to H.264. The poster attribute uses `portraitUrl`.
+   */
+  loopVideo?: {
+    webm?: string;
+    mp4: string;
+  };
 }
 
 export interface V4DiferencialProps {
@@ -28,7 +44,44 @@ export default function V4Diferencial({
   founderB,
   portraitsDetached = false,
 }: V4DiferencialProps) {
-  const [ref, isRevealed] = useSectionReveal(0.15);
+  const [revealRef, isRevealed] = useSectionReveal(0.15);
+  const reducedMotion = useReducedMotion();
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  const setSectionRef = useCallback(
+    (node: HTMLElement | null) => {
+      revealRef(node);
+      sectionRef.current = node;
+    },
+    [revealRef]
+  );
+
+  // Pause/resume cinemagraph videos based on viewport intersection so
+  // mobile battery doesn't burn on a perpetually-decoding loop. No-op
+  // when reduced-motion is set (because the videos won't render in
+  // that case) or when running in a test environment without IO.
+  useEffect(() => {
+    if (reducedMotion) return;
+    if (typeof IntersectionObserver === "undefined") return;
+    const node = sectionRef.current;
+    if (!node) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        videoRefs.current.forEach((v) => {
+          if (!v) return;
+          if (entry.isIntersecting) {
+            v.play().catch(() => {});
+          } else {
+            v.pause();
+          }
+        });
+      },
+      { threshold: 0.05 }
+    );
+    io.observe(node);
+    return () => io.disconnect();
+  }, [reducedMotion]);
 
   /* ============================================================
      TEMP DIAGNOSTIC — remove once the breath effect is confirmed
@@ -38,7 +91,7 @@ export default function V4Diferencial({
      disprove) that the animation is actually progressing.
      ============================================================ */
   useEffect(() => {
-    const TAG = "[V4-Diferencial Breath DIAG]";
+    const TAG = "[V4-Diferencial CardBreath DIAG]";
     const log = (label: string, ...rest: unknown[]) =>
       console.log(`${TAG} ${label}`, ...rest);
 
@@ -53,44 +106,52 @@ export default function V4Diferencial({
       "prefers-reduced-motion matches:",
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
     );
+    log("reducedMotion (from hook state):", reducedMotion);
+    log(
+      "rendered mode per card:",
+      videoRefs.current.map((v) => (v ? "video" : "img"))
+    );
     log(
       "CSS.supports animation-timeline view():",
       typeof CSS !== "undefined" && CSS.supports
         ? CSS.supports("animation-timeline: view()")
         : "CSS.supports unavailable"
     );
-    log("CSS module styles.portraitBreath =", styles.portraitBreath);
+    log("CSS module styles.portraitOuter  =", styles.portraitOuter);
     log("CSS module styles.portrait       =", styles.portrait);
     log("CSS module styles.portraitFrame  =", styles.portraitFrame);
 
-    const wrappers = document.querySelectorAll(
-      `.${styles.portraitBreath}`
+    const outers = document.querySelectorAll(
+      `.${styles.portraitOuter}`
     ) as NodeListOf<HTMLElement>;
-    const wrappersByAttr = document.querySelectorAll(
-      "[class*='portraitBreath']"
+    const outersByAttr = document.querySelectorAll(
+      "[class*='portraitOuter']"
     );
     log(
-      `wrappers via styles class (${styles.portraitBreath}):`,
-      wrappers.length
+      `outers via styles class (${styles.portraitOuter}):`,
+      outers.length
     );
     log(
-      "wrappers via [class*='portraitBreath']:",
-      wrappersByAttr.length
+      "outers via [class*='portraitOuter']:",
+      outersByAttr.length
     );
 
-    if (wrappers.length === 0) {
+    if (outers.length === 0) {
       log(
-        "❌ FAIL: no .portraitBreath elements matched the hashed class. " +
+        "❌ FAIL: no .portraitOuter elements matched the hashed class. " +
           "Either the JSX wrapper is missing, the className didn't resolve, " +
           "or the CSS module hash drifted between bundle and runtime."
       );
       return;
     }
 
-    wrappers.forEach((el, i) => {
+    outers.forEach((el, i) => {
       const cs = window.getComputedStyle(el);
-      log(`--- wrapper #${i + 1} (${el.className}) ---`);
-      log(`  offset size: ${el.offsetWidth} x ${el.offsetHeight}`);
+      log(`--- outer #${i + 1} (${el.className}) ---`);
+      log(
+        `  offset size: ${el.offsetWidth} x ${el.offsetHeight} ` +
+          `(now wraps frame, shadow, name tag — whole card moves)`
+      );
       log(`  animation-name:           ${cs.animationName}`);
       log(`  animation-duration:       ${cs.animationDuration}`);
       log(`  animation-delay:          ${cs.animationDelay}`);
@@ -100,7 +161,6 @@ export default function V4Diferencial({
       log(`  animation-timing-function:${cs.animationTimingFunction}`);
       log(`  will-change:              ${cs.willChange}`);
       log(`  position:                 ${cs.position}`);
-      log(`  inset:                    ${cs.inset}`);
       log(`  transform:                ${cs.transform}`);
 
       const getAnims = (el as HTMLElement & {
@@ -126,11 +186,11 @@ export default function V4Diferencial({
     const TOTAL_TICKS = 10;
     const interval = window.setInterval(() => {
       tick += 1;
-      const t0 = window.getComputedStyle(wrappers[0]).transform;
+      const t0 = window.getComputedStyle(outers[0]).transform;
       const t1 =
-        wrappers.length > 1
-          ? window.getComputedStyle(wrappers[1]).transform
-          : "(no wrapper #2)";
+        outers.length > 1
+          ? window.getComputedStyle(outers[1]).transform
+          : "(no outer #2)";
       log(`tick ${tick}/${TOTAL_TICKS} transforms — A: ${t0} | B: ${t1}`);
       if (tick >= TOTAL_TICKS) {
         window.clearInterval(interval);
@@ -139,13 +199,13 @@ export default function V4Diferencial({
     }, 1000);
 
     return () => window.clearInterval(interval);
-  }, []);
+  }, [reducedMotion]);
 
   return (
     <section
       id={id}
       className={styles.section}
-      ref={ref}
+      ref={setSectionRef}
       aria-labelledby="v4-diferencial-heading"
     >
       <div className={styles.grid}>
@@ -184,27 +244,67 @@ export default function V4Diferencial({
           } ${portraitsDetached ? styles.portraitsDetached : ""}`}
           data-detached={portraitsDetached ? "true" : "false"}
         >
-          {[founderA, founderB].map((founder) => (
-            <div key={founder.name} className={styles.portraitFrame}>
-              <div className={styles.portraitBreath}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  className={styles.portrait}
-                  src={founder.portraitUrl}
-                  alt={founder.alt}
-                  data-asset-type="founder-portrait"
-                  loading="lazy"
-                  onError={(e) => {
-                    const img = e.currentTarget;
-                    console.error(
-                      `[V4-Diferencial] ❌ Portrait "${founder.name}" load FAILED — ` +
-                        `src: ${img.src}. Reason: image URL unreachable or blocked.`
-                    );
-                    img.style.visibility = "hidden";
-                  }}
-                />
+          {[founderA, founderB].map((founder, idx) => (
+            <div
+              key={founder.name}
+              className={`${styles.portraitOuter} ${
+                idx === 1 ? styles.portraitOuterAlt : ""
+              }`}
+            >
+              <div className={styles.portraitFrame}>
+                {founder.loopVideo && !reducedMotion ? (
+                  <video
+                    ref={(el) => {
+                      videoRefs.current[idx] = el;
+                    }}
+                    className={styles.portrait}
+                    data-asset-type="founder-portrait-video"
+                    poster={founder.portraitUrl}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    aria-hidden="true"
+                    onError={() => {
+                      // Don't hide the <video> — the browser keeps rendering
+                      // the `poster` image as long as the element is mounted,
+                      // so a source-load failure gracefully degrades to the
+                      // still portrait without any DOM mutation from us.
+                      console.error(
+                        `[V4-Diferencial] ❌ Video for "${founder.name}" failed — ` +
+                          `falling back to still poster.`
+                      );
+                    }}
+                  >
+                    {founder.loopVideo.webm && (
+                      <source
+                        src={founder.loopVideo.webm}
+                        type="video/webm"
+                      />
+                    )}
+                    <source src={founder.loopVideo.mp4} type="video/mp4" />
+                  </video>
+                ) : (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    className={styles.portrait}
+                    src={founder.portraitUrl}
+                    alt={founder.alt}
+                    data-asset-type="founder-portrait"
+                    loading="lazy"
+                    onError={(e) => {
+                      const img = e.currentTarget;
+                      console.error(
+                        `[V4-Diferencial] ❌ Portrait "${founder.name}" load FAILED — ` +
+                          `src: ${img.src}. Reason: image URL unreachable or blocked.`
+                      );
+                      img.style.visibility = "hidden";
+                    }}
+                  />
+                )}
+                <span className={styles.portraitName}>{founder.name}</span>
               </div>
-              <span className={styles.portraitName}>{founder.name}</span>
             </div>
           ))}
         </div>

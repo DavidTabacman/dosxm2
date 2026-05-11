@@ -3,7 +3,7 @@ import { Fraunces, Inter } from "next/font/google";
 import V4Layout from "@/components/v4/V4Layout";
 import V4StickyHeader from "@/components/v4/V4StickyHeader";
 import V4HeroSplit from "@/components/v4/V4HeroSplit";
-import V4Diferencial from "@/components/v4/V4Diferencial";
+import V4Diferencial, { type Founder } from "@/components/v4/V4Diferencial";
 import V4Metrics from "@/components/v4/V4Metrics";
 import V4Historias from "@/components/v4/V4Historias";
 import V4Resenas from "@/components/v4/V4Resenas";
@@ -32,12 +32,17 @@ const inter = Inter({
   display: "swap",
 });
 
-const FOUNDER_A = {
+/* When cinemagraph loop assets are produced (LivePortrait or manual
+ * Cinemagraph Pro — see plan §Asset production), add:
+ *   loopVideo: { webm: "/v4/founders/founder_borja.webm",
+ *                mp4:  "/v4/founders/founder_borja.mp4" }
+ * The component renders <video> automatically when this field is set. */
+const FOUNDER_A: Founder = {
   name: "Borja",
   portraitUrl: "/v4/founders/founder_borja.webp",
   alt: "Retrato de Borja, cofundador de DOSXM2",
 };
-const FOUNDER_B = {
+const FOUNDER_B: Founder = {
   name: "Pablo",
   portraitUrl: "/v4/founders/founder_pablo.webp",
   alt: "Retrato de Pablo, cofundador de DOSXM2",

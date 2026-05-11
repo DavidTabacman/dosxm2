@@ -32,25 +32,57 @@ describe("V4 live portraits — CSS source", () => {
     expect(shared).not.toMatch(/v4PortraitBreath/);
   });
 
-  test("breath wrapper carries the breath animation", () => {
+  test("outer card wrapper carries the breath animation (linear, 7s)", () => {
+    // Linear easing is research-grounded: ease-in-out parks velocity at 0
+    // at the cycle extremes, exactly when a casually-glancing user samples
+    // the stimulus. Linear keeps the stimulus moving throughout.
     expect(css).toMatch(
-      /\.portraitBreath\s*\{[^}]*animation:\s*v4PortraitBreath\s+8s\s+ease-in-out\s+infinite\s+alternate/
+      /\.portraitOuter\s*\{[^}]*animation:\s*v4PortraitBreath\s+7s\s+linear\s+infinite\s+alternate/
     );
   });
 
-  test("second founder uses Alt keyframe with -4s phase offset (half of 8s period)", () => {
+  test("alt modifier carries the alt keyframe with decoupled 9s period + phase offset", () => {
+    // Decoupled 7s + 9s (not 8s/-4s phase offset of the same period) so
+    // the two cards don't read as a synchronised wobble.
     expect(css).toMatch(
-      /\.portraitFrame:nth-of-type\(2\)\s+\.portraitBreath\s*\{[^}]*animation-name:\s*v4PortraitBreathAlt[^}]*animation-delay:\s*-4s/
+      /\.portraitOuterAlt\s*\{[^}]*animation:\s*v4PortraitBreathAlt\s+9s\s+linear\s+infinite\s+alternate[^}]*animation-delay:\s*-2\.4s/
     );
   });
 
-  test("mobile media query reduces breath amplitudes", () => {
-    const mobile = sliceBalancedBlock(css, /@media\s*\(max-width:\s*600px\)\s*\{/);
+  test("breath wrapper sits OUTSIDE the frame (whole card moves, not just content)", () => {
+    // The core perception fix — see prds/v4_live_portraits_DEBUGGING.md §4
+    // and the research pass in §9 (Johansson biological-motion, aperture
+    // problem). Old inner-wrapper .portraitBreath must not coexist.
+    expect(css).not.toMatch(/\.portraitBreath\b/);
+    expect(css).toMatch(/\.portraitFrame\s*\{[^}]*overflow:\s*hidden/);
+  });
+
+  test("breath keyframes include rotation to break rigid-translation reading", () => {
+    // Rotation is research-grounded: differential motion between corners
+    // and center prevents the brain from reading the whole card as a
+    // rigid sheet (which never engages biological-motion perception).
+    const breathDesktop = sliceBalancedBlock(
+      css,
+      /@keyframes\s+v4PortraitBreath\s*\{/
+    );
+    expect(breathDesktop).not.toBeNull();
+    const rotateMatches = Array.from(
+      breathDesktop!.matchAll(/rotate\(\s*-?[\d.]+deg\s*\)/g)
+    );
+    expect(rotateMatches.length).toBeGreaterThanOrEqual(2);
+  });
+
+  test("mobile media query halves amplitudes (scale 1.02 cap)", () => {
+    const mobile = sliceBalancedBlock(
+      css,
+      /@media\s*\(max-width:\s*600px\)\s*\{/
+    );
     expect(mobile).not.toBeNull();
     expect(mobile!).toMatch(/@keyframes\s+v4PortraitBreath\b/);
     expect(mobile!).toMatch(/@keyframes\s+v4PortraitBreathAlt\b/);
-    expect(mobile!).toMatch(/scale\(1\.05\)/);
-    expect(mobile!).not.toMatch(/scale\(1\.1\)/);
+    expect(mobile!).toMatch(/scale\(1\.02\)/);
+    // Desktop scale value 1.04 must not leak into the mobile block.
+    expect(mobile!).not.toMatch(/scale\(1\.04\)/);
   });
 
   test("reduced-motion block disables breath animation and clears will-change", () => {
@@ -59,24 +91,18 @@ describe("V4 live portraits — CSS source", () => {
       /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{/
     );
     expect(reduce).not.toBeNull();
-    expect(reduce!).toMatch(/\.portraitBreath/);
+    expect(reduce!).toMatch(/\.portraitOuter\b/);
+    expect(reduce!).toMatch(/\.portraitOuterAlt\b/);
     expect(reduce!).toMatch(/animation:\s*none/);
     expect(reduce!).toMatch(/will-change:\s*auto/);
+    // Guard against the old inner-wrapper selector creeping back in.
+    expect(reduce!).not.toMatch(/\.portraitBreath\b/);
   });
 
-  test("breath wrapper sits absolutely inside its frame", () => {
-    expect(css).toMatch(
-      /\.portraitBreath\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0/
-    );
-  });
-
-  test("breath amplitudes stay within tuned caps (scale <=1.10, translate <=3%)", () => {
-    // Slice the first (desktop) v4PortraitBreath keyframes — the mobile
-    // copy lives inside the @media block and uses smaller amplitudes.
-    // Caps were raised in two passes from the original BRD draft
-    // (1.03 / 0.6% → 1.06 / 1.2% → 1.10 / 3%) after live-site diagnostic
-    // logs confirmed the smaller values were below the perceptibility
-    // threshold on a 253×337 frame.
+  test("breath amplitudes — scale ≤1.05, translate ≤2% X, ≤1.5% Y on desktop", () => {
+    // Whole card now moves (frame + shadow + name tag together), so much
+    // smaller amplitudes read clearly. Previous caps (scale 1.10 / ±3%)
+    // were tuned for the failed "motion inside a static frame" scenario.
     const breathDesktop = sliceBalancedBlock(
       css,
       /@keyframes\s+v4PortraitBreath\s*\{/
@@ -88,15 +114,41 @@ describe("V4 live portraits — CSS source", () => {
     expect(scaleMatches.length).toBeGreaterThanOrEqual(2);
     scaleMatches.forEach((s) => {
       expect(s).toBeGreaterThanOrEqual(1);
-      expect(s).toBeLessThanOrEqual(1.1);
+      expect(s).toBeLessThanOrEqual(1.05);
     });
     const translateMatches = Array.from(
       breathDesktop!.matchAll(/translate3d\(\s*(-?[\d.]+)%\s*,\s*(-?[\d.]+)%/g)
     );
     expect(translateMatches.length).toBeGreaterThanOrEqual(2);
     translateMatches.forEach(([, x, y]) => {
-      expect(Math.abs(parseFloat(x))).toBeLessThanOrEqual(3);
-      expect(Math.abs(parseFloat(y))).toBeLessThanOrEqual(3);
+      expect(Math.abs(parseFloat(x))).toBeLessThanOrEqual(2);
+      expect(Math.abs(parseFloat(y))).toBeLessThanOrEqual(1.5);
     });
+  });
+
+  test("portraitFrame keeps its hover lift independent of the breath", () => {
+    // Hover lives on the frame; breath lives on the outer wrapper. They
+    // compose via the compositor — neither overwrites the other.
+    expect(css).toMatch(
+      /\.portraitFrame:hover\s*\{[^}]*transform:\s*translateY\(\s*-4px\s*\)/
+    );
+  });
+
+  test("editorial vertical offset lives on portraitOuter (the grid item)", () => {
+    // The new outer wrapper is the direct grid child, so the asymmetric
+    // editorial layout must anchor there. If these rules accidentally
+    // stay on .portraitFrame as well, layouts compound and break.
+    expect(css).toMatch(
+      /\.portraitOuter:first-child\s*\{[^}]*margin-top:\s*0/
+    );
+    expect(css).toMatch(
+      /\.portraitOuter:last-child\s*\{[^}]*margin-top:\s*clamp\(/
+    );
+    expect(css).not.toMatch(
+      /\.portraitFrame:first-child\s*\{[^}]*margin-top/
+    );
+    expect(css).not.toMatch(
+      /\.portraitFrame:last-child\s*\{[^}]*margin-top/
+    );
   });
 });

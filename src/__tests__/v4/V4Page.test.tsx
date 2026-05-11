@@ -165,4 +165,28 @@ describe("V4 Page (integration)", () => {
     const fab = container.querySelector("[data-testid='v4-whatsapp-fab']");
     expect(fab?.getAttribute("aria-hidden")).toBe("false");
   });
+
+  test("founder portraits in Diferencial render as <img> by default (no loopVideo assets yet)", () => {
+    // Guards against accidentally adding loopVideo URLs to the FOUNDER
+    // constants without verifying the assets exist. When real cinemagraph
+    // assets are shipped, this test should be UPDATED (not deleted) to
+    // assert <video> is the default rendering inside Diferencial.
+    const { container } = render(<V4Page />);
+    // jsdom + CSS modules occasionally mis-resolves "#id" selectors;
+    // attribute selector is reliable here.
+    const diferencial = container.querySelector(
+      "section[id='diferencial']"
+    );
+    expect(diferencial).not.toBeNull();
+    expect(
+      diferencial!.querySelectorAll(
+        "img[data-asset-type='founder-portrait']"
+      )
+    ).toHaveLength(2);
+    expect(
+      diferencial!.querySelectorAll(
+        "video[data-asset-type='founder-portrait-video']"
+      )
+    ).toHaveLength(0);
+  });
 });
