@@ -22,16 +22,32 @@ afterEach(() => {
 });
 
 describe("V4 StickyHeader", () => {
-  test("exports 5 nav links matching the BRD sections", () => {
-    expect(V4_NAV_LINKS).toHaveLength(5);
-    const hrefs = V4_NAV_LINKS.map((l) => l.href);
-    expect(hrefs).toEqual([
+  test("exports 6 nav links: 5 internal anchors + the external Valorador CTA", () => {
+    expect(V4_NAV_LINKS).toHaveLength(6);
+    const internal = V4_NAV_LINKS.filter((l) => !l.external).map((l) => l.href);
+    expect(internal).toEqual([
       "#diferencial",
       "#resultados",
       "#historias",
       "#resenas",
       "#contacto",
     ]);
+    const external = V4_NAV_LINKS.filter((l) => l.external);
+    expect(external).toHaveLength(1);
+    expect(external[0].label).toBe("Valorador");
+    expect(external[0].href).toContain("valuation.lystos.com");
+  });
+
+  test("Valorador external nav link opens in a new tab with safe rel attrs", () => {
+    const { container } = render(<V4StickyHeader />);
+    const valorador = Array.from(container.querySelectorAll("nav a")).find(
+      (a) => a.textContent?.trim() === "Valorador",
+    );
+    expect(valorador).not.toBeUndefined();
+    expect(valorador?.getAttribute("target")).toBe("_blank");
+    const rel = valorador?.getAttribute("rel") ?? "";
+    expect(rel).toContain("noopener");
+    expect(rel).toContain("noreferrer");
   });
 
   test("renders the DOSXM2 logo button", () => {

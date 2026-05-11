@@ -37,7 +37,13 @@ export default function V4Footer({
           <ul className={styles.linkList}>
             {V4_NAV_LINKS.map((link) => (
               <li key={link.href}>
-                <a href={link.href}>{link.label}</a>
+                <a
+                  href={link.href}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noopener noreferrer" : undefined}
+                >
+                  {link.label}
+                </a>
               </li>
             ))}
           </ul>

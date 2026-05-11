@@ -129,20 +129,68 @@
   object-fit: cover;
   display: block;
   transform-origin: center center;
-  animation: v4KenBurns 14s ease-in-out infinite alternate;
   will-change: transform;
+  /* Default for browsers without animation-timeline support: an always-on
+     ken-burns. Strong enough to be perceptible on a glance — a 12% zoom
+     paired with a noticeable pan, alternating every 8s. */
+  animation: v4KenBurns 8s ease-in-out infinite alternate;
 }
 
 .portraitFrame:nth-of-type(2) .portrait {
-  animation-delay: -7s;
+  animation-delay: -4s;
+  animation-name: v4KenBurnsAlt;
 }
 
 @keyframes v4KenBurns {
   from {
-    transform: scale(1) translate3d(0, 0, 0);
+    transform: scale(1.02) translate3d(-2.5%, -1.5%, 0);
   }
   to {
-    transform: scale(1.06) translate3d(-1.5%, -1.2%, 0);
+    transform: scale(1.12) translate3d(2%, 1.5%, 0);
+  }
+}
+
+@keyframes v4KenBurnsAlt {
+  from {
+    transform: scale(1.12) translate3d(2.5%, -1.5%, 0);
+  }
+  to {
+    transform: scale(1.02) translate3d(-2%, 1.5%, 0);
+  }
+}
+
+/* Modern browsers: tie the motion directly to scroll position so the
+   user sees a parallax-style pan + zoom every time they scroll over
+   the photos. This gives a much more visible, deliberate sense of
+   movement than the ambient ken-burns alone. The animation-range
+   spans the entire time the portrait is visible in the viewport. */
+@supports (animation-timeline: view()) {
+  .portrait {
+    animation: v4PortraitScroll linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 100%;
+  }
+  .portraitFrame:nth-of-type(2) .portrait {
+    animation-name: v4PortraitScrollAlt;
+    animation-delay: 0s;
+  }
+}
+
+@keyframes v4PortraitScroll {
+  from {
+    transform: scale(1.04) translate3d(0, 8%, 0);
+  }
+  to {
+    transform: scale(1.1) translate3d(0, -8%, 0);
+  }
+}
+
+@keyframes v4PortraitScrollAlt {
+  from {
+    transform: scale(1.1) translate3d(0, -8%, 0);
+  }
+  to {
+    transform: scale(1.04) translate3d(0, 8%, 0);
   }
 }
 
@@ -183,7 +231,8 @@
   margin-bottom: 1.5rem;
 }
 
-/* Reduced motion */
+/* Reduced motion — kill ambient ken-burns, scroll-driven animation, and
+   any hover transforms. Photos stay completely still. */
 @media (prefers-reduced-motion: reduce) {
   .portraits,
   .portraitFrame,
@@ -198,6 +247,7 @@
   .portrait,
   .portraitFrame:nth-of-type(2) .portrait {
     animation: none;
+    animation-timeline: auto;
     transform: none;
   }
 

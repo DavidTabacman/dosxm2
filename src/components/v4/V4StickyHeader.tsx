@@ -3,12 +3,22 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { InstagramIcon, TikTokIcon } from "../shared/SocialIcons";
 import styles from "./V4StickyHeader.module.css";
 
-export const V4_NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
+export const V4_NAV_LINKS: ReadonlyArray<{
+  href: string;
+  label: string;
+  /** External links open in a new tab and skip the smooth-scroll handler. */
+  external?: boolean;
+}> = [
   { href: "#diferencial", label: "Por qué elegirnos" },
   { href: "#resultados", label: "Resultados" },
   { href: "#historias", label: "Historias" },
   { href: "#resenas", label: "Reseñas" },
   { href: "#contacto", label: "Contacto" },
+  {
+    href: "https://l.instagram.com/?u=http%3A%2F%2Fvaluation.lystos.com%2F%3FclientId%3Dcadc5d64-196d-4b14-a542-0858ecf58bd0%26utm_source%3Dig%26utm_medium%3Dsocial%26utm_content%3Dlink_in_bio%26fbclid%3DPAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnWAI3w4GE0tRTNGO9p13ir0iLcVOx6GPp-JU6w1IW6_EN55TM9Xi8LGVkFvc_aem_YqbvHEazi8CRfz6h0FF9HA&e=AT4aKKbyzBZDzksXHcyQW5Y_OODy1CtEBr-rMF4Zq0SFIkgWQJ9NVJjgFSGQ2fObe3ENRYKBmKjRVN_pFqMkQly4rO-yI85ePb9nkzpv7A",
+    label: "Valorador",
+    external: true,
+  },
 ];
 
 export const V4_SOCIAL_URLS = {
@@ -140,16 +150,26 @@ export default function V4StickyHeader() {
   );
 
   const handleNavClick = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    (
+      e: React.MouseEvent<HTMLAnchorElement>,
+      link: { href: string; external?: boolean },
+    ) => {
+      // External links: let the browser open the URL in a new tab. We close
+      // the drawer (if open) but otherwise stay out of the way.
+      if (link.external) {
+        setMenuOpen(false);
+        console.log(`[V4-StickyHeader] 🔗 External nav — ${link.href}`);
+        return;
+      }
       e.preventDefault();
       // Update the hash so browser history reflects the section; scroll via JS
       // so scroll-padding-top is honored consistently across browsers.
       if (typeof history !== "undefined") {
-        history.replaceState(null, "", href);
+        history.replaceState(null, "", link.href);
       }
       setMenuOpen(false);
-      scrollAfterDrawerCloses(() => scrollToAnchor(href));
-      console.log(`[V4-StickyHeader] 🔗 Nav click — scrolling to ${href}`);
+      scrollAfterDrawerCloses(() => scrollToAnchor(link.href));
+      console.log(`[V4-StickyHeader] 🔗 Nav click — scrolling to ${link.href}`);
     },
     [scrollAfterDrawerCloses]
   );
@@ -181,8 +201,10 @@ export default function V4StickyHeader() {
               <a
                 key={link.href}
                 href={link.href}
-                className={styles.navLink}
-                onClick={(e) => handleNavClick(e, link.href)}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener noreferrer" : undefined}
+                className={`${styles.navLink} ${link.external ? styles.navCta : ""}`}
+                onClick={(e) => handleNavClick(e, link)}
               >
                 {link.label}
               </a>
@@ -272,8 +294,10 @@ export default function V4StickyHeader() {
           <a
             key={link.href}
             href={link.href}
-            className={styles.navLink}
-            onClick={(e) => handleNavClick(e, link.href)}
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noopener noreferrer" : undefined}
+            className={`${styles.navLink} ${link.external ? styles.navCta : ""}`}
+            onClick={(e) => handleNavClick(e, link)}
             tabIndex={menuOpen ? 0 : -1}
           >
             {link.label}
