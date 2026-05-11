@@ -112,3 +112,48 @@ describe("V4 Diferencial", () => {
     expect(updated.className).toMatch(/portraitsDetached/);
   });
 });
+
+describe("V4 Diferencial — live portraits DOM", () => {
+  test("each portrait img is wrapped in a portraitBreath element", () => {
+    const { container } = render(<V4Diferencial {...FOUNDERS} />);
+    const wrappers = container.querySelectorAll("[class*='portraitBreath']");
+    expect(wrappers).toHaveLength(2);
+    wrappers.forEach((wrapper) => {
+      expect(wrapper.children).toHaveLength(1);
+      expect((wrapper.children[0] as HTMLElement).tagName).toBe("IMG");
+    });
+  });
+
+  test("portraitName is a sibling of the breath wrapper, not a descendant", () => {
+    const { container } = render(<V4Diferencial {...FOUNDERS} />);
+    const frames = container.querySelectorAll("[class*='portraitFrame']");
+    expect(frames).toHaveLength(2);
+    frames.forEach((frame) => {
+      const name = frame.querySelector("[class*='portraitName']");
+      expect(name).not.toBeNull();
+      expect(name!.parentElement).toBe(frame);
+    });
+  });
+
+  test("img remains directly queryable by data-asset-type after wrap", () => {
+    const { container } = render(<V4Diferencial {...FOUNDERS} />);
+    const portraits = container.querySelectorAll(
+      "img[data-asset-type='founder-portrait']"
+    );
+    expect(portraits).toHaveLength(2);
+  });
+
+  test("portraitsDetached toggle still works after wrap (no regression)", () => {
+    const { container, rerender } = render(<V4Diferencial {...FOUNDERS} />);
+    const before = container.querySelector("[data-detached]") as HTMLElement;
+    expect(before.getAttribute("data-detached")).toBe("false");
+
+    rerender(<V4Diferencial {...FOUNDERS} portraitsDetached />);
+    const after = container.querySelector("[data-detached]") as HTMLElement;
+    expect(after.getAttribute("data-detached")).toBe("true");
+    expect(after.className).toMatch(/portraitsDetached/);
+
+    const wrappers = container.querySelectorAll("[class*='portraitBreath']");
+    expect(wrappers).toHaveLength(2);
+  });
+});

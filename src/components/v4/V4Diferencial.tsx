@@ -74,22 +74,24 @@ export default function V4Diferencial({
         >
           {[founderA, founderB].map((founder) => (
             <div key={founder.name} className={styles.portraitFrame}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                className={styles.portrait}
-                src={founder.portraitUrl}
-                alt={founder.alt}
-                data-asset-type="founder-portrait"
-                loading="lazy"
-                onError={(e) => {
-                  const img = e.currentTarget;
-                  console.error(
-                    `[V4-Diferencial] ❌ Portrait "${founder.name}" load FAILED — ` +
-                      `src: ${img.src}. Reason: image URL unreachable or blocked.`
-                  );
-                  img.style.visibility = "hidden";
-                }}
-              />
+              <div className={styles.portraitBreath}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className={styles.portrait}
+                  src={founder.portraitUrl}
+                  alt={founder.alt}
+                  data-asset-type="founder-portrait"
+                  loading="lazy"
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    console.error(
+                      `[V4-Diferencial] ❌ Portrait "${founder.name}" load FAILED — ` +
+                        `src: ${img.src}. Reason: image URL unreachable or blocked.`
+                    );
+                    img.style.visibility = "hidden";
+                  }}
+                />
+              </div>
               <span className={styles.portraitName}>{founder.name}</span>
             </div>
           ))}

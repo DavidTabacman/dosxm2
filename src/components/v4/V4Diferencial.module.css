@@ -123,6 +123,26 @@
   transform: translateY(-4px);
 }
 
+/* Ambient "breathing" wrapper. Runs an always-on micro pan + zoom so the
+   portraits feel alive even when the user isn't scrolling. The wrapper
+   transform concatenates with the inner img's Ken Burns / scroll-driven
+   transform during compositing — they don't fight because they live on
+   different DOM nodes. Founder B uses the Alt keyframe with a -5s delay
+   (half-period) so the two portraits are always in opposing phases. */
+.portraitBreath {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform-origin: center center;
+  will-change: transform;
+  animation: v4PortraitBreath 10s ease-in-out infinite alternate;
+}
+
+.portraitFrame:nth-of-type(2) .portraitBreath {
+  animation-name: v4PortraitBreathAlt;
+  animation-delay: -5s;
+}
+
 .portrait {
   width: 100%;
   height: 100%;
@@ -194,6 +214,50 @@
   }
 }
 
+/* Breath keyframes: tiny scale band (1.00 → 1.03) + asymmetric translate
+   sway (X=0.6%, Y=0.4%) so the composed motion never zeros out on both
+   axes simultaneously when stacked on the inner img's larger pan. */
+@keyframes v4PortraitBreath {
+  from {
+    transform: scale(1) translate3d(-0.6%, -0.4%, 0);
+  }
+  to {
+    transform: scale(1.03) translate3d(0.6%, 0.4%, 0);
+  }
+}
+
+@keyframes v4PortraitBreathAlt {
+  from {
+    transform: scale(1.03) translate3d(0.6%, -0.4%, 0);
+  }
+  to {
+    transform: scale(1) translate3d(-0.6%, 0.4%, 0);
+  }
+}
+
+/* Mobile: halve the breath amplitudes so the motion stays subtle on
+   smaller viewports. Redefining @keyframes inside a media query is the
+   standard CSS pattern for scaling amplitude without a second name.
+   600px aligns with the V4 consolidated breakpoint set. */
+@media (max-width: 600px) {
+  @keyframes v4PortraitBreath {
+    from {
+      transform: scale(1) translate3d(-0.3%, -0.2%, 0);
+    }
+    to {
+      transform: scale(1.015) translate3d(0.3%, 0.2%, 0);
+    }
+  }
+  @keyframes v4PortraitBreathAlt {
+    from {
+      transform: scale(1.015) translate3d(0.3%, -0.2%, 0);
+    }
+    to {
+      transform: scale(1) translate3d(-0.3%, 0.2%, 0);
+    }
+  }
+}
+
 .portraitName {
   position: absolute;
   left: 0.875rem;
@@ -236,7 +300,8 @@
 @media (prefers-reduced-motion: reduce) {
   .portraits,
   .portraitFrame,
-  .portrait {
+  .portrait,
+  .portraitBreath {
     transition: none;
   }
 
@@ -245,10 +310,13 @@
   }
 
   .portrait,
-  .portraitFrame:nth-of-type(2) .portrait {
+  .portraitFrame:nth-of-type(2) .portrait,
+  .portraitBreath,
+  .portraitFrame:nth-of-type(2) .portraitBreath {
     animation: none;
     animation-timeline: auto;
     transform: none;
+    will-change: auto;
   }
 
   .portraitsDetached {
