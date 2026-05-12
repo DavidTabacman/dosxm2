@@ -3,7 +3,7 @@ import { Fraunces, Inter } from "next/font/google";
 import V4Layout from "@/components/v4/V4Layout";
 import V4StickyHeader from "@/components/v4/V4StickyHeader";
 import V4HeroSplit from "@/components/v4/V4HeroSplit";
-import V4Diferencial, { type Founder } from "@/components/v4/V4Diferencial";
+import V4Diferencial from "@/components/v4/V4Diferencial";
 import V4Metrics from "@/components/v4/V4Metrics";
 import V4Historias from "@/components/v4/V4Historias";
 import V4Resenas from "@/components/v4/V4Resenas";
@@ -11,6 +11,15 @@ import V4Contacto from "@/components/v4/V4Contacto";
 import V4Footer from "@/components/v4/V4Footer";
 import V4WhatsAppFAB from "@/components/v4/V4WhatsAppFAB";
 import { useScrollPastAnchor } from "@/components/shared/useScrollPastAnchor";
+import {
+  FOUNDER_BORJA as FOUNDER_A,
+  FOUNDER_PABLO as FOUNDER_B,
+  FOUNDERS,
+  BORJA_PHONE,
+  PABLO_PHONE,
+  WA_MESSAGE,
+  CONTACTO_FOUNDERS,
+} from "@/constants/founders";
 
 /* BRD 2.2 — "Ogg o Canela" are licensed faces. Fraunces is the closest
  * open substitute (Google Fonts) for a contrasted editorial serif. Swap
@@ -31,22 +40,6 @@ const inter = Inter({
   subsets: ["latin"],
   display: "swap",
 });
-
-/* When cinemagraph loop assets are produced (LivePortrait or manual
- * Cinemagraph Pro — see plan §Asset production), add:
- *   loopVideo: { webm: "/v4/founders/founder_borja.webm",
- *                mp4:  "/v4/founders/founder_borja.mp4" }
- * The component renders <video> automatically when this field is set. */
-const FOUNDER_A: Founder = {
-  name: "Borja",
-  portraitUrl: "/v4/founders/founder_borja.webp",
-  alt: "Retrato de Borja, cofundador de DOSXM2",
-};
-const FOUNDER_B: Founder = {
-  name: "Pablo",
-  portraitUrl: "/v4/founders/founder_pablo.webp",
-  alt: "Retrato de Pablo, cofundador de DOSXM2",
-};
 
 /* BRD 4.3 — metrics: 30 días / 100% / 24/7.
  * "24/7" is non-numeric; handled via `staticValue`. */
@@ -70,31 +63,6 @@ const METRICS = [
     caption: "Dos personas, un teléfono. Te respondemos cuando lo necesites.",
   },
 ] as const;
-
-const BORJA_PHONE = "34667006662";
-const PABLO_PHONE = "34674527410";
-const FOUNDERS = [
-  { name: "Borja", phone: BORJA_PHONE },
-  { name: "Pablo", phone: PABLO_PHONE },
-] as const;
-const WA_MESSAGE =
-  "Hola DOSXM2, quiero información sobre cómo vender mi casa en Madrid.";
-
-const CONTACTO_FOUNDERS = {
-  a: {
-    name: FOUNDER_A.name,
-    phone: BORJA_PHONE,
-    portraitUrl: FOUNDER_A.portraitUrl,
-    portraitAlt: FOUNDER_A.alt,
-  },
-  b: {
-    name: FOUNDER_B.name,
-    phone: PABLO_PHONE,
-    portraitUrl: FOUNDER_B.portraitUrl,
-    portraitAlt: FOUNDER_B.alt,
-  },
-  message: WA_MESSAGE,
-};
 
 export default function V4Page() {
   /* Single source of truth for the "portraits have detached" handoff.

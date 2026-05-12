@@ -26,6 +26,17 @@ vi.mock("@/components/shared/useSectionVisible", () => ({
   useSectionVisible: () => [() => {}, true],
 }));
 
+vi.mock("next/router", () => ({
+  useRouter: () => ({
+    pathname: "/v4",
+    asPath: "/v4",
+    query: {},
+    push: vi.fn(),
+    replace: vi.fn(),
+    isReady: true,
+  }),
+}));
+
 const scrollPastRef = { current: false };
 vi.mock("@/components/shared/useScrollPastAnchor", () => ({
   useScrollPastAnchor: () => scrollPastRef.current,
@@ -107,7 +118,10 @@ describe("V4 Page (integration)", () => {
     // read against src/pages/v4.tsx to guard the trim.
     const { readFileSync } = eval("require('fs')") as typeof import("fs");
     const { resolve } = eval("require('path')") as typeof import("path");
-    const src = readFileSync(resolve(process.cwd(), "src/pages/v4.tsx"), "utf8");
+    const src = readFileSync(
+      resolve(process.cwd(), "src/pages/v4/index.tsx"),
+      "utf8"
+    );
     expect(src).toMatch(/Fraunces\(\s*{[^}]*weight:\s*\[\s*"400"\s*\]/);
   });
 
@@ -166,11 +180,12 @@ describe("V4 Page (integration)", () => {
     expect(fab?.getAttribute("aria-hidden")).toBe("false");
   });
 
-  test("founder portraits in Diferencial render as <img> by default (no loopVideo assets yet)", () => {
-    // Guards against accidentally adding loopVideo URLs to the FOUNDER
-    // constants without verifying the assets exist. When real cinemagraph
-    // assets are shipped, this test should be UPDATED (not deleted) to
-    // assert <video> is the default rendering inside Diferencial.
+  test("founder portraits in Diferencial render as <video> cinemagraphs (loopVideo assets shipped)", () => {
+    // Pass-6: ffmpeg-generated cinemagraph mp4s are wired into the
+    // FOUNDER constants. The render-time ternary in V4Diferencial swaps
+    // <img> for <video> when loopVideo is set and reduced-motion is off.
+    // If this test ever flips back to expecting <img>, an asset URL has
+    // gone missing in src/constants/founders.ts.
     const { container } = render(<V4Page />);
     // jsdom + CSS modules occasionally mis-resolves "#id" selectors;
     // attribute selector is reliable here.
@@ -180,12 +195,12 @@ describe("V4 Page (integration)", () => {
     expect(diferencial).not.toBeNull();
     expect(
       diferencial!.querySelectorAll(
-        "img[data-asset-type='founder-portrait']"
+        "video[data-asset-type='founder-portrait-video']"
       )
     ).toHaveLength(2);
     expect(
       diferencial!.querySelectorAll(
-        "video[data-asset-type='founder-portrait-video']"
+        "img[data-asset-type='founder-portrait']"
       )
     ).toHaveLength(0);
   });
