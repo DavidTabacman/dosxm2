@@ -19,17 +19,24 @@ describe("V4 Footer", () => {
       // External links carry long, special-char-rich URLs (Instagram
       // tracker wrappers) that don't play well with attribute-equals
       // selectors — match by label text and verify the href separately.
-      const anchor = link.external
+      // Anchor links in the footer are prefixed with /v4 because the
+      // footer can be mounted on any V4 page (including /v4/conocenos).
+      const expectedHref =
+        link.kind === "anchor" ? `/v4${link.href}` : link.href;
+      const isExternal = link.kind === "external";
+      const anchor = isExternal
         ? Array.from(container.querySelectorAll("a")).find(
             (a) => a.textContent?.trim() === link.label,
           )
-        : container.querySelector(`a[href='${link.href}']`);
+        : container.querySelector(`a[href='${expectedHref}']`);
       expect(anchor).not.toBeUndefined();
       expect(anchor).not.toBeNull();
       expect(anchor?.textContent?.trim()).toBe(link.label);
-      if (link.external) {
+      if (isExternal) {
         expect(anchor?.getAttribute("href")).toBe(link.href);
         expect(anchor?.getAttribute("target")).toBe("_blank");
+      } else {
+        expect(anchor?.getAttribute("href")).toBe(expectedHref);
       }
     });
   });

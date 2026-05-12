@@ -1,25 +1,51 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { InstagramIcon, TikTokIcon } from "../shared/SocialIcons";
 import styles from "./V4StickyHeader.module.css";
 
-export const V4_NAV_LINKS: ReadonlyArray<{
+/**
+ * `kind` semantics:
+ *   - "anchor"   — fragment id on the homepage (/v4). Clicking from /v4 smooth-
+ *                  scrolls in place; clicking from any other page lets the
+ *                  browser do a full-page navigation to /v4 + href (the href
+ *                  attribute is rewritten below). We don't use router.push for
+ *                  hash navigation — see next.js #18601, #37552, #20125.
+ *   - "page"     — a different Next.js route. router.push handles client nav.
+ *   - "external" — opens in a new tab; styled as the Valorador CTA pill.
+ */
+export type V4NavKind = "anchor" | "page" | "external";
+
+export interface V4NavLink {
   href: string;
   label: string;
-  /** External links open in a new tab and skip the smooth-scroll handler. */
-  external?: boolean;
-}> = [
-  { href: "#diferencial", label: "Por qué elegirnos" },
-  { href: "#resultados", label: "Resultados" },
-  { href: "#historias", label: "Historias" },
-  { href: "#resenas", label: "Reseñas" },
-  { href: "#contacto", label: "Contacto" },
+  kind: V4NavKind;
+}
+
+export const V4_NAV_LINKS: ReadonlyArray<V4NavLink> = [
+  { href: "#diferencial", label: "Por qué elegirnos", kind: "anchor" },
+  { href: "/v4/conocenos", label: "Conócenos", kind: "page" },
+  { href: "#resultados", label: "Resultados", kind: "anchor" },
+  { href: "#historias", label: "Historias", kind: "anchor" },
+  { href: "#resenas", label: "Reseñas", kind: "anchor" },
+  { href: "#contacto", label: "Contacto", kind: "anchor" },
   {
     href: "https://l.instagram.com/?u=http%3A%2F%2Fvaluation.lystos.com%2F%3FclientId%3Dcadc5d64-196d-4b14-a542-0858ecf58bd0%26utm_source%3Dig%26utm_medium%3Dsocial%26utm_content%3Dlink_in_bio%26fbclid%3DPAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnWAI3w4GE0tRTNGO9p13ir0iLcVOx6GPp-JU6w1IW6_EN55TM9Xi8LGVkFvc_aem_YqbvHEazi8CRfz6h0FF9HA&e=AT4aKKbyzBZDzksXHcyQW5Y_OODy1CtEBr-rMF4Zq0SFIkgWQJ9NVJjgFSGQ2fObe3ENRYKBmKjRVN_pFqMkQly4rO-yI85ePb9nkzpv7A",
     label: "Valorador",
-    external: true,
+    kind: "external",
   },
 ];
+
+/** Compute the actual `href` attribute for a link given the current path.
+ *  Anchor links living on /v4 stay bare (`#hash`); anywhere else they get
+ *  the `/v4` prefix so the browser navigates to the homepage first. Page
+ *  and external links pass through unchanged. */
+export function resolveNavHref(link: V4NavLink, currentPathname: string): string {
+  if (link.kind === "anchor" && currentPathname !== "/v4") {
+    return `/v4${link.href}`;
+  }
+  return link.href;
+}
 
 export const V4_SOCIAL_URLS = {
   instagram: "https://www.instagram.com/dosxm2/",
@@ -46,6 +72,7 @@ export default function V4StickyHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const node = sentinelRef.current;
@@ -150,28 +177,52 @@ export default function V4StickyHeader() {
   );
 
   const handleNavClick = useCallback(
-    (
-      e: React.MouseEvent<HTMLAnchorElement>,
-      link: { href: string; external?: boolean },
-    ) => {
-      // External links: let the browser open the URL in a new tab. We close
-      // the drawer (if open) but otherwise stay out of the way.
-      if (link.external) {
+    (e: React.MouseEvent<HTMLAnchorElement>, link: V4NavLink) => {
+      // External: let the browser open the URL in a new tab. Just close
+      // the drawer (if open) and stay out of the way.
+      if (link.kind === "external") {
         setMenuOpen(false);
         console.log(`[V4-StickyHeader] 🔗 External nav — ${link.href}`);
         return;
       }
-      e.preventDefault();
-      // Update the hash so browser history reflects the section; scroll via JS
-      // so scroll-padding-top is honored consistently across browsers.
-      if (typeof history !== "undefined") {
-        history.replaceState(null, "", link.href);
+
+      // Page navigation: client-side route push via Next.js router.
+      if (link.kind === "page") {
+        e.preventDefault();
+        setMenuOpen(false);
+        scrollAfterDrawerCloses(() => {
+          void router.push(link.href);
+        });
+        console.log(`[V4-StickyHeader] 🔗 Page nav — push ${link.href}`);
+        return;
       }
+
+      // Anchor on the current /v4 page: smooth-scroll in place.
+      if (router.pathname === "/v4") {
+        e.preventDefault();
+        if (typeof history !== "undefined") {
+          history.replaceState(null, "", link.href);
+        }
+        setMenuOpen(false);
+        scrollAfterDrawerCloses(() => scrollToAnchor(link.href));
+        console.log(
+          `[V4-StickyHeader] 🔗 In-page anchor — scrolling to ${link.href}`
+        );
+        return;
+      }
+
+      // Anchor from a non-/v4 page (e.g. /v4/conocenos). The href attribute
+      // is already "/v4#hash" (via resolveNavHref), so DON'T preventDefault —
+      // let the browser do full-page navigation. Native hash scroll + the
+      // section's scroll-margin-top handle the sticky-header offset.
+      // We avoid router.push("/v4#hash") because of known scroll-bug issues
+      // (next.js #18601, #37552, #20125).
       setMenuOpen(false);
-      scrollAfterDrawerCloses(() => scrollToAnchor(link.href));
-      console.log(`[V4-StickyHeader] 🔗 Nav click — scrolling to ${link.href}`);
+      console.log(
+        `[V4-StickyHeader] 🔗 Cross-page anchor — browser nav to /v4${link.href}`
+      );
     },
-    [scrollAfterDrawerCloses]
+    [router, scrollAfterDrawerCloses]
   );
 
   const handleLogoClick = useCallback(() => {
@@ -197,18 +248,21 @@ export default function V4StickyHeader() {
       >
         <div className={styles.headerLeft}>
           <nav className={styles.nav} aria-label="Navegación principal">
-            {V4_NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                target={link.external ? "_blank" : undefined}
-                rel={link.external ? "noopener noreferrer" : undefined}
-                className={`${styles.navLink} ${link.external ? styles.navCta : ""}`}
-                onClick={(e) => handleNavClick(e, link)}
-              >
-                {link.label}
-              </a>
-            ))}
+            {V4_NAV_LINKS.map((link) => {
+              const isExternal = link.kind === "external";
+              return (
+                <a
+                  key={link.href}
+                  href={resolveNavHref(link, router.pathname)}
+                  target={isExternal ? "_blank" : undefined}
+                  rel={isExternal ? "noopener noreferrer" : undefined}
+                  className={`${styles.navLink} ${isExternal ? styles.navCta : ""}`}
+                  onClick={(e) => handleNavClick(e, link)}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
           </nav>
 
           <div className={styles.headerSocials} aria-label="Redes sociales">
@@ -290,19 +344,22 @@ export default function V4StickyHeader() {
         role="dialog"
         aria-label="Menú de navegación"
       >
-        {V4_NAV_LINKS.map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
-            target={link.external ? "_blank" : undefined}
-            rel={link.external ? "noopener noreferrer" : undefined}
-            className={`${styles.navLink} ${link.external ? styles.navCta : ""}`}
-            onClick={(e) => handleNavClick(e, link)}
-            tabIndex={menuOpen ? 0 : -1}
-          >
-            {link.label}
-          </a>
-        ))}
+        {V4_NAV_LINKS.map((link) => {
+          const isExternal = link.kind === "external";
+          return (
+            <a
+              key={link.href}
+              href={resolveNavHref(link, router.pathname)}
+              target={isExternal ? "_blank" : undefined}
+              rel={isExternal ? "noopener noreferrer" : undefined}
+              className={`${styles.navLink} ${isExternal ? styles.navCta : ""}`}
+              onClick={(e) => handleNavClick(e, link)}
+              tabIndex={menuOpen ? 0 : -1}
+            >
+              {link.label}
+            </a>
+          );
+        })}
 
         <div className={styles.drawerSocials} aria-label="Redes sociales">
           <a

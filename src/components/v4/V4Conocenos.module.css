@@ -1,0 +1,39 @@
+/* =========================================================
+   V4 Conócenos — page-level shell for the three-act sequence.
+   Per-act layout lives in V4ConocenosAct.module.css and
+   V4ConocenosJuntos.module.css; this file owns only the page
+   header (h1 + lede) and the band rhythm between acts.
+   ========================================================= */
+
+.page {
+  background: var(--v4-bg);
+  color: var(--v4-fg);
+  /* Sits below the fixed sticky header. The header is 120px on desktop
+     / 56px on mobile per V4Layout. Padding-top matches so the page
+     content begins at the visible viewport edge. */
+  padding-top: var(--v4-header-h);
+}
+
+.pageHeader {
+  max-width: var(--v4-max-width);
+  margin: 0 auto;
+  padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3rem) 0;
+  text-align: center;
+}
+
+.pageTitle {
+  font-family: var(--v4-font-serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: var(--v4-type-display);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--v4-fg);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .pageHeader {
+    padding: clamp(2rem, 7vw, 4rem) clamp(1.25rem, 4vw, 2rem) 0;
+  }
+}

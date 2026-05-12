@@ -1,12 +1,36 @@
 import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { render, fireEvent, act } from "@testing-library/react";
-import V4StickyHeader, { V4_NAV_LINKS } from "@/components/v4/V4StickyHeader";
+import V4StickyHeader, {
+  V4_NAV_LINKS,
+  resolveNavHref,
+} from "@/components/v4/V4StickyHeader";
 import { readV4Css } from "../utils/readCss";
 import { extractRuleBody, assertMinTapTarget } from "../utils/touchTargets";
+
+// Mutable router-state shim — each test sets pathname/push before render.
+const routerState: {
+  pathname: string;
+  asPath: string;
+  push: ReturnType<typeof vi.fn>;
+  replace: ReturnType<typeof vi.fn>;
+} = {
+  pathname: "/v4",
+  asPath: "/v4",
+  push: vi.fn(),
+  replace: vi.fn(),
+};
+
+vi.mock("next/router", () => ({
+  useRouter: () => routerState,
+}));
 
 // jsdom doesn't implement scrollIntoView — stub it so nav clicks don't crash.
 beforeEach(() => {
   Element.prototype.scrollIntoView = vi.fn();
+  routerState.pathname = "/v4";
+  routerState.asPath = "/v4";
+  routerState.push = vi.fn();
+  routerState.replace = vi.fn();
 });
 
 afterEach(() => {
@@ -22,17 +46,23 @@ afterEach(() => {
 });
 
 describe("V4 StickyHeader", () => {
-  test("exports 6 nav links: 5 internal anchors + the external Valorador CTA", () => {
-    expect(V4_NAV_LINKS).toHaveLength(6);
-    const internal = V4_NAV_LINKS.filter((l) => !l.external).map((l) => l.href);
-    expect(internal).toEqual([
+  test("exports 7 nav links: 5 anchors + Conócenos page + Valorador external", () => {
+    expect(V4_NAV_LINKS).toHaveLength(7);
+    const anchors = V4_NAV_LINKS.filter((l) => l.kind === "anchor").map(
+      (l) => l.href
+    );
+    expect(anchors).toEqual([
       "#diferencial",
       "#resultados",
       "#historias",
       "#resenas",
       "#contacto",
     ]);
-    const external = V4_NAV_LINKS.filter((l) => l.external);
+    const pageLinks = V4_NAV_LINKS.filter((l) => l.kind === "page");
+    expect(pageLinks).toHaveLength(1);
+    expect(pageLinks[0].href).toBe("/v4/conocenos");
+    expect(pageLinks[0].label).toBe("Conócenos");
+    const external = V4_NAV_LINKS.filter((l) => l.kind === "external");
     expect(external).toHaveLength(1);
     expect(external[0].label).toBe("Valorador");
     expect(external[0].href).toContain("valuation.lystos.com");
@@ -48,6 +78,53 @@ describe("V4 StickyHeader", () => {
     const rel = valorador?.getAttribute("rel") ?? "";
     expect(rel).toContain("noopener");
     expect(rel).toContain("noreferrer");
+  });
+
+  test("Conócenos page link routes via router.push (no scrollIntoView)", () => {
+    const scrollSpy = vi.spyOn(Element.prototype, "scrollIntoView");
+    const { container } = render(<V4StickyHeader />);
+    const conocenos = Array.from(container.querySelectorAll("nav a")).find(
+      (a) => a.textContent?.trim() === "Conócenos"
+    ) as HTMLAnchorElement;
+    expect(conocenos).not.toBeUndefined();
+    expect(conocenos.getAttribute("href")).toBe("/v4/conocenos");
+    fireEvent.click(conocenos);
+    expect(routerState.push).toHaveBeenCalledWith("/v4/conocenos");
+    expect(scrollSpy).not.toHaveBeenCalled();
+  });
+
+  test("when on /v4/conocenos, anchor link hrefs are rewritten to /v4#...", () => {
+    routerState.pathname = "/v4/conocenos";
+    routerState.asPath = "/v4/conocenos";
+    const { container } = render(<V4StickyHeader />);
+    const diferencial = Array.from(container.querySelectorAll("nav a")).find(
+      (a) => a.textContent?.trim() === "Por qué elegirnos"
+    ) as HTMLAnchorElement;
+    expect(diferencial.getAttribute("href")).toBe("/v4#diferencial");
+  });
+
+  test("cross-page anchor click does NOT preventDefault (browser handles full-page nav)", () => {
+    routerState.pathname = "/v4/conocenos";
+    const { container } = render(<V4StickyHeader />);
+    const diferencial = Array.from(container.querySelectorAll("nav a")).find(
+      (a) => a.textContent?.trim() === "Por qué elegirnos"
+    ) as HTMLAnchorElement;
+    const ev = new MouseEvent("click", { bubbles: true, cancelable: true });
+    diferencial.dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(false);
+    expect(routerState.push).not.toHaveBeenCalled();
+  });
+
+  test("resolveNavHref keeps anchor href bare on /v4, prefixes elsewhere", () => {
+    const anchor = V4_NAV_LINKS.find((l) => l.kind === "anchor")!;
+    expect(resolveNavHref(anchor, "/v4")).toBe(anchor.href);
+    expect(resolveNavHref(anchor, "/v4/conocenos")).toBe(
+      "/v4" + anchor.href
+    );
+    expect(resolveNavHref(anchor, "/")).toBe("/v4" + anchor.href);
+    const pageLink = V4_NAV_LINKS.find((l) => l.kind === "page")!;
+    expect(resolveNavHref(pageLink, "/v4/conocenos")).toBe(pageLink.href);
+    expect(resolveNavHref(pageLink, "/v4")).toBe(pageLink.href);
   });
 
   test("renders the DOSXM2 logo button", () => {

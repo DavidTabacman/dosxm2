@@ -35,17 +35,25 @@ export default function V4Footer({
         <div className={styles.block}>
           <h3>Explora</h3>
           <ul className={styles.linkList}>
-            {V4_NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  target={link.external ? "_blank" : undefined}
-                  rel={link.external ? "noopener noreferrer" : undefined}
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
+            {V4_NAV_LINKS.map((link) => {
+              const isExternal = link.kind === "external";
+              // Footer is rendered on multiple pages — anchors that target
+              // /v4 must include that prefix so the link works regardless
+              // of where the footer is mounted.
+              const href =
+                link.kind === "anchor" ? `/v4${link.href}` : link.href;
+              return (
+                <li key={link.href}>
+                  <a
+                    href={href}
+                    target={isExternal ? "_blank" : undefined}
+                    rel={isExternal ? "noopener noreferrer" : undefined}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </div>
 

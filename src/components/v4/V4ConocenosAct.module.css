@@ -1,0 +1,401 @@
+/* =========================================================
+   V4 Conócenos — one founder act (Pablo or Borja).
+   Desktop ≥1024px: pinned split-screen (portrait sticky, copy scrolls).
+   Tablet 600–1024px: stacked (portrait above copy).
+   Mobile ≤600px: translucent (portrait behind copy at 35% opacity).
+
+   The breathing/Ken-Burns/scroll keyframes below are DUPLICATED from
+   V4Diferencial.module.css verbatim — CSS Modules scoping keeps the
+   two sets independent. V4ConocenosAct.parity.test.ts asserts they
+   stay byte-equal so a future edit to one fails CI without the other.
+   ========================================================= */
+
+.section {
+  position: relative;
+  background: var(--v4-bg);
+  color: var(--v4-fg);
+  padding: clamp(5rem, 11vw, 9rem) clamp(1.5rem, 5vw, 3rem);
+  scroll-margin-top: calc(var(--v4-header-h) + 16px);
+  /* Cinematic dwell — ~1.8 viewports of pin window per the approved plan. */
+  min-height: clamp(150vh, 180vh, 200vh);
+  overflow: visible;
+}
+
+.layout {
+  max-width: var(--v4-max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+  align-items: start;
+  min-height: 100%;
+}
+
+/* Right-side act: portrait flips to the right column. */
+.section[data-side="right"] .layout {
+  grid-template-columns: 1.1fr 0.9fr;
+}
+
+.section[data-side="right"] .portraitColumn {
+  order: 2;
+}
+
+.section[data-side="right"] .copyColumn {
+  order: 1;
+}
+
+/* ---------------- Portrait column (desktop sticky) ---------------- */
+
+.portraitColumn {
+  position: relative;
+  height: 100%;
+}
+
+.portraitSticky {
+  position: sticky;
+  top: calc(var(--v4-header-h) + 24px);
+  display: block;
+}
+
+/* Ambient "presence" wrapper. Lives OUTSIDE the frame so the whole
+   photo card moves as one unit — perception fix from the live-portraits
+   debugging brief. Matches V4Diferencial's .portraitOuter exactly. */
+.portraitOuter {
+  position: relative;
+  display: block;
+  align-self: start;
+  transform-origin: center center;
+  will-change: transform;
+  animation: v4PortraitBreath 6s ease-in-out infinite alternate;
+}
+
+.portraitOuterAlt {
+  animation: v4PortraitBreathAlt 8s ease-in-out infinite alternate;
+  animation-delay: -3.2s;
+}
+
+.portraitFrame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--v4-surface-elevated);
+  aspect-ratio: 3 / 4;
+  box-shadow: 0 14px 40px rgba(28, 28, 28, 0.12);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.portrait {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform-origin: center center;
+  will-change: transform;
+  /* Ambient ken-burns fallback for browsers without animation-timeline. */
+  animation: v4KenBurns 8s ease-in-out infinite alternate;
+  /* Entry reveal — portrait enters scaled + desaturated, resolves on reveal. */
+  filter: saturate(0.6) contrast(0.92);
+  transition: filter 700ms ease-out;
+}
+
+.portraitOuterAlt .portrait {
+  animation-delay: -4s;
+  animation-name: v4KenBurnsAlt;
+}
+
+.sectionRevealed .portrait {
+  filter: none;
+}
+
+/* Modern browsers: scroll-driven Ken Burns. */
+@supports (animation-timeline: view()) {
+  .portrait {
+    animation: v4PortraitScroll linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 100%;
+  }
+  .portraitOuterAlt .portrait {
+    animation-name: v4PortraitScrollAlt;
+    animation-delay: 0s;
+  }
+}
+
+@keyframes v4KenBurns {
+  from {
+    transform: scale(1.02) translate3d(-2.5%, -1.5%, 0);
+  }
+  to {
+    transform: scale(1.12) translate3d(2%, 1.5%, 0);
+  }
+}
+
+@keyframes v4KenBurnsAlt {
+  from {
+    transform: scale(1.12) translate3d(2.5%, -1.5%, 0);
+  }
+  to {
+    transform: scale(1.02) translate3d(-2%, 1.5%, 0);
+  }
+}
+
+@keyframes v4PortraitScroll {
+  from {
+    transform: scale(1.04) translate3d(0, 8%, 0);
+  }
+  to {
+    transform: scale(1.1) translate3d(0, -8%, 0);
+  }
+}
+
+@keyframes v4PortraitScrollAlt {
+  from {
+    transform: scale(1.1) translate3d(0, -8%, 0);
+  }
+  to {
+    transform: scale(1.04) translate3d(0, 8%, 0);
+  }
+}
+
+/* Breath keyframes — DUPLICATED byte-equal from V4Diferencial.module.css.
+   Guarded by V4ConocenosAct.parity.test.ts. */
+@keyframes v4PortraitBreath {
+  from {
+    transform: scale(1) translate3d(-3%, -2%, 0) rotate(-0.6deg);
+  }
+  to {
+    transform: scale(1.1) translate3d(3%, 2%, 0) rotate(0.6deg);
+  }
+}
+
+@keyframes v4PortraitBreathAlt {
+  from {
+    transform: scale(1.1) translate3d(3%, -2%, 0) rotate(0.6deg);
+  }
+  to {
+    transform: scale(1) translate3d(-3%, 2%, 0) rotate(-0.6deg);
+  }
+}
+
+/* Duotone tint overlay that fades from full coverage to 0 on reveal. */
+.portraitTint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(139, 90, 43, 0.35),
+    rgba(28, 28, 28, 0.15) 60%,
+    rgba(28, 28, 28, 0)
+  );
+  mix-blend-mode: multiply;
+  opacity: 1;
+  transition: opacity 700ms ease-out;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sectionRevealed .portraitTint {
+  opacity: 0;
+}
+
+/* ---------------- Copy column ---------------- */
+
+.copyColumn {
+  position: relative;
+  z-index: 2;
+  max-width: 580px;
+  padding-top: clamp(2rem, 6vw, 5rem);
+}
+
+.heading {
+  font-family: var(--v4-font-serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: var(--v4-type-display);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin: 0 0 1.5rem;
+  color: var(--v4-fg);
+}
+
+.headingIntro {
+  display: inline-block;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 600ms cubic-bezier(0.7, 0, 0.3, 1) 100ms;
+}
+
+.sectionRevealed .headingIntro {
+  clip-path: inset(0 0 0 0);
+}
+
+.ruleAccent {
+  width: 56px;
+  height: 2px;
+  background: var(--v4-accent);
+  margin: 0 0 2rem;
+}
+
+.body {
+  font-family: var(--v4-font-sans);
+  font-size: clamp(0.9375rem, 1.55vw, 1.0625rem);
+  line-height: 1.75;
+  color: var(--v4-muted-strong);
+  margin: 0 0 1.5rem;
+}
+
+.body:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------------- Tablet: 600–1024px stacked ---------------- */
+
+@media (max-width: 1024px) {
+  .section {
+    min-height: 0;
+    padding: clamp(4rem, 9vw, 7rem) clamp(1.5rem, 5vw, 3rem);
+  }
+
+  .layout,
+  .section[data-side="right"] .layout {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .section[data-side="right"] .portraitColumn,
+  .section[data-side="right"] .copyColumn {
+    order: initial;
+  }
+
+  .portraitColumn {
+    height: auto;
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .portraitSticky {
+    position: static;
+    top: auto;
+  }
+
+  .copyColumn {
+    padding-top: 0;
+    max-width: 100%;
+  }
+}
+
+/* ---------------- Mobile: ≤600px translucent ---------------- */
+
+@media (max-width: 600px) {
+  .section {
+    padding: 3rem 1.25rem;
+    overflow: hidden;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+    position: relative;
+  }
+
+  /* Portrait becomes a full-bleed background of the section. */
+  .portraitColumn {
+    position: absolute;
+    inset: 0;
+    max-width: none;
+    margin: 0;
+    z-index: 0;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .portraitSticky {
+    height: 100%;
+  }
+
+  .portraitOuter {
+    height: 100%;
+  }
+
+  .portraitFrame {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* Cream veil between portrait and copy for legibility. Composited
+     against #faf9f6 (--v4-bg) the body text reads ≥ 4.5:1. Reuses the
+     shipped --v4-veil-paper-strong / --v4-bg-glass tokens so the
+     v4-hex-audit fence stays clean. */
+  .section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      var(--v4-veil-paper-strong),
+      var(--v4-bg-glass)
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .copyColumn {
+    position: relative;
+    z-index: 2;
+    padding: clamp(3rem, 10vw, 5rem) clamp(0.5rem, 3vw, 1.25rem);
+    max-width: 100%;
+  }
+
+  .heading {
+    font-size: clamp(2rem, 9vw, 2.75rem);
+  }
+
+  .body {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  /* Mobile: halve breath amplitudes — matches V4Diferencial. */
+  @keyframes v4PortraitBreath {
+    from {
+      transform: scale(1) translate3d(-1.5%, -1%, 0) rotate(-0.3deg);
+    }
+    to {
+      transform: scale(1.05) translate3d(1.5%, 1%, 0) rotate(0.3deg);
+    }
+  }
+  @keyframes v4PortraitBreathAlt {
+    from {
+      transform: scale(1.05) translate3d(1.5%, -1%, 0) rotate(0.3deg);
+    }
+    to {
+      transform: scale(1) translate3d(-1.5%, 1%, 0) rotate(-0.3deg);
+    }
+  }
+}
+
+/* ---------------- Reduced motion ---------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .portraitOuter,
+  .portraitOuterAlt,
+  .portrait,
+  .portraitOuterAlt .portrait,
+  .portraitTint,
+  .headingIntro {
+    animation: none;
+    animation-timeline: auto;
+    transform: none;
+    transition: none;
+    filter: none;
+    clip-path: none;
+    opacity: 1;
+    will-change: auto;
+  }
+
+  .portraitTint {
+    opacity: 0;
+  }
+}

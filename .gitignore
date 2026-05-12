@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# large source assets — kept locally for re-encoding only, never deployed
+public/v4/founders/together-original.jpg

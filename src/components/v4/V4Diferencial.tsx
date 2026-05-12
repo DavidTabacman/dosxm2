@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useCallback, useEffect, useRef } from "react";
 import { useSectionReveal } from "../shared/useSectionReveal";
 import { useReducedMotion } from "../shared/useReducedMotion";
@@ -236,6 +237,12 @@ export default function V4Diferencial({
             <span className={styles.signatureRule} aria-hidden="true" />
             <span>{founderA.name} &amp; {founderB.name}</span>
           </span>
+          <Link href="/v4/conocenos" className={styles.signatureLink}>
+            Más sobre {founderA.name} y {founderB.name}
+            <span className={styles.signatureLinkArrow} aria-hidden="true">
+              →
+            </span>
+          </Link>
         </div>
 
         <div
