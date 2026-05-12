@@ -9,18 +9,16 @@ import {
   TOGETHER_IMAGE,
 } from "@/constants/founders";
 
+// V4ConocenosJuntos calls useSectionReveal twice (0.15 for the heading +
+// copy stagger, 0.6 fire-once for the strip convergence). The shared mock
+// returns the revealed state for both — tests therefore see the locked,
+// post-converged DOM.
 vi.mock("@/components/shared/useSectionReveal", () => ({
   useSectionReveal: () => [() => {}, true],
 }));
 
-let visibleReturn = true;
-vi.mock("@/components/shared/useSectionVisible", () => ({
-  useSectionVisible: () => [() => {}, visibleReturn],
-}));
-
 describe("V4 ConocenosJuntos — DOM & accessibility", () => {
   test("renders the section with default id 'juntos'", () => {
-    visibleReturn = true;
     const { container } = render(<V4ConocenosJuntos />);
     expect(container.querySelector("section[id='juntos']")).not.toBeNull();
   });
@@ -104,19 +102,13 @@ describe("V4 ConocenosJuntos — DOM & accessibility", () => {
     expect(cta.textContent).toContain("Escríbenos");
   });
 
-  test("data-converging reflects useSectionVisible (true → 'true')", () => {
-    visibleReturn = true;
+  test("data-converging locks to 'true' once the strip is revealed", () => {
+    // The strip uses a fire-once useSectionReveal(0.6), so once the
+    // founders have visually joined, the joint state holds forever —
+    // no reversal when scrolling past the section or back up + down.
     const { container } = render(<V4ConocenosJuntos />);
     const diptych = container.querySelector("[class*='diptych']");
     expect(diptych?.getAttribute("data-converging")).toBe("true");
-  });
-
-  test("data-converging reflects useSectionVisible (false → 'false')", () => {
-    visibleReturn = false;
-    const { container } = render(<V4ConocenosJuntos />);
-    const diptych = container.querySelector("[class*='diptych']");
-    expect(diptych?.getAttribute("data-converging")).toBe("false");
-    visibleReturn = true; // reset for any later tests
   });
 
   test("together image onError hides without removing the element", () => {

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { useSectionReveal } from "../shared/useSectionReveal";
-import { useSectionVisible } from "../shared/useSectionVisible";
 import {
   FOUNDER_BORJA,
   FOUNDER_PABLO,
@@ -27,7 +26,11 @@ export default function V4ConocenosJuntos({
   // Higher threshold (0.6) so convergence fires when the section is
   // dominant in the viewport, not at first sliver — prevents the
   // "they meet too early" abruptness flagged in the BRD risk table.
-  const [stripRef, stripActive] = useSectionVisible(0.6);
+  // Fire-once (useSectionReveal, not useSectionVisible) so once the
+  // founders have "joined", the joint photo locks in place: scrolling
+  // past the section, scrolling back up, then scrolling down again
+  // never reverses the convergence into a separation.
+  const [stripRef, stripActive] = useSectionReveal(0.6);
 
   return (
     <section
