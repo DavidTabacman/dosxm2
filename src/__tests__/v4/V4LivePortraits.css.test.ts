@@ -32,20 +32,22 @@ describe("V4 live portraits — CSS source", () => {
     expect(shared).not.toMatch(/v4PortraitBreath/);
   });
 
-  test("outer card wrapper carries the breath animation (linear, 7s)", () => {
-    // Linear easing is research-grounded: ease-in-out parks velocity at 0
-    // at the cycle extremes, exactly when a casually-glancing user samples
-    // the stimulus. Linear keeps the stimulus moving throughout.
+  test("outer card wrapper carries the breath animation (ease-in-out, 6s)", () => {
+    // ease-in-out gives a sinusoidal velocity profile. Pass 4 used linear
+    // at very small amplitudes and ran ~0.04°/s — below the conscious
+    // motion threshold (0.1°/s). At pass-5 amplitudes ease-in-out peaks
+    // above threshold at mid-cycle, the breath shape reads naturally,
+    // and a casual glance has a ~50% chance of catching peak velocity.
     expect(css).toMatch(
-      /\.portraitOuter\s*\{[^}]*animation:\s*v4PortraitBreath\s+7s\s+linear\s+infinite\s+alternate/
+      /\.portraitOuter\s*\{[^}]*animation:\s*v4PortraitBreath\s+6s\s+ease-in-out\s+infinite\s+alternate/
     );
   });
 
-  test("alt modifier carries the alt keyframe with decoupled 9s period + phase offset", () => {
-    // Decoupled 7s + 9s (not 8s/-4s phase offset of the same period) so
-    // the two cards don't read as a synchronised wobble.
+  test("alt modifier carries the alt keyframe with decoupled 8s period + phase offset", () => {
+    // Decoupled 6s + 8s (not phase-shifted same period) so the two cards
+    // don't read as a synchronised wobble.
     expect(css).toMatch(
-      /\.portraitOuterAlt\s*\{[^}]*animation:\s*v4PortraitBreathAlt\s+9s\s+linear\s+infinite\s+alternate[^}]*animation-delay:\s*-2\.4s/
+      /\.portraitOuterAlt\s*\{[^}]*animation:\s*v4PortraitBreathAlt\s+8s\s+ease-in-out\s+infinite\s+alternate[^}]*animation-delay:\s*-3\.2s/
     );
   });
 
@@ -72,7 +74,7 @@ describe("V4 live portraits — CSS source", () => {
     expect(rotateMatches.length).toBeGreaterThanOrEqual(2);
   });
 
-  test("mobile media query halves amplitudes (scale 1.02 cap)", () => {
+  test("mobile media query halves amplitudes (scale 1.05 cap)", () => {
     const mobile = sliceBalancedBlock(
       css,
       /@media\s*\(max-width:\s*600px\)\s*\{/
@@ -80,9 +82,9 @@ describe("V4 live portraits — CSS source", () => {
     expect(mobile).not.toBeNull();
     expect(mobile!).toMatch(/@keyframes\s+v4PortraitBreath\b/);
     expect(mobile!).toMatch(/@keyframes\s+v4PortraitBreathAlt\b/);
-    expect(mobile!).toMatch(/scale\(1\.02\)/);
-    // Desktop scale value 1.04 must not leak into the mobile block.
-    expect(mobile!).not.toMatch(/scale\(1\.04\)/);
+    expect(mobile!).toMatch(/scale\(1\.05\)/);
+    // Desktop scale value 1.1 must not leak into the mobile block.
+    expect(mobile!).not.toMatch(/scale\(1\.1\)/);
   });
 
   test("reduced-motion block disables breath animation and clears will-change", () => {
@@ -99,10 +101,14 @@ describe("V4 live portraits — CSS source", () => {
     expect(reduce!).not.toMatch(/\.portraitBreath\b/);
   });
 
-  test("breath amplitudes — scale ≤1.05, translate ≤2% X, ≤1.5% Y on desktop", () => {
-    // Whole card now moves (frame + shadow + name tag together), so much
-    // smaller amplitudes read clearly. Previous caps (scale 1.10 / ±3%)
-    // were tuned for the failed "motion inside a static frame" scenario.
+  test("breath amplitudes — scale ≤1.10, translate ≤3% X, ≤2% Y on desktop", () => {
+    // Pass-5: amplitudes restored to pass-3 levels because pass-4
+    // (scale 1.04 / ±2%) ran below the conscious detection threshold
+    // (live diagnostic: ~0.04°/s, floor ~0.1°/s). The earlier failed
+    // pass at these amplitudes was invisible due to the aperture
+    // problem (motion inside a clipped frame). With the structural
+    // fix (motion on the outer wrapper), these amplitudes clear the
+    // detection floor at mid-cycle peak velocity.
     const breathDesktop = sliceBalancedBlock(
       css,
       /@keyframes\s+v4PortraitBreath\s*\{/
@@ -114,15 +120,15 @@ describe("V4 live portraits — CSS source", () => {
     expect(scaleMatches.length).toBeGreaterThanOrEqual(2);
     scaleMatches.forEach((s) => {
       expect(s).toBeGreaterThanOrEqual(1);
-      expect(s).toBeLessThanOrEqual(1.05);
+      expect(s).toBeLessThanOrEqual(1.1);
     });
     const translateMatches = Array.from(
       breathDesktop!.matchAll(/translate3d\(\s*(-?[\d.]+)%\s*,\s*(-?[\d.]+)%/g)
     );
     expect(translateMatches.length).toBeGreaterThanOrEqual(2);
     translateMatches.forEach(([, x, y]) => {
-      expect(Math.abs(parseFloat(x))).toBeLessThanOrEqual(2);
-      expect(Math.abs(parseFloat(y))).toBeLessThanOrEqual(1.5);
+      expect(Math.abs(parseFloat(x))).toBeLessThanOrEqual(3);
+      expect(Math.abs(parseFloat(y))).toBeLessThanOrEqual(2);
     });
   });
 

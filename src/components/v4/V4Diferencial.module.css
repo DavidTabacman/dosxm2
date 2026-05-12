@@ -80,6 +80,48 @@
   background: var(--v4-accent);
 }
 
+.signatureLink {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  font-family: var(--v4-font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--v4-accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.signatureLink:hover,
+.signatureLink:focus-visible {
+  color: var(--v4-accent-strong);
+  border-bottom-color: var(--v4-accent-strong);
+}
+
+.signatureLink:focus-visible {
+  outline: 2px solid var(--v4-accent);
+  outline-offset: 4px;
+}
+
+.signatureLinkArrow {
+  display: inline-block;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.signatureLink:hover .signatureLinkArrow,
+.signatureLink:focus-visible .signatureLinkArrow {
+  transform: translateX(4px);
+}
+
 /* Right column — portraits, offset editorial layout */
 .portraits {
   display: grid;
@@ -123,7 +165,13 @@
   align-self: start;
   transform-origin: center center;
   will-change: transform;
-  animation: v4PortraitBreath 7s linear infinite alternate;
+  /* ease-in-out (not linear) — gives a sinusoidal velocity profile that
+     peaks above the conscious-detection floor (~0.1°/s) at mid-cycle,
+     even though it parks velocity at the extremes. With these amplitudes
+     a 50/50 glance hits either a near-peak (clearly visible) or a near-
+     extreme (invisible), which reads as natural breath. Linear at this
+     amplitude was a constant ~0.04°/s — below threshold every glance. */
+  animation: v4PortraitBreath 6s ease-in-out infinite alternate;
 }
 
 .portraitOuter:first-child {
@@ -135,8 +183,8 @@
 }
 
 .portraitOuterAlt {
-  animation: v4PortraitBreathAlt 9s linear infinite alternate;
-  animation-delay: -2.4s;
+  animation: v4PortraitBreathAlt 8s ease-in-out infinite alternate;
+  animation-delay: -3.2s;
 }
 
 .portraitFrame {
@@ -224,38 +272,41 @@
   }
 }
 
-/* Breath keyframes — research-informed values.
+/* Breath keyframes — values tuned to clear the conscious-motion
+   detection floor (~0.1°/s) at mid-cycle peak velocity.
    Keep @keyframes v4PortraitBreath/Alt in this file — never move them
    to v4-animations.module.css or they leak into FAB portraits
    (V4FounderLinks). Guarded by V4LivePortraits.css.test.ts.
 
-   Tuning (per perception research, after three failed CSS passes):
-   • scale band 1.00 → 1.04 — whole card now moves; subtler reads better
-     than the earlier 1.10 because the visible unit (frame + shadow)
-     gives the eye a coherent object to track instead of content drift
-     behind a static aperture.
-   • translate ±2% X, ±1.2% Y — asymmetric so motion never zeros on
-     both axes simultaneously.
-   • rotate ±0.3deg — small but the *differential* between corners and
-     center breaks the rigid-translation reading that Johansson
-     biological-motion research warned about.
-   • 7s + 9s decoupled periods (not 8s/-4s phase offset) — identical
-     periods read as a synchronised wobble (uncanny "page glitch"). */
+   Pass-5 values, after the live diagnostic in commit aeea52c proved
+   smaller amplitudes (scale 1.04 / ±2%) ran at ~0.04°/s — half the
+   detection floor:
+   • scale band 1.00 → 1.10 — matches the earlier failed inside-frame
+     pass (a8392ed). That pass was invisible because of the aperture
+     problem, not amplitude. With the structural fix moving motion to
+     the outer wrapper, this amplitude makes the whole card visibly
+     move (shadow + caption translate together).
+   • translate ±3% X, ±2% Y — same as pass a8392ed.
+   • rotate ±0.6deg — doubled from pass-4. Differential motion between
+     corners and center keeps the perception from reading as rigid
+     translation (Johansson biological-motion).
+   • 6s + 8s decoupled periods — slightly faster than pass-4. Closer
+     to natural breath cadence (12 breaths/min = 5s per breath). */
 @keyframes v4PortraitBreath {
   from {
-    transform: scale(1) translate3d(-2%, -1.2%, 0) rotate(-0.3deg);
+    transform: scale(1) translate3d(-3%, -2%, 0) rotate(-0.6deg);
   }
   to {
-    transform: scale(1.04) translate3d(2%, 1.2%, 0) rotate(0.3deg);
+    transform: scale(1.1) translate3d(3%, 2%, 0) rotate(0.6deg);
   }
 }
 
 @keyframes v4PortraitBreathAlt {
   from {
-    transform: scale(1.04) translate3d(2%, -1.2%, 0) rotate(0.3deg);
+    transform: scale(1.1) translate3d(3%, -2%, 0) rotate(0.6deg);
   }
   to {
-    transform: scale(1) translate3d(-2%, 1.2%, 0) rotate(-0.3deg);
+    transform: scale(1) translate3d(-3%, 2%, 0) rotate(-0.6deg);
   }
 }
 
@@ -266,18 +317,18 @@
 @media (max-width: 600px) {
   @keyframes v4PortraitBreath {
     from {
-      transform: scale(1) translate3d(-1%, -0.6%, 0) rotate(-0.15deg);
+      transform: scale(1) translate3d(-1.5%, -1%, 0) rotate(-0.3deg);
     }
     to {
-      transform: scale(1.02) translate3d(1%, 0.6%, 0) rotate(0.15deg);
+      transform: scale(1.05) translate3d(1.5%, 1%, 0) rotate(0.3deg);
     }
   }
   @keyframes v4PortraitBreathAlt {
     from {
-      transform: scale(1.02) translate3d(1%, -0.6%, 0) rotate(0.15deg);
+      transform: scale(1.05) translate3d(1.5%, -1%, 0) rotate(0.3deg);
     }
     to {
-      transform: scale(1) translate3d(-1%, 0.6%, 0) rotate(-0.15deg);
+      transform: scale(1) translate3d(-1.5%, 1%, 0) rotate(-0.3deg);
     }
   }
 }
