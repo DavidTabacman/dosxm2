@@ -1,98 +1,44 @@
+<!--
+  Based on Twemoji "person raising hand: light skin tone, male" (1f64b-1f3fb-200d-2642-fe0f.svg)
+  https://github.com/jdecked/twemoji
+  © Twitter, Inc. and contributors — CC-BY 4.0
+  Modifications: removed hair, added bald scalp + Van Dyke beard + eyebrows,
+  recolored shirt to navy blazer, mirrored horizontally so the hand waves toward Pablo.
+-->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" role="img" aria-label="Borja">
   <title>Borja</title>
-
-  <!-- Neck (skin between jaw and collar) -->
-  <rect x="12.5" y="17.5" width="5" height="4" fill="#F0C8A3"/>
-
-  <!-- Blazer (navy jacket, matches real Borja's outfit) -->
-  <path d="M2 36
-           L 2 26
-           Q 2 22, 7 21
-           L 11 20.5
-           L 15 26
-           L 19 20.5
-           L 23 21
-           Q 28 22, 28 26
-           L 28 36 Z"
-        fill="#1F2937"/>
-
-  <!-- Inner crew-neck shirt visible through V-opening -->
-  <path d="M11 20.5 L 15 26 L 19 20.5 L 17 22 L 15 24.5 L 13 22 Z"
-        fill="#0F1419"/>
-
-  <!-- Subtle lapel center line -->
-  <path d="M15 26 L 15 36"
-        stroke="#111827" stroke-width="0.5" opacity="0.7" fill="none"/>
-
-  <!-- Raised right arm: sleeve (blazer color) -->
-  <path d="M19.5 20.5 L 23 20.5 L 26.5 11 L 24 11 Z"
-        fill="#1F2937"/>
-
-  <!-- Raised right arm: forearm (skin emerging from cuff) -->
-  <path d="M24 11 L 26.5 11 L 29 6 L 26.5 6 Z"
-        fill="#F0C8A3"/>
-
-  <!-- Hand: open palm waving hello -->
-  <ellipse cx="28.5" cy="4.5" rx="3" ry="3.2" fill="#F0C8A3"/>
-
-  <!-- Thumb (left side of palm) -->
-  <ellipse cx="25.8" cy="5.5" rx="1.1" ry="1.4" fill="#F0C8A3"/>
-
-  <!-- Finger separation hints on the palm -->
-  <path d="M27 1.7 L 27 4.3"
-        stroke="#E0B388" stroke-width="0.3" opacity="0.55" fill="none"/>
-  <path d="M28.3 1.3 L 28.3 4.3"
-        stroke="#E0B388" stroke-width="0.3" opacity="0.55" fill="none"/>
-  <path d="M29.6 1.3 L 29.6 4.3"
-        stroke="#E0B388" stroke-width="0.3" opacity="0.55" fill="none"/>
-  <path d="M30.8 1.7 L 30.8 4.3"
-        stroke="#E0B388" stroke-width="0.3" opacity="0.55" fill="none"/>
-
-  <!-- Bald head, light skin -->
-  <ellipse cx="15" cy="11" rx="7" ry="7.5" fill="#F0C8A3"/>
-
-  <!-- Bald crown highlight -->
-  <ellipse cx="15" cy="6.5" rx="4" ry="1.2" fill="#FCE0C2" opacity="0.75"/>
-
-  <!-- Soft skin shadow under crown -->
-  <path d="M9 9.5 Q 15 11, 21 9.5 Q 21 11, 15 11.5 Q 9 11, 9 9.5 Z"
-        fill="#E0B388" opacity="0.3"/>
-
-  <!-- Mustache: horizontal bar above the lip with slight middle dip -->
-  <path d="M10 13.5
-           Q 12.5 13, 15 13.4
-           Q 17.5 13, 20 13.5
-           Q 19.3 14.7, 17.3 14.6
-           Q 15 14.3, 12.7 14.6
-           Q 10.7 14.7, 10 13.5 Z"
-        fill="#2F1F17"/>
-
-  <!-- Mustache-to-goatee corner connectors (frames the mouth) -->
-  <path d="M10.7 14.5 Q 10.7 15.6, 12 16.3"
-        stroke="#2F1F17" stroke-width="1" fill="none" stroke-linecap="round"/>
-  <path d="M19.3 14.5 Q 19.3 15.6, 18 16.3"
-        stroke="#2F1F17" stroke-width="1" fill="none" stroke-linecap="round"/>
-
-  <!-- Goatee: chin beard teardrop below the lip -->
-  <path d="M12 16.3
-           Q 13.5 17, 15 17
-           Q 16.5 17, 18 16.3
-           Q 18 18.2, 16.5 18.7
-           Q 15 19, 13.5 18.7
-           Q 12 18.2, 12 16.3 Z"
-        fill="#2F1F17"/>
-
-  <!-- Eyes -->
-  <circle cx="12" cy="10.5" r="0.85" fill="#1F140E"/>
-  <circle cx="18" cy="10.5" r="0.85" fill="#1F140E"/>
-
-  <!-- Eyebrows -->
-  <path d="M10 9 L 13.2 8.6"
-        stroke="#2F1F17" stroke-width="0.9" stroke-linecap="round" fill="none"/>
-  <path d="M16.8 8.6 L 20 9"
-        stroke="#2F1F17" stroke-width="0.9" stroke-linecap="round" fill="none"/>
-
-  <!-- Subtle smile crease in the goatee -->
-  <path d="M13 17.8 Q 15 18.3, 17 17.8"
-        stroke="#F0C8A3" stroke-width="0.4" fill="none" opacity="0.4"/>
+  <g transform="matrix(-1 0 0 1 36 0)">
+    <!-- Bald scalp dome (drawn before face — merges seamlessly) -->
+    <ellipse cx="18" cy="6" rx="9" ry="6" fill="#F7DECE"/>
+    <!-- Face -->
+    <path fill="#F7DECE" d="M9 5.938V17c0 4.971 4.029 9 9 9s9-4.029 9-9V6.25L9 5.938z"/>
+    <!-- Mouth (open smile) -->
+    <path fill="#C1694F" d="M14 22h8s-1 2-4 2-4-2-4-2z"/>
+    <!-- Eyes -->
+    <path fill="#662113" d="M14 16c-.552 0-1-.448-1-1v-1c0-.552.448-1 1-1s1 .448 1 1v1c0 .552-.448 1-1 1zm8 0c-.552 0-1-.448-1-1v-1c0-.552.448-1 1-1s1 .448 1 1v1c0 .552-.448 1-1 1z"/>
+    <!-- Lip line / philtrum (will be hidden under the mustache) -->
+    <path fill="#C1694F" d="M19 19.5h-2c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h2c.276 0 .5.224.5.5s-.224.5-.5.5z"/>
+    <!-- Ears -->
+    <path fill="#F7DECE" d="M10.847 13.715c0 1.58-.8 2.861-1.788 2.861s-1.788-1.281-1.788-2.861c0-1.58.801-2.861 1.788-2.861s1.788 1.281 1.788 2.861zm17.882 0c0 1.58-.8 2.861-1.788 2.861s-1.788-1.281-1.788-2.861c0-1.58.8-2.861 1.788-2.861s1.788 1.281 1.788 2.861z"/>
+    <!-- Raised hand (skin) -->
+    <path fill="#F7DECE" d="M12.421 2.935c-.591-.389-1.387-.224-1.776.367L10 4.284V2c0-1.105-.896-2-2-2H4C2.896 0 2 .896 2 2v8s0 1 1 1h6l1-1V8.957l2.789-4.246c.389-.592.225-1.387-.368-1.776z"/>
+    <!-- Hand finger detail -->
+    <path fill="#E0AA94" d="M4 0h1v5H4zm3 0h1v5H7z"/>
+    <!-- Body: navy blazer -->
+    <path fill="#1F2937" d="M27 27H9l1-17H2v17s0 9 8 9h21v-5c0-2.209-1.791-4-4-4z"/>
+    <!-- Blazer accent (darker navy) -->
+    <path fill="#111827" d="M26 32h1v4h-1z"/>
+    <!-- Neck (skin visible above the collar) -->
+    <path fill="#F7DECE" d="M15 24v4c0 1.657 1.343 3 3 3s3-1.343 3-3v-4h-6z"/>
+    <!-- Eyebrows -->
+    <path d="M12 11.5 Q 14 10.5, 16 11.5" stroke="#3D241A" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+    <path d="M20 11.5 Q 22 10.5, 24 11.5" stroke="#3D241A" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+    <!-- Van Dyke mustache (over the philtrum/lip line) -->
+    <path fill="#3D241A" d="M13 19 Q 15.5 18.3, 18 18.8 Q 20.5 18.3, 23 19 Q 22.3 20.2, 20.3 20.1 Q 18 19.8, 15.7 20.1 Q 13.7 20.2, 13 19 Z"/>
+    <!-- Mustache-to-goatee corner connectors (frames the smile) -->
+    <path d="M13.5 19.8 Q 13 22, 14 23.8" stroke="#3D241A" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <path d="M22.5 19.8 Q 23 22, 22 23.8" stroke="#3D241A" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <!-- Goatee teardrop on the chin -->
+    <path fill="#3D241A" d="M14 24 Q 16 25, 18 25 Q 20 25, 22 24 Q 22 26.5, 20 27 Q 18 27.3, 16 27 Q 14 26.5, 14 24 Z"/>
+  </g>
 </svg>
