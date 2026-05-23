@@ -218,22 +218,6 @@
   }
 }
 
-/* In the mobile drawer the navLinks get a divider; the CTA shouldn't
-   inherit that divider, and it should still read as a pill. */
-.drawer .navCta {
-  border-bottom: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 3rem;
-  padding-block: 0.875rem;
-  padding-inline: 2rem;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  margin-top: 0.75rem;
-  align-self: flex-start;
-}
-
 /* Social icons — desktop header & mobile drawer */
 .headerSocials {
   display: flex;
@@ -389,6 +373,25 @@
 
 .drawer .navLink::after {
   display: none;
+}
+
+/* Valorador CTA inside the drawer. MUST come AFTER `.drawer .navLink`:
+   the <a> carries both classes, both selectors have the same specificity,
+   so source order decides. Defining this block earlier silently lets
+   `.drawer .navLink` win for padding / display / border-bottom — the
+   bug that made every prior padding tweak invisible. */
+.drawer .navCta {
+  border-bottom: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding-block: 0.875rem;
+  padding-inline: 2rem;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  margin-top: 0.75rem;
+  align-self: flex-start;
 }
 
 .drawerBackdrop {
