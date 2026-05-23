@@ -76,7 +76,23 @@ export default function V4ConocenosAct({
           }`}
         >
           <h2 id={headingId} className={styles.heading}>
-            <span className={styles.headingIntro}>{bio.introLine}</span>
+            <span className={styles.headingIntro}>
+              {bio.introLine}
+              {" "}
+              {bio.introBadge.kind === "emoji" ? (
+                <span className={styles.introBadgeEmoji}>
+                  {bio.introBadge.char}
+                </span>
+              ) : (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  className={styles.introBadgeIcon}
+                  src={bio.introBadge.src}
+                  alt={bio.introBadge.alt}
+                  aria-hidden={bio.introBadge.alt === "" ? "true" : undefined}
+                />
+              )}
+            </span>
           </h2>
           <div className={styles.ruleAccent} aria-hidden="true" />
           {bio.paragraphs.map((p, i) => (

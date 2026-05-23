@@ -22,8 +22,20 @@ export interface Founder {
   };
 }
 
+/**
+ * Visual badge that follows the intro line ("Yo soy …"). A string starting
+ * with "/" is treated as an image src (used for Borja, where no Unicode
+ * emoji renders bald + bearded across platforms); anything else is an
+ * emoji character rendered as text.
+ */
+export type IntroBadge =
+  | { kind: "emoji"; char: string }
+  | { kind: "image"; src: string; alt: string };
+
 export interface FounderBio {
+  /** Text only — no emoji baked in. The badge is rendered separately. */
   introLine: string;
+  introBadge: IntroBadge;
   paragraphs: ReadonlyArray<string>;
 }
 
@@ -75,14 +87,16 @@ export const CONTACTO_FOUNDERS = {
 } as const;
 
 /**
- * Conócenos page — client-supplied bios. Emojis preserved by design and
- * chosen per founder so VoiceOver announces an identity hint that matches
- * each one (Pablo: "person raising hand", Borja: "person, beard" — Apple
- * renders the beard variant effectively bald, matching Borja). Do NOT strip.
+ * Conócenos page — client-supplied bios. Each founder gets a small badge
+ * after the intro line; Pablo waves with the standard raised-hand emoji,
+ * Borja uses a custom SVG because no Unicode emoji renders bald + bearded
+ * consistently across iOS and Android. Do NOT strip — the badges are part
+ * of the founders' voice.
  */
 export const FOUNDER_BIOS: Record<"pablo" | "borja", FounderBio> = {
   pablo: {
-    introLine: "Yo soy Pablo 🙋🏻‍♂️",
+    introLine: "Yo soy Pablo",
+    introBadge: { kind: "emoji", char: "🙋🏻‍♂️" },
     paragraphs: [
       "Nací en Banfield, un barrio de la zona sur de Gran Buenos Aires, Argentina.",
       "Hace ya varios años decidí venir a vivir a Madrid, y aquí encontré no solo una oportunidad profesional, sino también mi lugar.",
@@ -91,7 +105,12 @@ export const FOUNDER_BIOS: Record<"pablo" | "borja", FounderBio> = {
     ],
   },
   borja: {
-    introLine: "Yo soy Borja 🧔🏻",
+    introLine: "Yo soy Borja",
+    introBadge: {
+      kind: "image",
+      src: "/v4/founders/borja-emoji.svg",
+      alt: "",
+    },
     paragraphs: [
       "He crecido en un barrio trabajador de Getafe, y eso me ha marcado.",
       "Desde pequeño, en casa me enseñaron algo muy simple: si das tu palabra, la cumples. Trabajo, sacrificio y honestidad no son solo valores, es la forma en la que entiendo tanto la vida como mi profesión.",

@@ -71,14 +71,24 @@ describe("constants/founders — Conócenos bio copy", () => {
     expect(FOUNDER_BIOS.borja.paragraphs.length).toBeGreaterThanOrEqual(4);
   });
 
-  test("intro lines carry the per-founder emoji (unicode integrity guard)", () => {
-    // If the build pipeline mangles the multi-codepoint emojis this regresses
-    // immediately — the founder's voice depends on it. Pablo waves; Borja is
-    // the bearded variant (Apple renders it bald + bearded, matching him).
-    expect(FOUNDER_BIOS.pablo.introLine).toContain("🙋🏻‍♂️");
-    expect(FOUNDER_BIOS.borja.introLine).toContain("🧔🏻");
-    expect(FOUNDER_BIOS.pablo.introLine).toContain("Pablo");
-    expect(FOUNDER_BIOS.borja.introLine).toContain("Borja");
+  test("intro lines are plain text and each founder carries a badge", () => {
+    expect(FOUNDER_BIOS.pablo.introLine).toBe("Yo soy Pablo");
+    expect(FOUNDER_BIOS.borja.introLine).toBe("Yo soy Borja");
+
+    // Pablo waves with the standard Unicode emoji; guard against the multi-
+    // codepoint sequence getting mangled by the build pipeline.
+    expect(FOUNDER_BIOS.pablo.introBadge).toEqual({
+      kind: "emoji",
+      char: "🙋🏻‍♂️",
+    });
+
+    // Borja gets a custom SVG — no Unicode emoji renders bald + bearded
+    // across iOS and Android, so we ship our own glyph.
+    expect(FOUNDER_BIOS.borja.introBadge).toEqual({
+      kind: "image",
+      src: "/v4/founders/borja-emoji.svg",
+      alt: "",
+    });
   });
 
   test("Pablo bio carries the BRD §6 hooks (Banfield, UBA)", () => {

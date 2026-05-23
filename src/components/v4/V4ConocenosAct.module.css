@@ -223,6 +223,20 @@
   transition: clip-path 600ms cubic-bezier(0.7, 0, 0.3, 1) 100ms;
 }
 
+/* Badge after the intro line. Emoji is text so it inherits scale; the
+   custom SVG (used for Borja, since no Unicode emoji renders bald + bearded)
+   is sized to match the emoji's optical weight at the heading font-size. */
+.introBadgeEmoji {
+  font-style: normal;
+}
+
+.introBadgeIcon {
+  display: inline-block;
+  height: 0.95em;
+  width: auto;
+  vertical-align: -0.12em;
+}
+
 .sectionRevealed .headingIntro {
   clip-path: inset(0 0 0 0);
 }
