@@ -212,26 +212,42 @@
     gap: 2rem;
   }
 
-  /* Diptych vertically stacks; convergence translates Y instead of X. */
+  /* Two-column row: Pablo | Borja at the same level; together overlays the center
+     so the convergence reads as "they meet in the middle" rather than three
+     stacked photos. */
   .diptych {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    max-width: 320px;
+    position: relative;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    max-width: 360px;
     margin: 0 auto;
   }
 
   .diptychSlot {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 3 / 4;
   }
 
-  /* together's 2:3 already matches the source — no redefine needed. */
+  .togetherFrame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 58%;
+    max-width: 220px;
+    /* translate(-50%,-50%) must stay in the transform across both states so
+       the transition interpolates instead of snapping out of centering. */
+    transform: translate(-50%, -50%) scale(0.96);
+  }
 
   .diptych[data-converging="true"] .diptychSlot[data-slot-index="0"] {
-    transform: translateY(40%) scale(0.88);
+    transform: translateX(40%) scale(0.88);
   }
 
   .diptych[data-converging="true"] .diptychSlot[data-slot-index="1"] {
-    transform: translateY(-40%) scale(0.88);
+    transform: translateX(-40%) scale(0.88);
+  }
+
+  .diptych[data-converging="true"] .togetherFrame {
+    transform: translate(-50%, -50%) scale(1);
   }
 
   .heading {
