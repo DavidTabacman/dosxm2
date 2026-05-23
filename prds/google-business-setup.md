@@ -1,8 +1,12 @@
 # Alta de DOSXM2 en Google (Google Business Profile)
 
-Esta guía es para que el cliente dé de alta el negocio en Google. Una vez
-verificado, el botón "Deja tu reseña en Google" en la web pasa a estar
-operativo (hoy apunta a un placeholder hasta que tengamos el Place ID).
+Esta guía es para que el cliente dé de alta el negocio en Google. La web
+V4 ya enlaza directamente al perfil de Maps con un short-link
+(`maps.app.goo.gl/z3LKpvaQvq4kDCZf9`), así que el botón "Ver más reseñas
+y deja la tuya en Google" funciona desde ya. Esta guía sigue siendo
+relevante para completar la verificación oficial y conseguir el Place ID
+si en algún momento se quiere abrir directamente el formulario de
+escribir reseña sin pasar por Maps.
 
 ---
 
@@ -79,20 +83,18 @@ Dos formas fáciles de obtenerlo:
 2. En el mapa que aparece arriba, busca tu negocio por nombre (`DOSXM2`).
 3. Pulsa en el pin que aparece — el Place ID se muestra en el infobox.
 
-**Una vez lo tengas**, pásamelo por mensaje. Yo lo enchufo en la
-constante `GOOGLE_PLACE_ID` de [src/components/v4/V4Resenas.tsx](src/components/v4/V4Resenas.tsx).
-Hoy esa constante está vacía, así que el botón "Deja tu reseña en
-Google" **no se renderiza** en producción — evitamos enviar usuarios a
-una URL rota mientras se completa la verificación. En cuanto la pongo
-con el Place ID real, el botón aparece y la URL final será:
+**Una vez lo tengas**, pásamelo por mensaje. El botón actual de la web
+apunta al short-link de Maps (`maps.app.goo.gl/z3LKpvaQvq4kDCZf9`), que
+abre el listado y desde ahí el usuario puede pulsar "Escribir una
+reseña". Con el Place ID puedo swappear el `href` en
+[src/components/v4/V4Resenas.tsx](src/components/v4/V4Resenas.tsx) para
+que abra directamente el formulario de reseña sin pasar por el listado:
 
 ```
 https://search.google.com/local/writereview?placeid={TU_PLACE_ID}
 ```
 
-Esa URL abre directamente el formulario de "Escribir una reseña" en
-Google sin pasar por el listado de Google Maps — perfecto para
-maximizar la conversión desde la web.
+Esa URL maximiza la conversión porque elimina un click intermedio.
 
 ---
 

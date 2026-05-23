@@ -41,26 +41,26 @@ const inter = Inter({
   display: "swap",
 });
 
-/* BRD 4.3 — metrics: 30 días / 100% / 24/7.
- * "24/7" is non-numeric; handled via `staticValue`. */
+/* Métricas: 34 días / 98% / 9/10.
+ * "9/10" es no-numérico; se pinta vía `staticValue`. */
 const METRICS = [
   {
-    value: 30,
+    value: 34,
     suffix: " días",
-    label: "Tiempo promedio de venta",
+    label: "Tiempo de venta promedio",
     caption: "Medido sobre propiedades vendidas en Madrid en los últimos 12 meses.",
   },
   {
-    value: 100,
+    value: 98,
     suffix: "%",
-    label: "Tasa de éxito",
-    caption: "Cuando aceptamos un encargo, la vendemos.",
+    label: "Precisión en el precio",
+    caption: "Nuestras viviendas se venden, de media, por el 98,37% del precio de valoración que recomendamos.",
   },
   {
     value: null,
-    staticValue: "24/7",
-    label: "Disponibilidad",
-    caption: "Dos personas, un teléfono. Te respondemos cuando lo necesites.",
+    staticValue: "9/10",
+    label: "Recomendación",
+    caption: "9 de cada 10 clientes que han trabajado con nosotros, nos recomiendan.",
   },
 ] as const;
 

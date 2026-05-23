@@ -86,13 +86,13 @@ describe("V4 Historias", () => {
     expect(img.style.visibility).toBe("hidden");
   });
 
-  test("renders BRD heading 'Cada casa tiene su historia.'", () => {
+  test("renders the BRD heading 'Llegaste tarde... ¡Ya se han vendido!'", () => {
     const { container } = render(<V4Historias />);
     const h2 = container.querySelector("h2");
     expect(h2?.textContent?.trim().replace(/\s+/g, " ")).toContain(
-      "Cada casa tiene"
+      "Llegaste tarde"
     );
-    expect(h2?.textContent).toContain("su historia");
+    expect(h2?.textContent).toContain("¡Ya se han vendido!");
   });
 
   test("supports a custom items prop to render a limited subset", () => {

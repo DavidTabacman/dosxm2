@@ -168,28 +168,20 @@ export default function V4Resenas({
         )}
       </div>
 
-      {GOOGLE_PLACE_ID ? (
-        <div className={styles.reviewCtaWrap}>
-          <a
-            className={styles.reviewCta}
-            href={`https://search.google.com/local/writereview?placeid=${GOOGLE_PLACE_ID}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <GoogleGIcon />
-            Deja tu reseña en Google
-          </a>
-        </div>
-      ) : null}
+      <div className={styles.reviewCtaWrap}>
+        <a
+          className={styles.reviewCta}
+          href="https://maps.app.goo.gl/z3LKpvaQvq4kDCZf9"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <GoogleGIcon />
+          Ver más reseñas y deja la tuya en Google
+        </a>
+      </div>
     </section>
   );
 }
-
-/* Set this once the DOSXM2 Google Business Profile is verified — the Place ID
-   lives at business.google.com after verification. While empty, the "Deja tu
-   reseña en Google" button stays hidden so we never ship a broken link.
-   See prds/google-business-setup.md for the client-facing setup walkthrough. */
-const GOOGLE_PLACE_ID: string = "";
 
 function GoogleGIcon() {
   return (

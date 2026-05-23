@@ -64,8 +64,8 @@ function Tile({ metric, animate }: { metric: V4Metric; animate: boolean }) {
 
 export default function V4Metrics({
   id = "resultados",
-  heading = "Números que hablan por sí solos.",
-  sub = "Lo que pasa cuando dos expertos se dedican a tu casa como si fuese la suya.",
+  heading = "Números que hablan por sí solos",
+  sub = "Este es el resultado de nuestro trabajo",
   metrics,
 }: V4MetricsProps) {
   // Header entrance is fire-once — the editorial h2/sub should not

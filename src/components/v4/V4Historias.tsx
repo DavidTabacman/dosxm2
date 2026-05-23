@@ -111,11 +111,12 @@ export default function V4Historias({
         }`}
       >
         <h2 id="v4-historias-heading" className={styles.heading}>
-          Cada casa tiene{" "}
-          <span className={styles.headingAccent}>su historia.</span>
+          Llegaste tarde...{" "}
+          <span className={styles.headingAccent}>¡Ya se han vendido!</span>
         </h2>
         <p className={styles.sub}>
-          Pincha en cada casa para ver su historia.
+          Echa un vistazo a nuestras últimas propiedades vendidas y descubre la
+          historia detrás de cada una, haciendo clic sobre ellas.
         </p>
       </div>
 

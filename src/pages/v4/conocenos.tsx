@@ -35,7 +35,7 @@ export default function V4ConocenosPage() {
         <title>Conócenos — DOSXM2</title>
         <meta
           name="description"
-          content="Pablo y Borja, los dos fundadores de DOSXM2. Desde Banfield y Getafe, una década en multinacionales y un único objetivo: vender tu casa en Madrid como si fuese la nuestra."
+          content="Pablo y Borja, los dos fundadores de DOSXM2. Desde Banfield y Getafe, una década en multinacionales y un mismo objetivo: vender tu casa en Madrid como si fuese la nuestra."
         />
         <meta
           name="viewport"

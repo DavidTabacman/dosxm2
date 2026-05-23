@@ -21,7 +21,7 @@ export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
     imageUrl: "/v4/properties/alberdi-40.jpg",
     alt: "Estudio diáfano con suelo de parqué y cocina americana integrada al fondo",
     story:
-      "Mari tuvo alquilado ese estudio durante muchos años, y tomo la decisión de venderlo, pero la inmobiliaria que lo tuvo en un inicio, no pudo hacerlo durante 6 meses, antes que lo trabajásemos nosotros. Enric, de unos veintitantos años, se mudaba a Madrid desde Barcelona, y estaba buscando comprar su primera vivienda cerca de su nuevo trabajo. Ole tu!!",
+      "Mari estuvo alquilando este estudio durante muchos años, y tomó la decisión de desprenderse de él, pero la inmobiliaria que lo tuvo en un inicio, no pudo venderlo durante 6 meses, antes de que trabajase con nosotros. Enric, de unos veintitantos años, se mudaba a Madrid desde Barcelona, y estaba buscando comprar su primera vivienda cerca de su nuevo trabajo. Ole tu!!",
     outcome: "Vendido",
   },
   {
@@ -37,7 +37,7 @@ export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
   {
     id: "pico-almanzor-10",
     title: "Pico de Almanzor 10",
-    zona: "Fuenlabrada",
+    zona: "Madrid",
     imageUrl: "/v4/properties/pico-almanzor-10.jpg",
     alt: "Salón amplio con sofá marrón, cuadro panorámico del puente de Brooklyn y comedor al fondo",
     story:
@@ -57,7 +57,7 @@ export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
   {
     id: "gerona-2",
     title: "Gerona 2",
-    zona: "Getafe",
+    zona: "Fuenlabrada",
     imageUrl: "/v4/properties/gerona-2.jpg",
     alt: "Local comercial diáfano con suelo de barro cocido, barra de obra y techos con vigas de madera",
     story:
@@ -67,17 +67,17 @@ export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
   {
     id: "aranjuez-3",
     title: "Aranjuez 3",
-    zona: "Getafe",
+    zona: "Torrejón de la Calzada",
     imageUrl: "/v4/properties/aranjuez-3.jpg",
     alt: "Salón-comedor con escalera abierta al fondo, sofá beige y mantel de ganchillo amarillo",
     story:
-      "Esta pareja, necesitaba vender su propiedad al separar sus caminos y empezar de nuevo sus vidas independientemente. Pero fíjate como es el destino, sin ellos saberlo se encontraron en notaría con una compañera de trabajo de uno de ellos, eran Anggie y Carlos. Esta pareja estrenaba su primera casa con mucha ilusión e ideas nuevas de mejora. Os deseamos lo mejor!!",
+      "Esta pareja, necesitaba vender su propiedad para separar sus caminos y así empezar de nuevo sus vidas. Pero fíjate como es el destino, sin ellos saberlo, se encontraron con que uno de los compradores era una compañera de trabajo de él. Esta pareja esperaba estrenar su primera casa con mucha ilusión e ideas nuevas de mejora. Os deseamos lo mejor!!",
     outcome: "Vendido",
   },
   {
     id: "rufino-blanco-4",
     title: "Rufino Blanco 4",
-    zona: "Madrid",
+    zona: "Guadalajara",
     imageUrl: "/v4/properties/rufino-blanco-4.jpg",
     alt: "Despacho clásico con biblioteca repleta de libros, escritorio de madera y alfombra persa",
     story:
@@ -91,23 +91,23 @@ export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
     imageUrl: "/v4/properties/castilla-vieja-21.jpg",
     alt: "Salón luminoso con sofá rosa, cojines azules y ventanal corrido con vistas al cielo",
     story:
-      "Víctor y Estefanía solicitaron de nuestros servicios porque necesitaban una vivienda mayor, sobretodo en una donde tuviera un garaje grande donde Víctor pudiera “jugar” con sus coches. Olga y José fueron los compradores ideales, ya que también vendieron su casa con nosotros y esta SÍ tenía ese ascensor tan deseado. Ambos están felices en sus nuevas vidas!!",
+      "Víctor y Estefanía solicitaron nuestros servicios porque necesitaban un cambio, una vivienda más grande, pero sobre todo que tuviera un garaje donde él pudiera “jugar” con sus coches. Olga y José fueron los compradores ideales, ya que también vendieron su casa con nosotros y esta SÍ tenía ese ascensor tan deseado. Ambos están felices en sus nuevas vidas!!",
     outcome: "Vendido",
   },
   {
     id: "avenida-espana-12",
-    title: "Avenida España 12",
-    zona: "Fuenlabrada",
+    title: "Avenida de España 12",
+    zona: "Getafe",
     imageUrl: "/v4/properties/avenida-espana-12.jpg",
     alt: "Salón con sofá naranja, suelo de mármol veteado y mueble bajo de madera clara con televisor",
     story:
-      "Estas hermanas que son un encanto, nos pidieron ayuda porque su papá llevaba tiempo en la residencia y tomaron la decisión de cerrar ese capitulo tan bonito y tan largo de su vida, allí crecieron y fueron una familia feliz junto a su mamá. Los nuevos compradores necesitaban una vivienda para darle un punto extra de seguridad a la zona, Laura y Óscar fueron la pareja ideal!!",
+      "Estas hermanas que son un encanto, nos pidieron ayuda porque su papá llevaba tiempo en la residencia y tomaron la decisión de cerrar ese capítulo tan bonito y tan largo de su vida, vendiendo el piso donde crecieron y fueron una familia feliz junto a su mamá. Los compradores buscaban una vivienda como inversión justo en la misma zona. Laura y Óscar fueron la pareja ideal!!",
     outcome: "Vendido",
   },
   {
     id: "travesia-espana",
-    title: "Travesía de España",
-    zona: "Fuenlabrada",
+    title: "Travesía de España 10",
+    zona: "El Viso de San Juan",
     imageUrl: "/v4/properties/travesia-espana.jpg",
     alt: "Recibidor con escalera de granito y vista a la cocina abierta con muebles de madera",
     story:

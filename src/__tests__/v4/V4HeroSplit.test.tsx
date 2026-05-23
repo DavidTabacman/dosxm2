@@ -53,7 +53,6 @@ describe("V4 HeroSplit", () => {
   test("renders the BRD sub-copy", () => {
     const { container } = render(<V4HeroSplit />);
     expect(container.textContent).toContain("Vendemos tu casa como si fuese la nuestra");
-    expect(container.textContent).toContain("Doble compromiso");
   });
 
   test("renders the CTA pointing to the external Lystos valuation tool", () => {

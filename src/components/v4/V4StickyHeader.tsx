@@ -26,7 +26,7 @@ export const V4_NAV_LINKS: ReadonlyArray<V4NavLink> = [
   { href: "#diferencial", label: "Por qué elegirnos", kind: "anchor" },
   { href: "/v4/conocenos", label: "Conócenos", kind: "page" },
   { href: "#resultados", label: "Resultados", kind: "anchor" },
-  { href: "#historias", label: "Historias", kind: "anchor" },
+  { href: "#historias", label: "Vendidas", kind: "anchor" },
   { href: "#resenas", label: "Reseñas", kind: "anchor" },
   { href: "#contacto", label: "Contacto", kind: "anchor" },
   {

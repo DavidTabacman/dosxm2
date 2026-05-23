@@ -152,8 +152,7 @@ export default function V4HeroSplit() {
             <span className={styles.headingAccent}>una historia.</span>
           </h1>
           <p className={styles.sub}>
-            Vendemos tu casa como si fuese la nuestra. Doble compromiso, trato
-            personal y resultados demostrables en Madrid.
+            Vendemos tu casa como si fuese la nuestra.
           </p>
           <div className={styles.ctaRow}>
             <a

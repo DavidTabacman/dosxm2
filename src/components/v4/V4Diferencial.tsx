@@ -216,22 +216,23 @@ export default function V4Diferencial({
           }`}
         >
           <h2 id="v4-diferencial-heading" className={styles.heading}>
-            Dos visiones,{" "}
-            <span className={styles.headingAccent}>un único objetivo.</span>
+            Dos profesionales,{" "}
+            <span className={styles.headingAccent}>un mismo objetivo.</span>
           </h2>
           <p className={styles.lede}>
             En un sector donde la mayoría trabaja solo, nosotros somos un
-            equipo.
+            equipo consolidado.
           </p>
           <div className={styles.ruleAccent} aria-hidden="true" />
           <p className={styles.body}>
-            Doble compromiso, trato personal y resultados demostrables. Nos
-            dedicamos a menos propiedades para acompañarte a ti, no a una
-            cartera. Cada casa tiene su historia — y nosotros nos sentamos
-            contigo hasta que la tuya esté contada.
+            Varios años de experiencia avalan nuestro trabajo, demostrando un
+            compromiso innegociable, trato personal a tope y resultados 100%
+            demostrables en Madrid, que hacen que nuestros clientes nos
+            recomienden siempre.
           </p>
           <p className={styles.body}>
-            Tu tranquilidad es nuestra métrica principal.
+            Cada casa tiene su historia, y nosotros trabajaremos hasta que la
+            tuya esté contada.
           </p>
           <span className={styles.signature}>
             <span className={styles.signatureRule} aria-hidden="true" />

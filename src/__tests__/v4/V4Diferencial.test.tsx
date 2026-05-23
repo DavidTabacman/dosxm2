@@ -73,10 +73,10 @@ describe("V4 Diferencial", () => {
 
   test("renders the BRD core message about teamwork", () => {
     const { container } = render(<V4Diferencial {...FOUNDERS} />);
-    expect(container.textContent).toContain("Dos visiones");
-    expect(container.textContent).toContain("un único objetivo");
+    expect(container.textContent).toContain("Dos profesionales");
+    expect(container.textContent).toContain("un mismo objetivo");
     expect(container.textContent).toContain("En un sector donde la mayoría trabaja solo");
-    expect(container.textContent).toContain("nosotros somos un equipo");
+    expect(container.textContent).toContain("nosotros somos un equipo consolidado");
   });
 
   test("renders both founder portraits with correct alt text", () => {
