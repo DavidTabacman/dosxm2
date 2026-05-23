@@ -116,6 +116,24 @@
     width: min(620px, 55vw);
     padding-top: calc(var(--v4-header-h) + clamp(2rem, 4vw, 3.5rem));
     padding-left: clamp(3rem, 8vw, 7rem);
+    /* Anchor from the top: centering this absolutely-positioned 100vh layer
+       on top of the asymmetric header padding pushes the CTA past the hero's
+       overflow:hidden boundary on common laptop viewports (~700px tall). */
+    justify-content: flex-start;
+  }
+}
+
+/* Short desktop viewports (laptops, zoomed-in screens): scale down the
+   display heading and tighten the sub margins so the H1 + sub + CTA stack
+   always fits within 100vh and the CTA is never clipped. Mirrors the
+   landscape-phones rule further down. */
+@media (min-width: 769px) and (max-height: 820px) {
+  .heading {
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+  }
+
+  .sub {
+    margin: 1rem 0 1.5rem;
   }
 }
 
