@@ -350,6 +350,8 @@
 
   .heading {
     font-size: clamp(2rem, 9vw, 2.75rem);
+    line-height: 1.18;
+    padding-bottom: 0.15em;
   }
 
   .body {

@@ -83,7 +83,7 @@
 
 @media (max-width: 768px) {
   .root {
-    --v4-header-h: 56px;
+    --v4-header-h: 80px;
     --v4-fab-size: 48px;
   }
 }

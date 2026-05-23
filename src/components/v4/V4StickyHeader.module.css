@@ -93,7 +93,7 @@
 
 @media (max-width: 768px) {
   .logoImage {
-    height: clamp(36px, 5vw, 44px);
+    height: clamp(60px, 16vw, 72px);
   }
 }
 

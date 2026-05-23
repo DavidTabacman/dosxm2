@@ -71,11 +71,12 @@ describe("constants/founders — Conócenos bio copy", () => {
     expect(FOUNDER_BIOS.borja.paragraphs.length).toBeGreaterThanOrEqual(4);
   });
 
-  test("intro lines contain the raised-hand emoji (unicode integrity guard)", () => {
-    // If the build pipeline mangles the multi-codepoint emoji this regresses
-    // immediately — the founder's voice depends on it.
+  test("intro lines carry the per-founder emoji (unicode integrity guard)", () => {
+    // If the build pipeline mangles the multi-codepoint emojis this regresses
+    // immediately — the founder's voice depends on it. Pablo waves; Borja is
+    // bald, matching the real founders.
     expect(FOUNDER_BIOS.pablo.introLine).toContain("🙋🏻‍♂️");
-    expect(FOUNDER_BIOS.borja.introLine).toContain("🙋🏻‍♂️");
+    expect(FOUNDER_BIOS.borja.introLine).toContain("👨🏻‍🦲");
     expect(FOUNDER_BIOS.pablo.introLine).toContain("Pablo");
     expect(FOUNDER_BIOS.borja.introLine).toContain("Borja");
   });
