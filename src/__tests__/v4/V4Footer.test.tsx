@@ -2,6 +2,7 @@ import { expect, test, describe } from "vitest";
 import { render } from "@testing-library/react";
 import V4Footer from "@/components/v4/V4Footer";
 import { V4_NAV_LINKS } from "@/components/v4/V4StickyHeader";
+import { FOUNDERS } from "@/constants/founders";
 import { readV4Css } from "../utils/readCss";
 import { contrastRatio, flattenRgba } from "../utils/contrast";
 import { extractRuleBody, assertMinTapTarget, assertMinHeight44 } from "../utils/touchTargets";
@@ -41,10 +42,20 @@ describe("V4 Footer", () => {
     });
   });
 
-  test("renders the email as a mailto link", () => {
-    const { container } = render(<V4Footer email="hola@dosxm2.com" />);
-    const mailto = container.querySelector("a[href='mailto:hola@dosxm2.com']");
-    expect(mailto).not.toBeNull();
+  test("renders a mailto link for each founder", () => {
+    const { container } = render(<V4Footer founders={FOUNDERS} />);
+    FOUNDERS.forEach((f) => {
+      const mailto = container.querySelector(`a[href='mailto:${f.email}']`);
+      expect(mailto).not.toBeNull();
+      expect(mailto?.textContent?.trim()).toBe(f.email);
+    });
+  });
+
+  test("never renders the legacy placeholder hola@ address", () => {
+    const { container } = render(<V4Footer founders={FOUNDERS} />);
+    const legacy = container.querySelector("a[href='mailto:hola@dosxm2.com']");
+    expect(legacy).toBeNull();
+    expect(container.textContent).not.toContain("hola@dosxm2.com");
   });
 
   test("renders Instagram and TikTok links with safe rel attrs", () => {

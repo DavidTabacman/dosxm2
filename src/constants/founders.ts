@@ -62,9 +62,12 @@ export const TOGETHER_IMAGE = {
 export const BORJA_PHONE = "34667006662";
 export const PABLO_PHONE = "34674527410";
 
+export const BORJA_EMAIL = "borja.gallego@dosxm2.com";
+export const PABLO_EMAIL = "pablo.dupont@dosxm2.com";
+
 export const FOUNDERS = [
-  { name: "Borja", phone: BORJA_PHONE },
-  { name: "Pablo", phone: PABLO_PHONE },
+  { name: "Borja", phone: BORJA_PHONE, email: BORJA_EMAIL },
+  { name: "Pablo", phone: PABLO_PHONE, email: PABLO_EMAIL },
 ] as const;
 
 export const WA_MESSAGE =

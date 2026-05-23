@@ -73,6 +73,25 @@
   margin: 0;
 }
 
+.founderList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.founderName {
+  display: block;
+  font-family: var(--v4-font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--v4-on-dark-primary);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.125rem;
+}
+
 .linkList a {
   color: var(--v4-on-dark-primary);
   font-family: var(--v4-font-sans);

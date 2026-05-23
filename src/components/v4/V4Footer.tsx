@@ -5,8 +5,7 @@ import styles from "./V4Footer.module.css";
 export interface V4FooterProps {
   instagramUrl?: string;
   tiktokUrl?: string;
-  email?: string;
-  founders?: ReadonlyArray<{ name: string; phone: string }>;
+  founders?: ReadonlyArray<{ name: string; phone: string; email: string }>;
 }
 
 function formatEsPhone(phone: string): string {
@@ -17,7 +16,6 @@ function formatEsPhone(phone: string): string {
 export default function V4Footer({
   instagramUrl = V4_SOCIAL_URLS.instagram,
   tiktokUrl = V4_SOCIAL_URLS.tiktok,
-  email = "hola@dosxm2.com",
   founders = [],
 }: V4FooterProps) {
   const year = new Date().getFullYear();
@@ -59,17 +57,18 @@ export default function V4Footer({
 
         <div className={styles.block}>
           <h3>Contacto</h3>
-          <ul className={styles.linkList}>
-            <li>
-              <a href={`mailto:${email}`}>{email}</a>
-            </li>
+          <ul className={styles.founderList}>
             {founders.map((f) => (
               <li key={f.phone}>
-                <a href={`tel:+${f.phone}`}>
-                  {f.name}
-                  <span className={styles.separator}>·</span>
-                  {formatEsPhone(f.phone)}
-                </a>
+                <span className={styles.founderName}>{f.name}</span>
+                <ul className={styles.linkList}>
+                  <li>
+                    <a href={`mailto:${f.email}`}>{f.email}</a>
+                  </li>
+                  <li>
+                    <a href={`tel:+${f.phone}`}>{formatEsPhone(f.phone)}</a>
+                  </li>
+                </ul>
               </li>
             ))}
           </ul>
