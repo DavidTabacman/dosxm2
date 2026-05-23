@@ -102,10 +102,10 @@ export default function V4Historias({
     <section
       id={id}
       className={styles.section}
-      ref={ref}
       aria-labelledby="v4-historias-heading"
     >
       <div
+        ref={ref}
         className={`${styles.sectionHeader} ${anim.revealTarget} ${
           isRevealed ? anim.revealTargetVisible : ""
         }`}
