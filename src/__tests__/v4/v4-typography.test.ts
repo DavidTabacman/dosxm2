@@ -68,10 +68,13 @@ describe("V4 body-copy 16px floor (P2-5)", () => {
 
 describe("V4 type-scale token adoption (Phase 4)", () => {
 
-  test("Hero heading uses --v4-type-display", () => {
+  test("Hero heading uses --v4-type-display capped by viewport height", () => {
     const css = readCss("V4HeroSplit.module.css");
+    // The hero caps the token with a vh limit so the H1+sub+CTA stack always
+    // fits inside the 100vh+overflow:hidden hero. See V4HeroSplit.layout.test.ts
+    // for the regression context.
     expect(css).toMatch(
-      /\.heading\s*{[^}]*font-size:\s*var\(--v4-type-display\)/
+      /\.heading\s*{[^}]*font-size:\s*min\(\s*var\(--v4-type-display\)\s*,\s*8vh\s*\)/
     );
   });
 

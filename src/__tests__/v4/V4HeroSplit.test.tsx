@@ -142,6 +142,30 @@ describe("V4 HeroSplit", () => {
     expect(h1).not.toBeNull();
   });
 
+  test("CTA anchor lives inside the textLayer's ctaRow (above-the-fold contract)", () => {
+    const { container } = render(<V4HeroSplit />);
+    const textLayer = container.querySelector("[class*='textLayer']");
+    expect(textLayer).not.toBeNull();
+    const ctaRow = textLayer!.querySelector("[class*='ctaRow']");
+    expect(ctaRow).not.toBeNull();
+    const cta = ctaRow!.querySelector("a[href*='valuation.lystos.com']");
+    expect(cta).not.toBeNull();
+    expect(cta?.textContent).toContain("Valora tu propiedad");
+  });
+
+  test("textLayer stack order is heading → sub → ctaRow (CTA cannot be moved out of the visible stack)", () => {
+    const { container } = render(<V4HeroSplit />);
+    const textLayer = container.querySelector("[class*='textLayer']");
+    expect(textLayer).not.toBeNull();
+    const children = Array.from(textLayer!.children);
+    const heading = children.findIndex((el) => el.tagName === "H1");
+    const sub = children.findIndex((el) => el.matches("[class*='sub']"));
+    const ctaRow = children.findIndex((el) => el.matches("[class*='ctaRow']"));
+    expect(heading).toBeGreaterThanOrEqual(0);
+    expect(sub).toBeGreaterThan(heading);
+    expect(ctaRow).toBeGreaterThan(sub);
+  });
+
   test("hero CSS uses svh with vh fallback for stable iOS viewport", () => {
     const css = readV4Css("V4HeroSplit.module.css");
     expect(css).toContain("100svh");
