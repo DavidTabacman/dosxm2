@@ -60,7 +60,7 @@ export default function V4ConocenosPage() {
         />
       </Head>
       <V4Layout fontClassName={`${fraunces.variable} ${inter.variable}`}>
-        <V4StickyHeader />
+        <V4StickyHeader alwaysSolid />
         <V4Conocenos />
         <V4Footer founders={FOUNDERS} />
       </V4Layout>

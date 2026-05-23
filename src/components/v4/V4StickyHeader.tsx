@@ -65,16 +65,23 @@ function scrollToAnchor(hash: string) {
   target.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-export default function V4StickyHeader() {
+export default function V4StickyHeader({
+  alwaysSolid = false,
+}: {
+  alwaysSolid?: boolean;
+} = {}) {
   // Solid/transparent state — driven by IntersectionObserver on a 1px sentinel
   // placed at the top of the page. When sentinel leaves viewport, solid is on.
-  const [isSolid, setIsSolid] = useState(false);
+  // `alwaysSolid` forces solid from first paint (for pages with light heroes
+  // where the white logo would be invisible against the background).
+  const [isSolid, setIsSolid] = useState(alwaysSolid);
   const [menuOpen, setMenuOpen] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
 
   useEffect(() => {
+    if (alwaysSolid) return;
     const node = sentinelRef.current;
     if (!node) return;
 
@@ -102,7 +109,7 @@ export default function V4StickyHeader() {
     console.log(`[V4-StickyHeader] 👁️ Sentinel observer attached`);
 
     return () => observer.disconnect();
-  }, []);
+  }, [alwaysSolid]);
 
   // Close drawer on ESC, outside click, or hash change.
   useEffect(() => {
