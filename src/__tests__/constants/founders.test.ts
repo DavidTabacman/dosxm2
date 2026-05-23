@@ -74,9 +74,9 @@ describe("constants/founders — Conócenos bio copy", () => {
   test("intro lines carry the per-founder emoji (unicode integrity guard)", () => {
     // If the build pipeline mangles the multi-codepoint emojis this regresses
     // immediately — the founder's voice depends on it. Pablo waves; Borja is
-    // bald, matching the real founders.
+    // the bearded variant (Apple renders it bald + bearded, matching him).
     expect(FOUNDER_BIOS.pablo.introLine).toContain("🙋🏻‍♂️");
-    expect(FOUNDER_BIOS.borja.introLine).toContain("👨🏻‍🦲");
+    expect(FOUNDER_BIOS.borja.introLine).toContain("🧔🏻");
     expect(FOUNDER_BIOS.pablo.introLine).toContain("Pablo");
     expect(FOUNDER_BIOS.borja.introLine).toContain("Borja");
   });

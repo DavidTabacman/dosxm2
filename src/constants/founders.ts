@@ -77,7 +77,8 @@ export const CONTACTO_FOUNDERS = {
 /**
  * Conócenos page — client-supplied bios. Emojis preserved by design and
  * chosen per founder so VoiceOver announces an identity hint that matches
- * each one (Pablo: "person raising hand", Borja: "man, bald"). Do NOT strip.
+ * each one (Pablo: "person raising hand", Borja: "person, beard" — Apple
+ * renders the beard variant effectively bald, matching Borja). Do NOT strip.
  */
 export const FOUNDER_BIOS: Record<"pablo" | "borja", FounderBio> = {
   pablo: {
@@ -90,7 +91,7 @@ export const FOUNDER_BIOS: Record<"pablo" | "borja", FounderBio> = {
     ],
   },
   borja: {
-    introLine: "Yo soy Borja 👨🏻‍🦲",
+    introLine: "Yo soy Borja 🧔🏻",
     paragraphs: [
       "He crecido en un barrio trabajador de Getafe, y eso me ha marcado.",
       "Desde pequeño, en casa me enseñaron algo muy simple: si das tu palabra, la cumples. Trabajo, sacrificio y honestidad no son solo valores, es la forma en la que entiendo tanto la vida como mi profesión.",
