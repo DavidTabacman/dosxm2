@@ -30,7 +30,7 @@ export const V4_NAV_LINKS: ReadonlyArray<V4NavLink> = [
   { href: "#resenas", label: "Reseñas", kind: "anchor" },
   { href: "#contacto", label: "Contacto", kind: "anchor" },
   {
-    href: "https://l.instagram.com/?u=http%3A%2F%2Fvaluation.lystos.com%2F%3FclientId%3Dcadc5d64-196d-4b14-a542-0858ecf58bd0%26utm_source%3Dig%26utm_medium%3Dsocial%26utm_content%3Dlink_in_bio%26fbclid%3DPAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnWAI3w4GE0tRTNGO9p13ir0iLcVOx6GPp-JU6w1IW6_EN55TM9Xi8LGVkFvc_aem_YqbvHEazi8CRfz6h0FF9HA&e=AT4aKKbyzBZDzksXHcyQW5Y_OODy1CtEBr-rMF4Zq0SFIkgWQJ9NVJjgFSGQ2fObe3ENRYKBmKjRVN_pFqMkQly4rO-yI85ePb9nkzpv7A",
+    href: "https://valuation.lystos.com/?clientId=cadc5d64-196d-4b14-a542-0858ecf58bd0&utm_source=web&utm_medium=cta&utm_content=nav",
     label: "Valorador",
     kind: "external",
   },
