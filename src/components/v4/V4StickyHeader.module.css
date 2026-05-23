@@ -222,9 +222,15 @@
    inherit that divider, and it should still read as a pill. */
 .drawer .navCta {
   border-bottom: none;
-  padding: 0.95rem 1.75rem;
-  text-align: center;
-  margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding-block: 0.875rem;
+  padding-inline: 2rem;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  margin-top: 0.75rem;
   align-self: flex-start;
 }
 
