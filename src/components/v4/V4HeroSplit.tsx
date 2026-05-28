@@ -6,7 +6,7 @@ import styles from "./V4HeroSplit.module.css";
 
 /* BRD 4.1 — split-screen videos.
  * - Left: architectural / aspirational (cool detail) — balcony w/ Madrid sun.
- * - Right: lifestyle / warm — reformado interior with natural light.
+ * - Right: lifestyle / warm — Castilla la Vieja exterior in golden light.
  * Sources are clips from DOSXM2's own TikTok @dosxm2, downsized for
  * hero use. H.264 MP4 is universally supported and already compresses
  * smaller than the VP9/WebM twins at this resolution, so no fallback
@@ -14,8 +14,8 @@ import styles from "./V4HeroSplit.module.css";
  */
 const LEFT_VIDEO = "/v4/hero/hero-left.mp4";
 const LEFT_POSTER = "/v4/hero/hero-left-poster.jpg";
-const RIGHT_VIDEO = "/v4/hero/hero-right.mp4";
-const RIGHT_POSTER = "/v4/hero/hero-right-poster.jpg";
+const RIGHT_VIDEO = "/v4/hero/castillalavieja.mp4";
+const RIGHT_POSTER = "/v4/hero/castillalavieja-poster.jpg";
 // Mobile (<=768px) collapses the split-screen into a single full-bleed video.
 const MOBILE_VIDEO = "/v4/hero/castillalavieja-mobile.mp4";
 const MOBILE_POSTER = "/v4/hero/castillalavieja-poster.jpg";
