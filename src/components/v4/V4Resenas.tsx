@@ -171,7 +171,7 @@ export default function V4Resenas({
       <div className={styles.reviewCtaWrap}>
         <a
           className={styles.reviewCta}
-          href="https://maps.app.goo.gl/z3LKpvaQvq4kDCZf9"
+          href="https://search.google.com/local/reviews?placeid=ChIJ90k3GBBvMIwR1qyNs8bbBB0"
           target="_blank"
           rel="noopener noreferrer"
         >
