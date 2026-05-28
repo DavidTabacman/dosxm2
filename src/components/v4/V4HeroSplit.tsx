@@ -150,7 +150,13 @@ export default function V4HeroSplit() {
             data-asset-type="hero-bg-fallback"
           />
         ) : (
+          // `key` forces a remount when isMobile flips, so useVideoPlayback's
+          // ref callback fires for the new <video> and re-triggers play() on
+          // the swapped src. Without this, React would mutate the existing
+          // element's src attribute and the hook would never autoplay the
+          // new source — the poster sits idle.
           <video
+            key={isMobile ? "mobile" : "desktop"}
             ref={setLeftVideoRef}
             className={styles.panelBg}
             src={isMobile ? MOBILE_VIDEO : LEFT_VIDEO}
