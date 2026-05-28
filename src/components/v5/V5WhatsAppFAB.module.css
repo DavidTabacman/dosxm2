@@ -1,0 +1,57 @@
+/* =========================================================
+   V5 WhatsApp FAB — the founder portraits dock to the corner
+   once the Diferencial section (where the real portraits
+   live) scrolls out of view. Per BRD 4.2 the portraits THEMSELVES
+   are the button: no pill, no visible label, no WhatsApp icon —
+   only a subtle ochre halo + a hover/focus tooltip for
+   discoverability.
+
+   Only positioning / visibility lives here. The two portrait
+   links themselves (and their responsive + motion rules) live
+   in V5FounderLinks.module.css — shared with the valorador
+   success state.
+   ========================================================= */
+
+.fab {
+  position: fixed;
+  z-index: 55;
+  bottom: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-bottom));
+  right: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-right));
+  transition:
+    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  /* 100ms delay on the FAB's inbound motion lets the section
+     portraits fade out first — selling the "detach" narrative. */
+  transition-delay: 0.1s;
+  pointer-events: auto;
+  transform-origin: bottom right;
+}
+
+.fabHidden {
+  opacity: 0;
+  transform: translateY(24px) scale(0.9);
+  pointer-events: none;
+  visibility: hidden;
+  /* Outbound motion: no delay — respond immediately to scroll up. */
+  transition-delay: 0s;
+}
+
+/* Mobile: docked to center-bottom for reachability. */
+@media (max-width: 600px) {
+  .fab {
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  .fabHidden {
+    transform: translateX(50%) translateY(24px) scale(0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fab {
+    transition: opacity 0.2s linear;
+    transform: none !important;
+    transition-delay: 0s;
+  }
+}

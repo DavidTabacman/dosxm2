@@ -1,0 +1,282 @@
+/* =========================================================
+   V5 Reseñas — conversational "typing reviews" (BRD 4.5).
+   Uses V5 palette: Papel Cálido background, Carbón Profundo
+   text, Ocre Terroso for accents/sender names.
+   ========================================================= */
+
+.section {
+  background: var(--v5-surface-elevated);
+  padding: clamp(5rem, 11vw, 8rem) clamp(1.5rem, 5vw, 3rem);
+  scroll-margin-top: calc(var(--v5-header-h) + 16px);
+}
+
+.sectionHeader {
+  max-width: 740px;
+  margin: 0 auto clamp(2.5rem, 6vw, 4rem);
+  text-align: center;
+}
+
+.heading {
+  font-family: var(--v5-font-serif);
+  font-weight: 400;
+  font-size: var(--v5-type-h2);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.75rem;
+}
+
+.headingAccent {
+  font-style: italic;
+  color: var(--v5-accent);
+}
+
+.sub {
+  font-family: var(--v5-font-sans);
+  font-size: clamp(0.9375rem, 1.55vw, 1.0625rem);
+  color: var(--v5-muted-strong);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.chat {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.row {
+  display: flex;
+  /* reserved space equal to the typing indicator height so the bubble's
+     eventual reveal doesn't pop layout — matches V2's approach. */
+  min-height: 3rem;
+}
+
+.rowRight {
+  justify-content: flex-end;
+}
+
+/* Slide in once message is revealed */
+.slideLeft {
+  opacity: 0;
+  transform: translateX(-24px);
+}
+
+.slideRight {
+  opacity: 0;
+  transform: translateX(24px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .slideLeft,
+  .slideRight {
+    transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+.slideLeft.inView,
+.slideRight.inView {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Bubble */
+.bubble {
+  max-width: min(82%, 420px);
+  background: var(--v5-bg);
+  border: 1px solid var(--v5-border);
+  border-radius: 18px;
+  border-top-left-radius: 4px;
+  padding: 0.875rem 1.125rem;
+  box-shadow: 0 2px 10px rgba(28, 28, 28, 0.06);
+}
+
+.rowRight .bubble {
+  background: var(--v5-fg);
+  color: var(--v5-bg);
+  border-color: var(--v5-fg);
+  border-radius: 18px;
+  border-top-right-radius: 4px;
+}
+
+.senderName {
+  font-family: var(--v5-font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--v5-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 0.25rem;
+}
+
+.rowRight .senderName {
+  color: var(--v5-accent-warm);
+}
+
+.location {
+  font-family: var(--v5-font-sans);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--v5-muted);
+  margin-left: 0.5rem;
+}
+
+.rowRight .location {
+  color: var(--v5-on-dark-tertiary);
+}
+
+.message {
+  font-family: var(--v5-font-sans);
+  font-size: 1rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.time {
+  display: block;
+  text-align: right;
+  font-family: var(--v5-font-sans);
+  font-size: 0.6875rem;
+  color: var(--v5-muted);
+  margin-top: 0.375rem;
+}
+
+.rowRight .time {
+  color: var(--v5-on-dark-tertiary);
+}
+
+/* Typing indicator */
+.typing {
+  display: inline-flex;
+  gap: 4px;
+  padding: 0.875rem 1.125rem;
+  background: var(--v5-bg);
+  border: 1px solid var(--v5-border);
+  border-radius: 18px;
+  border-top-left-radius: 4px;
+  box-shadow: 0 2px 10px rgba(28, 28, 28, 0.06);
+  align-items: center;
+}
+
+.rowRight .typing {
+  background: var(--v5-fg);
+  border-color: var(--v5-fg);
+  border-radius: 18px;
+  border-top-right-radius: 4px;
+}
+
+.typingDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--v5-muted);
+  animation: bounce 1.4s ease-in-out infinite;
+}
+
+.rowRight .typingDot {
+  background: var(--v5-on-dark-secondary);
+}
+
+.typingDot:nth-child(2) { animation-delay: 0.2s; }
+.typingDot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slideLeft,
+  .slideRight {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .typingDot {
+    animation: none;
+  }
+}
+
+/* iPhone SE and similarly narrow screens: widen bubbles to stop two-word
+   "wrap-per-bubble" from shrinking the chat to an awkward column. */
+@media (max-width: 400px) {
+  .bubble {
+    max-width: 92%;
+  }
+}
+
+/* Uppercase senderName at 0.14em tracking clips on tight mobile widths;
+   relax the tracking below 600px so names like "CARMEN L." fit. */
+@media (max-width: 600px) {
+  .senderName {
+    letter-spacing: 0.08em;
+  }
+}
+
+/* CTA below testimonials — invites visitors to leave a Google review. */
+.reviewCtaWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.reviewCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  background: var(--v5-bg);
+  color: var(--v5-fg);
+  font-family: var(--v5-font-sans);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.875rem 1.5rem 0.875rem 1.25rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--v5-border-strong);
+  box-shadow: 0 8px 22px rgba(28, 28, 28, 0.06);
+  text-decoration: none;
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.reviewCta:hover,
+.reviewCta:focus-visible {
+  border-color: var(--v5-accent);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(28, 28, 28, 0.1);
+}
+
+.reviewCta:focus-visible {
+  outline: 2px solid var(--v5-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reviewCta {
+    transition: none;
+  }
+  .reviewCta:hover,
+  .reviewCta:focus-visible {
+    transform: none;
+  }
+}
+
+/* Under prefers-reduced-data, collapse the cascade: show all bubbles at
+   once with no slide/typing animation. No data is saved (CSS only), but
+   it matches the low-motion, low-spectacle spirit users have opted into. */
+@media (prefers-reduced-data: reduce) {
+  .slideLeft,
+  .slideRight {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .typingDot {
+    animation: none;
+  }
+}

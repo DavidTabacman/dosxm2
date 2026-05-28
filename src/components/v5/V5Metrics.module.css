@@ -1,0 +1,143 @@
+/* =========================================================
+   V5 Métricas / Resultados — dark editorial section.
+   BRD 4.3: counters animate only once when entering viewport.
+   Background: Carbón Profundo. Numbers: Papel Cálido.
+   Accent: Ocre Terroso.
+   ========================================================= */
+
+.section {
+  background: var(--v5-surface-dark);
+  color: var(--v5-bg);
+  padding: clamp(4.5rem, 10vw, 7.5rem) clamp(1.5rem, 5vw, 3rem);
+  scroll-margin-top: calc(var(--v5-header-h) + 16px);
+}
+
+.inner {
+  max-width: var(--v5-max-width);
+  margin: 0 auto;
+}
+
+/* Header block owns the editorial stagger entrance. Kept separate from
+   the grid so the counters can independently replay on scroll-in without
+   dragging the heading's slide-up with them. */
+.headerBlock {
+  margin-bottom: 0;
+}
+
+.heading {
+  font-family: var(--v5-font-serif);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5rem;
+  max-width: 24ch;
+  color: var(--v5-bg);
+}
+
+.sub {
+  font-family: var(--v5-font-sans);
+  font-size: clamp(0.9375rem, 1.55vw, 1rem);
+  line-height: 1.6;
+  color: var(--v5-on-dark-secondary);
+  margin: 0 0 clamp(2.5rem, 6vw, 4rem);
+  max-width: 48ch;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+/* Step down 3-col -> 2-col at 1024, then -> 1-col at 600. The 2-col
+   intermediate prevents the 770-1024 range from regressing to a single
+   column while the viewport still has room for two. */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--v5-on-dark-hairline);
+  position: relative;
+}
+
+/* Ochre whisker — short brand-tinted accent sitting on top of the
+   hairline border. Reinforces the Ocre Terroso motif on the dark
+   metrics section without shouting. */
+.tile::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: clamp(32px, 6vw, 56px);
+  height: 2px;
+  background: var(--v5-accent);
+  border-radius: 1px;
+}
+
+.value {
+  font-family: var(--v5-font-sans);
+  font-weight: 600;
+  font-size: var(--v5-type-metric);
+  line-height: 1;
+  color: var(--v5-bg);
+  letter-spacing: -0.03em;
+  /* Keep layout stable while counting — monospace-style tabular figures. */
+  font-variant-numeric: tabular-nums;
+}
+
+.valueSuffix {
+  color: var(--v5-accent);
+  margin-left: 0.125em;
+}
+
+.label {
+  font-family: var(--v5-font-sans);
+  font-size: clamp(0.8125rem, 1.4vw, 0.95rem);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--v5-on-dark-secondary);
+  font-weight: 500;
+}
+
+.caption {
+  font-family: var(--v5-font-sans);
+  font-size: 0.8125rem;
+  color: var(--v5-on-dark-tertiary);
+  line-height: 1.5;
+  max-width: 26ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .value,
+  .valueSuffix {
+    transition: none;
+  }
+}
+
+/* Landscape phones: enough horizontal room to re-expand to 3 columns
+   even though the width-based breakpoint would step down. Shrinks the
+   value type so three metrics fit in the available height. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .value {
+    font-size: clamp(2rem, 5vw, 3rem);
+  }
+}

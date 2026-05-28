@@ -1,0 +1,90 @@
+/* =========================================================
+   V5 design tokens — "Elegancia Cinematográfica con
+   Empatía Conversacional". Scoped to .root so V1/V2/V3
+   on their own routes are unaffected.
+   ========================================================= */
+
+.root {
+  /* BRD 2.1 — color palette */
+  --v5-bg: #faf9f6;              /* Papel Cálido */
+  --v5-fg: #1c1c1c;              /* Carbón Profundo */
+  --v5-accent: #8b5a2b;          /* Ocre Terroso */
+
+  /* Derived tokens (hand-tuned for contrast and UI affordances) */
+  --v5-accent-soft: rgba(139, 90, 43, 0.12);
+  --v5-accent-strong: #6e4621;
+  --v5-surface-elevated: #f3efe7;
+  --v5-surface-dark: #0f0f0f;    /* metrics section background */
+  --v5-border: rgba(28, 28, 28, 0.08);
+  --v5-border-strong: rgba(28, 28, 28, 0.18);
+  --v5-muted: rgba(28, 28, 28, 0.62);
+  --v5-muted-strong: rgba(28, 28, 28, 0.78);
+
+  /* Error token — darker than the original rose for 6:1 contrast on the
+     warm paper background. */
+  --v5-error: #a8371f;
+  --v5-error-soft: rgba(168, 55, 31, 0.1);
+
+  /* Warm accent family — reused in hero/historias/resenas instead of
+     per-file hex literals. */
+  --v5-accent-warm: #e9c996;
+  --v5-accent-cream: #f3e3c9;
+
+  /* Text-on-dark + text-on-accent scale. Flattened over the dark carbon
+     base these meet AA/AAA per WCAG. */
+  --v5-on-accent: #ffffff;
+  --v5-on-dark-primary: rgba(250, 249, 246, 0.95);
+  --v5-on-dark-secondary: rgba(250, 249, 246, 0.75);
+  --v5-on-dark-tertiary: rgba(250, 249, 246, 0.55);
+  --v5-on-dark-hairline: rgba(250, 249, 246, 0.12);
+  /* Translucent paper — used for the sticky header solid-scroll background
+     so the blur filter can shine through. */
+  --v5-bg-translucent: rgba(250, 249, 246, 0.92);
+  /* Glass paper — more translucent variant for the mobile drawer, where we
+     want the page content to read faintly behind the menu (with backdrop
+     blur on top). */
+  --v5-bg-glass: rgba(250, 249, 246, 0.78);
+
+  /* Decorative veil stops for hero panel gradients. Keep these separate
+     from the on-dark text scale so downstream refactors don't accidentally
+     re-purpose them for body copy (contrast-checked text). */
+  --v5-veil-paper-strong: rgba(250, 249, 246, 0.55);
+  --v5-veil-paper-mid: rgba(250, 249, 246, 0.25);
+  --v5-veil-paper-faint: rgba(250, 249, 246, 0.05);
+
+  /* Type-scale tokens — single source of truth for the V5 headings.
+     Raw clamp() values in sections are replaced with these. */
+  --v5-type-display: clamp(2.5rem, 6.5vw, 5.25rem);
+  --v5-type-h1: clamp(2rem, 4.5vw, 3.5rem);
+  --v5-type-h2: clamp(2rem, 4.5vw, 3.25rem);
+  --v5-type-metric: clamp(2.75rem, 7.5vw, 5.25rem);
+
+  /* Layout tokens */
+  --v5-header-h: 120px;
+  --v5-fab-size: 52px;
+  --v5-max-width: 1180px;
+
+  /* Typography — substitutes for licensed faces Ogg/Canela are loaded
+     at the page level (Fraunces for serif, Inter for sans). */
+  --v5-font-serif: var(--font-v5-serif), "Times New Roman", serif;
+  --v5-font-sans: var(--font-v5-sans), system-ui, -apple-system, sans-serif;
+
+  background: var(--v5-bg);
+  color: var(--v5-fg);
+  font-family: var(--v5-font-sans);
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Note: each V5 section sets its own `scroll-margin-top` so anchor-link
+   scrolls don't land underneath the sticky header. Using scroll-padding-top
+   here would be a no-op because the html/body is the actual scroll
+   container, not this inner div. */
+
+@media (max-width: 768px) {
+  .root {
+    --v5-header-h: 80px;
+    --v5-fab-size: 48px;
+  }
+}
+

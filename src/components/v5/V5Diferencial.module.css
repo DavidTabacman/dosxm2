@@ -1,0 +1,403 @@
+/* =========================================================
+   V5 El Diferencial — editorial asymmetric layout (V3-flavor)
+   with founder portraits that conceptually "detach" to become
+   the floating WhatsApp FAB once this section leaves view.
+   ========================================================= */
+
+.section {
+  background: var(--v5-bg);
+  color: var(--v5-fg);
+  padding: clamp(5rem, 11vw, 9rem) clamp(1.5rem, 5vw, 3rem);
+  position: relative;
+  scroll-margin-top: calc(var(--v5-header-h) + 16px);
+}
+
+.grid {
+  max-width: var(--v5-max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+/* Left column — editorial copy */
+.copyBlock {
+  max-width: 560px;
+}
+
+.heading {
+  font-family: var(--v5-font-serif);
+  font-weight: 400;
+  font-size: var(--v5-type-h1);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.25rem;
+}
+
+.headingAccent {
+  font-style: italic;
+  color: var(--v5-accent);
+}
+
+.lede {
+  font-family: var(--v5-font-serif);
+  font-weight: 400;
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  line-height: 1.55;
+  color: var(--v5-muted-strong);
+  margin: 0 0 1.25rem;
+}
+
+.body {
+  font-family: var(--v5-font-sans);
+  font-size: clamp(0.9375rem, 1.55vw, 1.0625rem);
+  line-height: 1.7;
+  color: var(--v5-muted-strong);
+  margin: 0 0 1.5rem;
+}
+
+.signature {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-family: var(--v5-font-serif);
+  font-style: italic;
+  color: var(--v5-fg);
+}
+
+.signatureRule {
+  width: 32px;
+  height: 1px;
+  background: var(--v5-accent);
+}
+
+.signatureLink {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  font-family: var(--v5-font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--v5-accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.signatureLink:hover,
+.signatureLink:focus-visible {
+  color: var(--v5-accent-strong);
+  border-bottom-color: var(--v5-accent-strong);
+}
+
+.signatureLink:focus-visible {
+  outline: 2px solid var(--v5-accent);
+  outline-offset: 4px;
+}
+
+.signatureLinkArrow {
+  display: inline-block;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.signatureLink:hover .signatureLinkArrow,
+.signatureLink:focus-visible .signatureLinkArrow {
+  transform: translateX(4px);
+}
+
+/* Right column — portraits, offset editorial layout */
+.portraits {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  position: relative;
+  transition:
+    opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* When the section scrolls off-screen, the page hoists a
+   `portraitsDetached` flag that fades the portraits out — giving
+   the illusion that they've flown down-right into the FAB.
+   Coordinated with the FAB's 100ms entrance delay. */
+.portraitsDetached {
+  opacity: 0;
+  transform: scale(0.92);
+  pointer-events: none;
+}
+
+/* Ambient "presence" wrapper. Lives OUTSIDE the frame so the whole
+   photo card (frame + shadow + gradient + name + media) moves as one
+   unit — fixes the perceptual aperture problem documented in
+   prds/v4_live_portraits_DEBUGGING.md §4 + research notes.
+   When a cinemagraph <video> is rendered inside, this wrapper adds
+   subtle whole-card presence on top of the video's internal motion.
+   When only a still <img> is rendered, this wrapper IS the motion —
+   tuned with a slight rotation to break the rigid-translation reading
+   that perception research (Johansson biological motion) flagged.
+   Don't add overflow:hidden here — the breath transform extends ~2%
+   beyond the box and nothing should clip it. */
+.portraitOuter {
+  position: relative;
+  display: block;
+  /* Don't stretch vertically inside the grid: the asymmetric editorial
+     margin-top on the second card makes the grid row taller than the
+     frame's aspect-ratio-locked height, and a stretched outer would put
+     the breath's transform-origin off the frame's actual center
+     (asymmetric wobble on the first card only). */
+  align-self: start;
+  transform-origin: center center;
+  will-change: transform;
+  /* ease-in-out (not linear) — gives a sinusoidal velocity profile that
+     peaks above the conscious-detection floor (~0.1°/s) at mid-cycle,
+     even though it parks velocity at the extremes. With these amplitudes
+     a 50/50 glance hits either a near-peak (clearly visible) or a near-
+     extreme (invisible), which reads as natural breath. Linear at this
+     amplitude was a constant ~0.04°/s — below threshold every glance. */
+  animation: v5PortraitBreath 6s ease-in-out infinite alternate;
+}
+
+.portraitOuter:first-child {
+  margin-top: 0;
+}
+
+.portraitOuter:last-child {
+  margin-top: clamp(2rem, 6vw, 4rem);
+}
+
+.portraitOuterAlt {
+  animation: v5PortraitBreathAlt 8s ease-in-out infinite alternate;
+  animation-delay: -3.2s;
+}
+
+.portraitFrame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--v5-surface-elevated);
+  aspect-ratio: 3 / 4;
+  box-shadow: 0 14px 40px rgba(28, 28, 28, 0.12);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.portraitFrame:hover {
+  transform: translateY(-4px);
+}
+
+.portrait {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform-origin: center center;
+  will-change: transform;
+  /* Default for browsers without animation-timeline support: an always-on
+     ken-burns. Strong enough to be perceptible on a glance — a 12% zoom
+     paired with a noticeable pan, alternating every 8s. */
+  animation: v5KenBurns 8s ease-in-out infinite alternate;
+}
+
+.portraitOuterAlt .portrait {
+  animation-delay: -4s;
+  animation-name: v5KenBurnsAlt;
+}
+
+@keyframes v5KenBurns {
+  from {
+    transform: scale(1.02) translate3d(-2.5%, -1.5%, 0);
+  }
+  to {
+    transform: scale(1.12) translate3d(2%, 1.5%, 0);
+  }
+}
+
+@keyframes v5KenBurnsAlt {
+  from {
+    transform: scale(1.12) translate3d(2.5%, -1.5%, 0);
+  }
+  to {
+    transform: scale(1.02) translate3d(-2%, 1.5%, 0);
+  }
+}
+
+/* Modern browsers: tie the motion directly to scroll position so the
+   user sees a parallax-style pan + zoom every time they scroll over
+   the photos. This gives a much more visible, deliberate sense of
+   movement than the ambient ken-burns alone. The animation-range
+   spans the entire time the portrait is visible in the viewport. */
+@supports (animation-timeline: view()) {
+  .portrait {
+    animation: v5PortraitScroll linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 100%;
+  }
+  .portraitOuterAlt .portrait {
+    animation-name: v5PortraitScrollAlt;
+    animation-delay: 0s;
+  }
+}
+
+@keyframes v5PortraitScroll {
+  from {
+    transform: scale(1.04) translate3d(0, 8%, 0);
+  }
+  to {
+    transform: scale(1.1) translate3d(0, -8%, 0);
+  }
+}
+
+@keyframes v5PortraitScrollAlt {
+  from {
+    transform: scale(1.1) translate3d(0, -8%, 0);
+  }
+  to {
+    transform: scale(1.04) translate3d(0, 8%, 0);
+  }
+}
+
+/* Breath keyframes — values tuned to clear the conscious-motion
+   detection floor (~0.1°/s) at mid-cycle peak velocity.
+   Keep @keyframes v5PortraitBreath/Alt in this file — never move them
+   to v5-animations.module.css or they leak into FAB portraits
+   (V5FounderLinks). Guarded by V5LivePortraits.css.test.ts.
+
+   Pass-5 values, after the live diagnostic in commit aeea52c proved
+   smaller amplitudes (scale 1.04 / ±2%) ran at ~0.04°/s — half the
+   detection floor:
+   • scale band 1.00 → 1.10 — matches the earlier failed inside-frame
+     pass (a8392ed). That pass was invisible because of the aperture
+     problem, not amplitude. With the structural fix moving motion to
+     the outer wrapper, this amplitude makes the whole card visibly
+     move (shadow + caption translate together).
+   • translate ±3% X, ±2% Y — same as pass a8392ed.
+   • rotate ±0.6deg — doubled from pass-4. Differential motion between
+     corners and center keeps the perception from reading as rigid
+     translation (Johansson biological-motion).
+   • 6s + 8s decoupled periods — slightly faster than pass-4. Closer
+     to natural breath cadence (12 breaths/min = 5s per breath). */
+@keyframes v5PortraitBreath {
+  from {
+    transform: scale(1) translate3d(-3%, -2%, 0) rotate(-0.6deg);
+  }
+  to {
+    transform: scale(1.1) translate3d(3%, 2%, 0) rotate(0.6deg);
+  }
+}
+
+@keyframes v5PortraitBreathAlt {
+  from {
+    transform: scale(1.1) translate3d(3%, -2%, 0) rotate(0.6deg);
+  }
+  to {
+    transform: scale(1) translate3d(-3%, 2%, 0) rotate(-0.6deg);
+  }
+}
+
+/* Mobile: halve the breath amplitudes so the motion stays subtle on
+   smaller viewports. Redefining @keyframes inside a media query is the
+   standard CSS pattern for scaling amplitude without a second name.
+   600px aligns with the V5 consolidated breakpoint set. */
+@media (max-width: 600px) {
+  @keyframes v5PortraitBreath {
+    from {
+      transform: scale(1) translate3d(-1.5%, -1%, 0) rotate(-0.3deg);
+    }
+    to {
+      transform: scale(1.05) translate3d(1.5%, 1%, 0) rotate(0.3deg);
+    }
+  }
+  @keyframes v5PortraitBreathAlt {
+    from {
+      transform: scale(1.05) translate3d(1.5%, -1%, 0) rotate(0.3deg);
+    }
+    to {
+      transform: scale(1) translate3d(-1.5%, 1%, 0) rotate(-0.3deg);
+    }
+  }
+}
+
+.portraitName {
+  position: absolute;
+  left: 0.875rem;
+  bottom: 0.75rem;
+  right: 0.875rem;
+  color: var(--v5-on-accent);
+  font-family: var(--v5-font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.portraitFrame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.45) 0%,
+    rgba(0, 0, 0, 0.15) 40%,
+    rgba(0, 0, 0, 0) 70%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Decorative ocre rule between portraits + text */
+.ruleAccent {
+  width: 48px;
+  height: 2px;
+  background: var(--v5-accent);
+  margin-bottom: 1.5rem;
+}
+
+/* Reduced motion — kill ambient ken-burns, scroll-driven animation, the
+   outer card breath, and any hover transforms. The component-level
+   useReducedMotion hook also swaps <video> for <img> in this case —
+   this CSS block is the belt-and-braces guarantee even if the JS hook
+   runs late on hydration. */
+@media (prefers-reduced-motion: reduce) {
+  .portraits,
+  .portraitOuter,
+  .portraitFrame,
+  .portrait {
+    transition: none;
+  }
+
+  .portraitFrame:hover {
+    transform: none;
+  }
+
+  .portrait,
+  .portraitOuter,
+  .portraitOuterAlt,
+  .portraitOuterAlt .portrait {
+    animation: none;
+    animation-timeline: auto;
+    transform: none;
+    will-change: auto;
+  }
+
+  .portraitsDetached {
+    transform: none;
+  }
+}

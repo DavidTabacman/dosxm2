@@ -1,0 +1,176 @@
+/* =========================================================
+   V5 Footer — minimal editorial closing.
+   ========================================================= */
+
+.footer {
+  background: var(--v5-fg);
+  color: var(--v5-bg);
+  padding: clamp(3rem, 8vw, 5rem) clamp(1.5rem, 5vw, 3rem) 2rem;
+}
+
+.inner {
+  max-width: var(--v5-max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+.logo {
+  font-family: var(--v5-font-serif);
+  font-size: clamp(1.5rem, 2.8vw, 2rem);
+  margin: 0 0 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.tagline {
+  font-family: var(--v5-font-serif);
+  font-style: italic;
+  color: var(--v5-on-dark-secondary);
+  max-width: 32ch;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.block h3 {
+  font-family: var(--v5-font-sans);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--v5-on-dark-primary);
+  font-weight: 600;
+  margin: 0 0 1rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+/* Ochre underline whisker preserves the brand accent without forcing the
+   heading text itself to fail AA contrast. */
+.block h3::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 24px;
+  height: 2px;
+  background: var(--v5-accent);
+  border-radius: 1px;
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.founderList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.founderName {
+  display: block;
+  font-family: var(--v5-font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--v5-on-dark-primary);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.125rem;
+}
+
+.linkList a {
+  color: var(--v5-on-dark-primary);
+  font-family: var(--v5-font-sans);
+  font-size: 1rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: inline-block;
+  padding: 0.625rem 0;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+.linkList a:hover,
+.linkList a:focus-visible {
+  color: var(--v5-accent);
+}
+
+.linkList a:focus-visible {
+  outline: 2px solid var(--v5-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.bottom {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--v5-on-dark-hairline);
+  max-width: var(--v5-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--v5-on-dark-tertiary);
+  font-family: var(--v5-font-sans);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+.separator {
+  opacity: 0.5;
+  margin: 0 0.4rem;
+}
+
+.contactSocials {
+  display: flex;
+  gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 1.25rem 0 0;
+}
+
+.contactSocials .iconLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--v5-on-dark-primary);
+  padding: 0.625rem;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+
+.contactSocials .iconLink:hover,
+.contactSocials .iconLink:focus-visible {
+  color: var(--v5-accent);
+}
+
+.contactSocials .iconLink:focus-visible {
+  outline: 2px solid var(--v5-accent);
+  outline-offset: 3px;
+}
+
+.contactSocials .iconLink svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contactSocials .iconLink {
+    transition: none;
+  }
+}
