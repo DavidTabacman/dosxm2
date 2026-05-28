@@ -234,34 +234,23 @@
   }
 }
 
-/* Mobile: stacked layout. panelLeft holds the text and fills the viewport
-   so the H1 + CTA sit above the fold. panelRight is kept as a decorative
-   warm-toned continuation of the hero (video already preloads metadata
-   only, so bandwidth cost is minimal). */
+/* Mobile: single full-bleed video. The component skips rendering panelRight
+   on viewports <=768px (see V4HeroSplit.tsx isMobile branch), so only
+   panelLeft + its overlaid text/CTA remain. */
 @media (max-width: 768px) {
   .hero {
     display: flex;
     flex-direction: column;
   }
 
-  .panelLeft,
-  .panelRight {
+  .panelLeft {
     position: relative;
     width: 100%;
-  }
-
-  .panelLeft {
     min-height: 100vh;
     min-height: 100svh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-  }
-
-  .panelRight {
-    min-height: 40vh;
-    min-height: 40svh;
-    clip-path: none !important;
   }
 
   .textLayer {

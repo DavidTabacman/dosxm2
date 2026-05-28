@@ -247,6 +247,26 @@ describe("V4 HeroSplit", () => {
     expect(videos).toHaveLength(2);
   });
 
+  test("mobile viewport collapses to a single castillalavieja video, no panelRight", () => {
+    (window as Window).__setMatchMedia?.((q) => ({
+      matches: q.includes("max-width: 768px"),
+      media: q,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }));
+
+    const { container } = render(<V4HeroSplit />);
+    const videos = container.querySelectorAll("video[data-asset-type='hero-bg']");
+    expect(videos).toHaveLength(1);
+    expect(videos[0].getAttribute("src")).toContain("castillalavieja-mobile.mp4");
+    expect(videos[0].getAttribute("poster")).toContain("castillalavieja-poster.jpg");
+    expect(container.querySelector("[class*='panelRight']")).toBeNull();
+  });
+
   test("non-coarse pointer registers mousemove scrub", () => {
     // Default matchMedia returns matches: false (desktop-like); no swap needed.
     const { container } = render(<V4HeroSplit />);

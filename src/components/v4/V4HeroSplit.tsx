@@ -16,6 +16,9 @@ const LEFT_VIDEO = "/v4/hero/hero-left.mp4";
 const LEFT_POSTER = "/v4/hero/hero-left-poster.jpg";
 const RIGHT_VIDEO = "/v4/hero/hero-right.mp4";
 const RIGHT_POSTER = "/v4/hero/hero-right-poster.jpg";
+// Mobile (<=768px) collapses the split-screen into a single full-bleed video.
+const MOBILE_VIDEO = "/v4/hero/castillalavieja-mobile.mp4";
+const MOBILE_POSTER = "/v4/hero/castillalavieja-poster.jpg";
 
 export default function V4HeroSplit() {
   const heroRef = useRef<HTMLElement>(null);
@@ -30,6 +33,20 @@ export default function V4HeroSplit() {
     useVideoPlayback("V4-Hero-Left");
   const { ref: rightPlaybackRef, hasError: rightError } =
     useVideoPlayback("V4-Hero-Right");
+
+  // Mobile collapses the split-screen into a single full-bleed video, so
+  // we choose between the two trees at render time. Default false for SSR;
+  // the effect swaps it client-side. The poster behind the video masks the
+  // one-frame swap on first paint.
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mql = window.matchMedia("(max-width: 768px)");
+    const update = () => setIsMobile(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
 
   // Respect Save-Data / 2G — skip the hero videos on metered or slow
   // connections. navigator.connection is non-standard and Safari returns
@@ -127,7 +144,7 @@ export default function V4HeroSplit() {
           // eslint-disable-next-line @next/next/no-img-element
           <img
             className={styles.panelBg}
-            src={LEFT_POSTER}
+            src={isMobile ? MOBILE_POSTER : LEFT_POSTER}
             alt=""
             aria-hidden="true"
             data-asset-type="hero-bg-fallback"
@@ -136,8 +153,8 @@ export default function V4HeroSplit() {
           <video
             ref={setLeftVideoRef}
             className={styles.panelBg}
-            src={LEFT_VIDEO}
-            poster={LEFT_POSTER}
+            src={isMobile ? MOBILE_VIDEO : LEFT_VIDEO}
+            poster={isMobile ? MOBILE_POSTER : LEFT_POSTER}
             loop
             muted
             playsInline
@@ -184,31 +201,33 @@ export default function V4HeroSplit() {
         </div>
       </div>
 
-      <div className={styles.panelRight}>
-        {skipRightVideo ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            className={styles.panelBg}
-            src={RIGHT_POSTER}
-            alt=""
-            aria-hidden="true"
-            data-asset-type="hero-bg-fallback"
-          />
-        ) : (
-          <video
-            ref={setRightVideoRef}
-            className={styles.panelBg}
-            src={RIGHT_VIDEO}
-            poster={RIGHT_POSTER}
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            aria-hidden="true"
-            data-asset-type="hero-bg"
-          />
-        )}
-      </div>
+      {!isMobile && (
+        <div className={styles.panelRight}>
+          {skipRightVideo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              className={styles.panelBg}
+              src={RIGHT_POSTER}
+              alt=""
+              aria-hidden="true"
+              data-asset-type="hero-bg-fallback"
+            />
+          ) : (
+            <video
+              ref={setRightVideoRef}
+              className={styles.panelBg}
+              src={RIGHT_VIDEO}
+              poster={RIGHT_POSTER}
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              aria-hidden="true"
+              data-asset-type="hero-bg"
+            />
+          )}
+        </div>
+      )}
 
       <div className={styles.divider} aria-hidden="true" />
     </section>
