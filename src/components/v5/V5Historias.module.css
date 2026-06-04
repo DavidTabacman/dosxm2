@@ -68,22 +68,28 @@
 
 .container {
   display: flex;
-  gap: var(--gap);
   list-style: none;
   padding: 0;
-  margin: 0;
+  /* Negative left margin cancels the first slide's leading padding,
+     so the viewport's left edge sits flush with card content rather
+     than with a gap. The per-slide padding-left below is what creates
+     the spacing — it travels with each slide and so renders correctly
+     across Embla's loop wrap (which is just translateX). */
+  margin: 0 0 0 calc(var(--gap) * -1);
   touch-action: pan-y pinch-zoom;
 }
 
 .slide {
-  flex: 0 0 calc((100% - 2 * var(--gap)) / 3);
+  flex: 0 0 calc(100% / 3);
   min-width: 0;
   padding-top: 1.75rem;
+  padding-left: var(--gap);
+  box-sizing: border-box;
 }
 
 @media (max-width: 1024px) {
   .slide {
-    flex-basis: calc((100% - 1 * var(--gap)) / 2);
+    flex-basis: 50%;
   }
 }
 
