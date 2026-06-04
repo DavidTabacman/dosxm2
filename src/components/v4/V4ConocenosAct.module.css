@@ -16,8 +16,6 @@
   color: var(--v4-fg);
   padding: clamp(5rem, 11vw, 9rem) clamp(1.5rem, 5vw, 3rem);
   scroll-margin-top: calc(var(--v4-header-h) + 16px);
-  /* Cinematic dwell — ~1.8 viewports of pin window per the approved plan. */
-  min-height: clamp(150vh, 180vh, 200vh);
   overflow: visible;
 }
 
@@ -265,7 +263,6 @@
 
 @media (max-width: 1024px) {
   .section {
-    min-height: 0;
     padding: clamp(4rem, 9vw, 7rem) clamp(1.5rem, 5vw, 3rem);
   }
 

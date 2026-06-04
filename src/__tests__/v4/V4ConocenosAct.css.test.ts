@@ -26,12 +26,6 @@ describe("V4 ConocenosAct — CSS source", () => {
     );
   });
 
-  test("section min-height is the cinematic dwell window (≥150vh)", () => {
-    expect(css).toMatch(
-      /\.section\s*\{[^}]*min-height:\s*clamp\(\s*150vh\s*,\s*180vh\s*,\s*200vh\s*\)/
-    );
-  });
-
   test("desktop layout is a two-column grid", () => {
     expect(css).toMatch(
       /\.layout\s*\{[^}]*grid-template-columns:\s*0\.9fr\s+1\.1fr/
