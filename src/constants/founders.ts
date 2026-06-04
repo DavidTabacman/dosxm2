@@ -1,6 +1,6 @@
 /**
  * Single source of truth for founder identity, contact, and bio copy.
- * Consumed by `/v4` (homepage strip + contact + FAB) and `/v4/conocenos`
+ * Consumed by `/` (homepage strip + contact + FAB) and `/conocenos`
  * (about-us page). Keep all client-supplied Spanish text here so a copy
  * change is a one-file edit.
  */

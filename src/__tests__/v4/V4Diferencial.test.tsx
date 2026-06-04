@@ -107,13 +107,13 @@ describe("V4 Diferencial", () => {
     expect(container.textContent).toContain("Diego");
   });
 
-  test("signatureLink anchors to /v4/conocenos and names both founders", () => {
+  test("signatureLink anchors to /conocenos and names both founders", () => {
     const { container } = render(<V4Diferencial {...FOUNDERS} />);
     const link = container.querySelector(
       "a[class*='signatureLink']"
     ) as HTMLAnchorElement | null;
     expect(link).not.toBeNull();
-    expect(link!.getAttribute("href")).toBe("/v4/conocenos");
+    expect(link!.getAttribute("href")).toBe("/conocenos");
     expect(link!.textContent).toContain("Andrea");
     expect(link!.textContent).toContain("Diego");
   });

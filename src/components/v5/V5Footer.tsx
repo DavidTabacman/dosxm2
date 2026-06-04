@@ -36,10 +36,10 @@ export default function V5Footer({
             {V5_NAV_LINKS.map((link) => {
               const isExternal = link.kind === "external";
               // Footer is rendered on multiple pages — anchors that target
-              // /v5 must include that prefix so the link works regardless
-              // of where the footer is mounted.
+              // the homepage must include the `/` prefix (→ `/#hash`) so the
+              // link works regardless of where the footer is mounted.
               const href =
-                link.kind === "anchor" ? `/v5${link.href}` : link.href;
+                link.kind === "anchor" ? `/${link.href}` : link.href;
               return (
                 <li key={link.href}>
                   <a

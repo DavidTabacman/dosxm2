@@ -18,7 +18,7 @@ export interface V4ConocenosJuntosProps {
 
 export default function V4ConocenosJuntos({
   id = "juntos",
-  ctaHref = "/v5#contacto",
+  ctaHref = "/#contacto",
   ctaLabel = "Hablemos",
 }: V4ConocenosJuntosProps) {
   const [revealRef, isRevealed] = useSectionReveal(0.15);

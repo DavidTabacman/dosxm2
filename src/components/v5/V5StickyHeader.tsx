@@ -6,9 +6,9 @@ import styles from "./V5StickyHeader.module.css";
 
 /**
  * `kind` semantics:
- *   - "anchor"   — fragment id on the homepage (/v5). Clicking from /v5 smooth-
+ *   - "anchor"   — fragment id on the homepage (/). Clicking from / smooth-
  *                  scrolls in place; clicking from any other page lets the
- *                  browser do a full-page navigation to /v5 + href (the href
+ *                  browser do a full-page navigation to / + href (the href
  *                  attribute is rewritten below). We don't use router.push for
  *                  hash navigation — see next.js #18601, #37552, #20125.
  *   - "page"     — a different Next.js route. router.push handles client nav.
@@ -24,7 +24,7 @@ export interface V5NavLink {
 
 export const V5_NAV_LINKS: ReadonlyArray<V5NavLink> = [
   { href: "#diferencial", label: "Por qué elegirnos", kind: "anchor" },
-  { href: "/v4/conocenos", label: "Conócenos", kind: "page" },
+  { href: "/conocenos", label: "Conócenos", kind: "page" },
   { href: "#resultados", label: "Resultados", kind: "anchor" },
   { href: "#historias", label: "Vendidas", kind: "anchor" },
   { href: "#resenas", label: "Reseñas", kind: "anchor" },
@@ -37,12 +37,12 @@ export const V5_NAV_LINKS: ReadonlyArray<V5NavLink> = [
 ];
 
 /** Compute the actual `href` attribute for a link given the current path.
- *  Anchor links living on /v5 stay bare (`#hash`); anywhere else they get
- *  the `/v5` prefix so the browser navigates to the homepage first. Page
- *  and external links pass through unchanged. */
+ *  Anchor links living on the homepage (`/`) stay bare (`#hash`); anywhere
+ *  else they get a `/` prefix (→ `/#hash`) so the browser navigates to the
+ *  homepage first. Page and external links pass through unchanged. */
 export function resolveNavHref(link: V5NavLink, currentPathname: string): string {
-  if (link.kind === "anchor" && currentPathname !== "/v5") {
-    return `/v5${link.href}`;
+  if (link.kind === "anchor" && currentPathname !== "/") {
+    return `/${link.href}`;
   }
   return link.href;
 }
@@ -204,8 +204,8 @@ export default function V5StickyHeader({
         return;
       }
 
-      // Anchor on the current /v5 page: smooth-scroll in place.
-      if (router.pathname === "/v5") {
+      // Anchor on the current homepage (/): smooth-scroll in place.
+      if (router.pathname === "/") {
         e.preventDefault();
         if (typeof history !== "undefined") {
           history.replaceState(null, "", link.href);
@@ -218,16 +218,16 @@ export default function V5StickyHeader({
         return;
       }
 
-      // Anchor from a non-/v5 page (theoretical — V5StickyHeader is only
-      // mounted on /v5 today; kept for parity with V4's structure). The
-      // href is already "/v5#hash" (via resolveNavHref), so DON'T
+      // Anchor from a non-homepage page (theoretical — V5StickyHeader is only
+      // mounted on / today; kept for parity with the conócenos page's header).
+      // The href is already "/#hash" (via resolveNavHref), so DON'T
       // preventDefault — let the browser do full-page navigation. Native
       // hash scroll + the section's scroll-margin-top handle the
-      // sticky-header offset. We avoid router.push("/v5#hash") because of
+      // sticky-header offset. We avoid router.push("/#hash") because of
       // known scroll-bug issues (next.js #18601, #37552, #20125).
       setMenuOpen(false);
       console.log(
-        `[V5-StickyHeader] 🔗 Cross-page anchor — browser nav to /v5${link.href}`
+        `[V5-StickyHeader] 🔗 Cross-page anchor — browser nav to /${link.href}`
       );
     },
     [router, scrollAfterDrawerCloses]

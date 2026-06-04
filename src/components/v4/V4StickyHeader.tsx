@@ -6,9 +6,9 @@ import styles from "./V4StickyHeader.module.css";
 
 /**
  * `kind` semantics:
- *   - "anchor"   — fragment id on the homepage (/v4). Clicking from /v4 smooth-
+ *   - "anchor"   — fragment id on the homepage (/). Clicking from / smooth-
  *                  scrolls in place; clicking from any other page lets the
- *                  browser do a full-page navigation to /v4 + href (the href
+ *                  browser do a full-page navigation to / + href (the href
  *                  attribute is rewritten below). We don't use router.push for
  *                  hash navigation — see next.js #18601, #37552, #20125.
  *   - "page"     — a different Next.js route. router.push handles client nav.
@@ -24,7 +24,7 @@ export interface V4NavLink {
 
 export const V4_NAV_LINKS: ReadonlyArray<V4NavLink> = [
   { href: "#diferencial", label: "Por qué elegirnos", kind: "anchor" },
-  { href: "/v4/conocenos", label: "Conócenos", kind: "page" },
+  { href: "/conocenos", label: "Conócenos", kind: "page" },
   { href: "#resultados", label: "Resultados", kind: "anchor" },
   { href: "#historias", label: "Vendidas", kind: "anchor" },
   { href: "#resenas", label: "Reseñas", kind: "anchor" },
@@ -37,12 +37,12 @@ export const V4_NAV_LINKS: ReadonlyArray<V4NavLink> = [
 ];
 
 /** Compute the actual `href` attribute for a link given the current path.
- *  Anchor links living on /v4 stay bare (`#hash`); anywhere else they get
- *  the `/v4` prefix so the browser navigates to the homepage first. Page
- *  and external links pass through unchanged. */
+ *  Anchor links living on the homepage (`/`) stay bare (`#hash`); anywhere
+ *  else they get a `/` prefix (→ `/#hash`) so the browser navigates to the
+ *  homepage first. Page and external links pass through unchanged. */
 export function resolveNavHref(link: V4NavLink, currentPathname: string): string {
-  if (link.kind === "anchor" && currentPathname !== "/v4") {
-    return `/v4${link.href}`;
+  if (link.kind === "anchor" && currentPathname !== "/") {
+    return `/${link.href}`;
   }
   return link.href;
 }
@@ -204,8 +204,8 @@ export default function V4StickyHeader({
         return;
       }
 
-      // Anchor on the current /v4 page: smooth-scroll in place.
-      if (router.pathname === "/v4") {
+      // Anchor on the current homepage (/): smooth-scroll in place.
+      if (router.pathname === "/") {
         e.preventDefault();
         if (typeof history !== "undefined") {
           history.replaceState(null, "", link.href);
@@ -218,15 +218,15 @@ export default function V4StickyHeader({
         return;
       }
 
-      // Anchor from a non-/v4 page (e.g. /v4/conocenos). The href attribute
-      // is already "/v4#hash" (via resolveNavHref), so DON'T preventDefault —
+      // Anchor from a non-homepage page (e.g. /conocenos). The href attribute
+      // is already "/#hash" (via resolveNavHref), so DON'T preventDefault —
       // let the browser do full-page navigation. Native hash scroll + the
       // section's scroll-margin-top handle the sticky-header offset.
-      // We avoid router.push("/v4#hash") because of known scroll-bug issues
+      // We avoid router.push("/#hash") because of known scroll-bug issues
       // (next.js #18601, #37552, #20125).
       setMenuOpen(false);
       console.log(
-        `[V4-StickyHeader] 🔗 Cross-page anchor — browser nav to /v4${link.href}`
+        `[V4-StickyHeader] 🔗 Cross-page anchor — browser nav to /${link.href}`
       );
     },
     [router, scrollAfterDrawerCloses]

@@ -20,10 +20,10 @@ describe("V4 Footer", () => {
       // External links carry long, special-char-rich URLs (Instagram
       // tracker wrappers) that don't play well with attribute-equals
       // selectors — match by label text and verify the href separately.
-      // Anchor links in the footer are prefixed with /v4 because the
-      // footer can be mounted on any V4 page (including /v4/conocenos).
+      // Anchor links in the footer are prefixed with / (→ /#hash) because
+      // the footer can be mounted on any page (including /conocenos).
       const expectedHref =
-        link.kind === "anchor" ? `/v4${link.href}` : link.href;
+        link.kind === "anchor" ? `/${link.href}` : link.href;
       const isExternal = link.kind === "external";
       const anchor = isExternal
         ? Array.from(container.querySelectorAll("a")).find(

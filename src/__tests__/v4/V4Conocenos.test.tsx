@@ -74,13 +74,13 @@ describe("V4 Conocenos — orchestrator", () => {
     );
   });
 
-  test("Juntos finale CTA points at /v4#contacto with label 'Hablemos'", () => {
+  test("Juntos finale CTA points at /#contacto with label 'Hablemos'", () => {
     const { container } = render(<V4Conocenos />);
     const cta = container.querySelector(
       "section[id='juntos'] a[class*='cta']"
     ) as HTMLAnchorElement;
     expect(cta).not.toBeNull();
-    expect(cta.getAttribute("href")).toBe("/v4#contacto");
+    expect(cta.getAttribute("href")).toBe("/#contacto");
     expect(cta.textContent).toContain("Hablemos");
   });
 });

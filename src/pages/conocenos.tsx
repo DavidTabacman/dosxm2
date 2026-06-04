@@ -1,11 +1,3 @@
-/* TODO (V4-becomes-/): when /v4 becomes the live root route, move
- * this file to src/pages/conocenos.tsx and update:
- *   - canonical link below
- *   - <link rel="preload"> href
- *   - V4StickyHeader's V4_NAV_LINKS entry for "Conócenos" (kind: "page" href)
- *   - V4Diferencial.tsx signatureLink href
- *   - V4ConocenosJuntos CTA prop default
- */
 import Head from "next/head";
 import { Fraunces, Inter } from "next/font/google";
 import V4Layout from "@/components/v4/V4Layout";
@@ -42,7 +34,7 @@ export default function V4ConocenosPage() {
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
         <meta httpEquiv="content-language" content="es" />
-        <link rel="canonical" href="/v4/conocenos" />
+        <link rel="canonical" href="/conocenos" />
         <meta property="og:title" content="Conócenos — DOSXM2" />
         <meta
           property="og:description"

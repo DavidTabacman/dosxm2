@@ -2,7 +2,7 @@ import { describe, expect, test, vi } from "vitest";
 import { render } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import V4ConocenosPage from "@/pages/v4/conocenos";
+import V4ConocenosPage from "@/pages/conocenos";
 
 vi.mock("next/font/google", () => {
   const stubFont = () => ({
@@ -21,8 +21,8 @@ vi.mock("next/head", () => {
 
 vi.mock("next/router", () => ({
   useRouter: () => ({
-    pathname: "/v4/conocenos",
-    asPath: "/v4/conocenos",
+    pathname: "/conocenos",
+    asPath: "/conocenos",
     query: {},
     push: vi.fn(),
     replace: vi.fn(),
@@ -118,7 +118,7 @@ describe("V4 ConocenosPage — integration", () => {
     const canonical =
       document.head.querySelector("link[rel='canonical']") ??
       document.querySelector("link[rel='canonical']");
-    expect(canonical?.getAttribute("href")).toBe("/v4/conocenos");
+    expect(canonical?.getAttribute("href")).toBe("/conocenos");
     const ogImage =
       document.head.querySelector("meta[property='og:image']") ??
       document.querySelector("meta[property='og:image']");
@@ -136,7 +136,7 @@ describe("V4 ConocenosPage — integration", () => {
     expect(viewport?.getAttribute("content")).toContain("viewport-fit=cover");
   });
 
-  test("closing CTA links to /v4#contacto (back to homepage contact)", () => {
+  test("closing CTA links to /#contacto (back to homepage contact)", () => {
     const { container } = render(<V4ConocenosPage />);
     const juntos = container.querySelector("section[id='juntos']");
     expect(juntos).not.toBeNull();
@@ -144,7 +144,7 @@ describe("V4 ConocenosPage — integration", () => {
       "a[class*='cta']"
     ) as HTMLAnchorElement | null;
     expect(cta).not.toBeNull();
-    expect(cta!.getAttribute("href")).toBe("/v4#contacto");
+    expect(cta!.getAttribute("href")).toBe("/#contacto");
   });
 
   test("verbatim BRD §6 copy lands (sample sentences)", () => {
@@ -160,7 +160,7 @@ describe("V4 ConocenosPage — integration", () => {
 
   test("source loads Fraunces with weight ['400'] (matches /v4 typography)", () => {
     const src = readFileSync(
-      resolve(process.cwd(), "src/pages/v4/conocenos.tsx"),
+      resolve(process.cwd(), "src/pages/conocenos.tsx"),
       "utf8"
     );
     expect(src).toMatch(/Fraunces\(\s*{[^}]*weight:\s*\[\s*"400"\s*\]/);

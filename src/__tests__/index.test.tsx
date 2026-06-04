@@ -1,48 +1,74 @@
-import { expect, test, describe, vi } from "vitest";
+import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { render } from "@testing-library/react";
 import Home from "@/pages/index";
 
+vi.mock("next/font/google", () => {
+  const stubFont = () => ({
+    variable: "--font-stub",
+    className: "font-stub",
+    style: { fontFamily: "stub" },
+  });
+  return { Fraunces: stubFont, Inter: stubFont };
+});
+
 vi.mock("next/head", () => ({
-  default: () => null,
+  default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
-describe("Under Construction Page", () => {
-  test("renders headline text via sr-only span", () => {
-    const { container } = render(<Home />);
-    const h1 = container.querySelector("h1");
-    expect(h1?.textContent).toContain("Estamos preparando algo grande");
+vi.mock("next/router", () => ({
+  useRouter: () => ({
+    pathname: "/",
+    asPath: "/",
+    query: {},
+    push: vi.fn(),
+    replace: vi.fn(),
+    isReady: true,
+  }),
+}));
+
+// embla-carousel (V5Historias) constructs IntersectionObserver and ResizeObserver
+// unconditionally on mount; jsdom provides neither, so stub no-ops to let the full
+// page render. (These are stubbed locally rather than in setup.ts because other
+// suites assert the components' no-observer fallback paths.)
+class ObserverStub {
+  root = null;
+  rootMargin = "";
+  thresholds = [];
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+  takeRecords() {
+    return [];
+  }
+}
+
+describe("Homepage (V5)", () => {
+  beforeEach(() => {
+    // jsdom doesn't implement scrollIntoView — stub so nav clicks don't crash.
+    Element.prototype.scrollIntoView = vi.fn();
+    vi.stubGlobal("IntersectionObserver", ObserverStub);
+    vi.stubGlobal("ResizeObserver", ObserverStub);
   });
 
-  test("renders subtext", () => {
-    const { container } = render(<Home />);
-    const subtext = container.querySelector("p");
-    expect(subtext?.textContent).toContain("Menos propiedades");
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
-  test("has exactly one h1", () => {
+  test("renders the sticky header as a banner landmark", () => {
     const { container } = render(<Home />);
-    const headings = container.querySelectorAll("h1");
-    expect(headings).toHaveLength(1);
+    expect(container.querySelector("header[role='banner']")).not.toBeNull();
   });
 
-  test("has a main landmark", () => {
+  test("renders the footer as a contentinfo landmark", () => {
     const { container } = render(<Home />);
-    const main = container.querySelector("main");
-    expect(main).not.toBeNull();
+    expect(container.querySelector("footer[role='contentinfo']")).not.toBeNull();
   });
 
-  test("background element is decorative (aria-hidden)", () => {
+  test("header 'Conócenos' link points to /conocenos", () => {
     const { container } = render(<Home />);
-    const main = container.querySelector("main");
-    const bg = main?.querySelector("[aria-hidden='true']");
-    expect(bg).not.toBeNull();
-  });
-
-  test("card section has aria-labelledby pointing to headline", () => {
-    const { container } = render(<Home />);
-    const section = container.querySelector("section");
-    expect(section?.getAttribute("aria-labelledby")).toBe("headline");
-    const headline = section?.querySelector("h1");
-    expect(headline?.id).toBe("headline");
+    const conocenos = Array.from(container.querySelectorAll("nav a")).find(
+      (a) => a.textContent?.trim() === "Conócenos"
+    );
+    expect(conocenos?.getAttribute("href")).toBe("/conocenos");
   });
 });

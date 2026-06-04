@@ -8,7 +8,7 @@ import {
 import styles from "./V4Conocenos.module.css";
 
 /**
- * Page-level orchestrator for /v4/conocenos. Renders the three-act
+ * Page-level orchestrator for /conocenos. Renders the three-act
  * scrollytelling sequence (Pablo solo → Borja solo → Juntos finale).
  * No state, no hooks — composition only. Data flows from
  * `@/constants/founders` so a copy edit is a one-file change.
