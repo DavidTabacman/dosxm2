@@ -42,7 +42,8 @@ const inter = Inter({
 });
 
 /* Métricas: 34 días / 98% / 9/10.
- * "9/10" es no-numérico; se pinta vía `staticValue`. */
+ * En 9/10 el "/" va vía `divider` (Papel Cálido) para que sólo el "10"
+ * herede el acento Ocre Terroso vía `staticValueAccent`. */
 const METRICS = [
   {
     value: 34,
@@ -57,8 +58,8 @@ const METRICS = [
     caption: "Nuestras viviendas se venden, de media, por el 98,37% del precio de valoración que recomendamos.",
   },
   {
-    value: null,
-    staticValue: "9/",
+    value: 9,
+    divider: "/",
     staticValueAccent: "10",
     label: "Clientes nos recomiendan",
     caption: "De quienes han firmado con nosotros en los últimos 12 meses.",

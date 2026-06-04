@@ -14,6 +14,10 @@ export interface V5Metric {
    * Use for cases like the "10" in "9/10" where the qualifier shouldn't break
    * the visual flow of a fraction. */
   staticValueAccent?: string;
+  /** Optional connector rendered between the (animated) value and
+   * `staticValueAccent`, in the default value color. Used for the "/" in
+   * "9/10" so the slash stays Papel Cálido while only "10" is accent. */
+  divider?: string;
   /** Prefix rendered before the number (e.g. "+"). */
   prefix?: string;
   /** Suffix rendered after the number (e.g. "%", "días"). */
@@ -38,6 +42,7 @@ function Tile({ metric, animate }: { metric: V5Metric; animate: boolean }) {
     value,
     staticValue,
     staticValueAccent,
+    divider,
     prefix,
     suffix,
     label,
@@ -66,6 +71,7 @@ function Tile({ metric, animate }: { metric: V5Metric; animate: boolean }) {
       <div className={styles.value}>
         {prefix}
         {displayValue}
+        {divider}
         {staticValueAccent ? (
           <span className={styles.valueAccentInline}>{staticValueAccent}</span>
         ) : null}
