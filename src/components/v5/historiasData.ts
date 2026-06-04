@@ -15,13 +15,13 @@ export interface HistoriaItem {
 
 export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
   {
-    id: "alberdi-40",
-    title: "Alberdi 40",
-    zona: "Madrid",
-    imageUrl: "/v4/properties/alberdi-40.jpg",
-    alt: "Estudio diáfano con suelo de parqué y cocina americana integrada al fondo",
+    id: "castilla-vieja-21",
+    title: "Castilla la Vieja 21",
+    zona: "Fuenlabrada",
+    imageUrl: "/v4/properties/castilla-vieja-21.jpg",
+    alt: "Salón luminoso con sofá rosa, cojines azules y ventanal corrido con vistas al cielo",
     story:
-      "Mari estuvo alquilando este estudio durante muchos años, y tomó la decisión de desprenderse de él, pero la inmobiliaria que lo tuvo en un inicio, no pudo venderlo durante 6 meses, antes de que trabajase con nosotros. Enric, de unos veintitantos años, se mudaba a Madrid desde Barcelona, y estaba buscando comprar su primera vivienda cerca de su nuevo trabajo. Ole tu!!",
+      "Víctor y Estefanía solicitaron nuestros servicios porque necesitaban un cambio, una vivienda más grande, pero sobre todo que tuviera un garaje donde él pudiera “jugar” con sus coches. Olga y José fueron los compradores ideales, ya que también vendieron su casa con nosotros y esta SÍ tenía ese ascensor tan deseado. Ambos están felices en sus nuevas vidas!!",
     outcome: "Vendido",
   },
   {
@@ -32,6 +32,26 @@ export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
     alt: "Cocina reformada con frigorífico americano, microondas empotrado y muebles blancos",
     story:
       "Adrián y Estela llevaban unos meses intentando vender su casa, un bajo precioso en el centro de Getafe, para poder comprar una casa más grande en Valdemoro. Raquel buscaba un piso en esa misma zona, ya que trabajaba a unas calles de allí, así podría escaparse a comer a su casa en el break del trabajo, y no tener que viajar mucho. Más céntrico imposible!!",
+    outcome: "Vendido",
+  },
+  {
+    id: "travesia-espana",
+    title: "Travesía de España 10",
+    zona: "El Viso de San Juan",
+    imageUrl: "/v4/properties/travesia-espana.jpg",
+    alt: "Recibidor con escalera de granito y vista a la cocina abierta con muebles de madera",
+    story:
+      "Vero y Jose nos pidieron que vendiéramos su propiedad, la cual compraron con mucha ilusión y esfuerzo hace más de una década, tras hacerle unos pequeños cambios, llegaron Lorena y Javier una parejita joven con muchas ganas de darle de nuevo esa vida de primera vivienda, ENHORABUENA!!!",
+    outcome: "Vendido",
+  },
+  {
+    id: "alberdi-40",
+    title: "Alberdi 40",
+    zona: "Madrid",
+    imageUrl: "/v4/properties/alberdi-40.jpg",
+    alt: "Estudio diáfano con suelo de parqué y cocina americana integrada al fondo",
+    story:
+      "Mari estuvo alquilando este estudio durante muchos años, y tomó la decisión de desprenderse de él, pero la inmobiliaria que lo tuvo en un inicio, no pudo venderlo durante 6 meses, antes de que trabajase con nosotros. Enric, de unos veintitantos años, se mudaba a Madrid desde Barcelona, y estaba buscando comprar su primera vivienda cerca de su nuevo trabajo. Ole tu!!",
     outcome: "Vendido",
   },
   {
@@ -85,16 +105,6 @@ export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
     outcome: "Vendido",
   },
   {
-    id: "castilla-vieja-21",
-    title: "Castilla la Vieja 21",
-    zona: "Fuenlabrada",
-    imageUrl: "/v4/properties/castilla-vieja-21.jpg",
-    alt: "Salón luminoso con sofá rosa, cojines azules y ventanal corrido con vistas al cielo",
-    story:
-      "Víctor y Estefanía solicitaron nuestros servicios porque necesitaban un cambio, una vivienda más grande, pero sobre todo que tuviera un garaje donde él pudiera “jugar” con sus coches. Olga y José fueron los compradores ideales, ya que también vendieron su casa con nosotros y esta SÍ tenía ese ascensor tan deseado. Ambos están felices en sus nuevas vidas!!",
-    outcome: "Vendido",
-  },
-  {
     id: "avenida-espana-12",
     title: "Avenida de España 12",
     zona: "Getafe",
@@ -102,16 +112,6 @@ export const HISTORIAS: ReadonlyArray<HistoriaItem> = [
     alt: "Salón con sofá naranja, suelo de mármol veteado y mueble bajo de madera clara con televisor",
     story:
       "Estas hermanas que son un encanto, nos pidieron ayuda porque su papá llevaba tiempo en la residencia y tomaron la decisión de cerrar ese capítulo tan bonito y tan largo de su vida, vendiendo el piso donde crecieron y fueron una familia feliz junto a su mamá. Los compradores buscaban una vivienda como inversión justo en la misma zona. Laura y Óscar fueron la pareja ideal!!",
-    outcome: "Vendido",
-  },
-  {
-    id: "travesia-espana",
-    title: "Travesía de España 10",
-    zona: "El Viso de San Juan",
-    imageUrl: "/v4/properties/travesia-espana.jpg",
-    alt: "Recibidor con escalera de granito y vista a la cocina abierta con muebles de madera",
-    story:
-      "Vero y Jose nos pidieron que vendiéramos su propiedad, la cual compraron con mucha ilusión y esfuerzo hace más de una década, tras hacerle unos pequeños cambios, llegaron Lorena y Javier una parejita joven con muchas ganas de darle de nuevo esa vida de primera vivienda, ENHORABUENA!!!",
     outcome: "Vendido",
   },
 ];

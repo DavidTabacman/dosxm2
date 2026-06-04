@@ -43,28 +43,95 @@
   margin: 0;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(1rem, 2.5vw, 1.75rem);
-  row-gap: clamp(2.5rem, 5vw, 3.5rem);
+/* =========================================================
+   Carousel shell — Embla expects: viewport (overflow:hidden) >
+   container (flex row) > slide (fixed flex-basis per breakpoint).
+   Sizing is CSS-driven, not JS-driven, so SSR matches client
+   (no hydration jump, no window.innerWidth read at render).
+   ========================================================= */
+
+.carousel {
+  --gap: clamp(1rem, 2.5vw, 1.75rem);
+  display: flex;
+  align-items: stretch;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
   max-width: var(--v5-max-width);
   margin: 0 auto;
-  padding-top: 1.75rem;
   counter-reset: historia;
 }
 
+.viewport {
+  overflow: hidden;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.container {
+  display: flex;
+  gap: var(--gap);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  touch-action: pan-y pinch-zoom;
+}
+
+.slide {
+  flex: 0 0 calc((100% - 2 * var(--gap)) / 3);
+  min-width: 0;
+  padding-top: 1.75rem;
+}
+
 @media (max-width: 1024px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
+  .slide {
+    flex-basis: calc((100% - 1 * var(--gap)) / 2);
   }
 }
 
 @media (max-width: 600px) {
-  .grid {
-    grid-template-columns: 1fr;
-    max-width: 440px;
+  .slide {
+    flex-basis: 100%;
   }
+}
+
+.arrow {
+  flex: 0 0 auto;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--v5-muted-strong);
+  background: transparent;
+  color: var(--v5-fg);
+  font-family: var(--v5-font-serif);
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.arrow:hover:not(:disabled) {
+  background: var(--v5-accent);
+  border-color: var(--v5-accent);
+  color: var(--v5-on-accent);
+  transform: scale(1.05);
+}
+
+.arrow:focus-visible {
+  outline: 2px solid var(--v5-accent);
+  outline-offset: 3px;
+}
+
+.arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 /* Card shell — BRD says moderate size (not oversized). We target
