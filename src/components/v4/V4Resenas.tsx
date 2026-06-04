@@ -171,7 +171,7 @@ export default function V4Resenas({
       <div className={styles.reviewCtaWrap}>
         <a
           className={styles.reviewCta}
-          href="https://search.google.com/local/reviews?placeid=ChIJ90k3GBBvMIwR1qyNs8bbBB0"
+          href="https://www.google.com/maps/place/DOSxM2+(Dos+por+metro+cuadrado)/@40.525282,-3.8160298,17z/data=!3m1!4b1!4m7!3m6!1s0x8c306f10183749f7:0x1d04dbc6b38dacd6!8m2!3d40.525282!4d-3.8160298!9m1!1b1!16s%2Fg%2F11zbhj00jx"
           target="_blank"
           rel="noopener noreferrer"
         >

@@ -186,8 +186,8 @@ export default function V5Resenas({
 function GoogleGIcon() {
   return (
     <svg
-      width="18"
-      height="18"
+      width="22"
+      height="22"
       viewBox="0 0 48 48"
       aria-hidden="true"
       focusable="false"

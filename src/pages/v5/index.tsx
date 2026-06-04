@@ -59,8 +59,8 @@ const METRICS = [
   {
     value: null,
     staticValue: "9/10",
-    label: "Recomendación",
-    caption: "9 de cada 10 clientes que han trabajado con nosotros, nos recomiendan.",
+    label: "Clientes nos recomiendan",
+    caption: "De quienes han firmado con nosotros en los últimos 12 meses.",
   },
 ] as const;
 
@@ -74,14 +74,14 @@ export default function V5Page() {
   return (
     <>
       <Head>
-        <title>DOSXM2 — Vendemos tu casa como si fuese la nuestra</title>
+        <title>DOSXM2 — Inmobiliaria en Madrid que vende tu casa como si fuese la nuestra</title>
         <meta
           name="description"
           content="DOSXM2: dos expertos que venden tu casa en Madrid con trato personal, doble compromiso y resultados demostrables."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta httpEquiv="content-language" content="es" />
-        <meta property="og:title" content="DOSXM2 — Elegancia cinematográfica con empatía conversacional" />
+        <meta property="og:title" content="DOSXM2 — Inmobiliaria en Madrid · Elegancia cinematográfica con empatía conversacional" />
         <meta
           property="og:description"
           content="Detrás de cada casa hay una historia. Vendemos la tuya como si fuese la nuestra."
