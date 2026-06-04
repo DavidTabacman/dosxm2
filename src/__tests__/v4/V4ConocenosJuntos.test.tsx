@@ -85,11 +85,11 @@ describe("V4 ConocenosJuntos — DOM & accessibility", () => {
     });
   });
 
-  test("closing CTA links to /v4#contacto with label 'Hablemos' by default", () => {
+  test("closing CTA links to /v5#contacto with label 'Hablemos' by default", () => {
     const { container } = render(<V4ConocenosJuntos />);
     const cta = container.querySelector("a[class*='cta']") as HTMLAnchorElement;
     expect(cta).not.toBeNull();
-    expect(cta.getAttribute("href")).toBe("/v4#contacto");
+    expect(cta.getAttribute("href")).toBe("/v5#contacto");
     expect(cta.textContent).toContain("Hablemos");
   });
 

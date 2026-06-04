@@ -172,10 +172,10 @@ export default function V5HeroSplit() {
         <div className={styles.textLayer}>
           <h1 className={styles.heading}>
             Detrás de cada casa hay{" "}
-            <span className={styles.headingAccent}>una historia.</span>
+            <span className={styles.headingAccent}>una historia</span>
           </h1>
           <p className={styles.sub}>
-            Vendemos tu casa como si fuese la nuestra.
+            Vendemos tu casa como si fuese la nuestra
           </p>
           <div className={styles.ctaRow}>
             <a

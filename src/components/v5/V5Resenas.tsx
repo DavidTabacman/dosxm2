@@ -176,7 +176,7 @@ export default function V5Resenas({
           rel="noopener noreferrer"
         >
           <GoogleGIcon />
-          Ver más reseñas y deja la tuya en Google
+          Mira nuestras reseñas y déjanos la tuya
         </a>
       </div>
     </section>

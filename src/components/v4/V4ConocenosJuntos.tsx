@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useSectionReveal } from "../shared/useSectionReveal";
 import {
   FOUNDER_BORJA,
@@ -19,7 +18,7 @@ export interface V4ConocenosJuntosProps {
 
 export default function V4ConocenosJuntos({
   id = "juntos",
-  ctaHref = "/v4#contacto",
+  ctaHref = "/v5#contacto",
   ctaLabel = "Hablemos",
 }: V4ConocenosJuntosProps) {
   const [revealRef, isRevealed] = useSectionReveal(0.15);
@@ -113,7 +112,7 @@ export default function V4ConocenosJuntos({
             </p>
           ))}
           <div className={styles.ctaRow}>
-            <Link href={ctaHref} className={styles.cta}>
+            <a href={ctaHref} className={styles.cta}>
               <span>{ctaLabel}</span>
               <svg
                 className={styles.ctaArrow}
@@ -131,7 +130,7 @@ export default function V4ConocenosJuntos({
                   strokeLinejoin="round"
                 />
               </svg>
-            </Link>
+            </a>
           </div>
         </div>
       </div>
