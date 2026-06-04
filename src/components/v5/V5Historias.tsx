@@ -74,7 +74,7 @@ function FlipCard({ item }: { item: HistoriaItem }) {
           </div>
         </div>
         <div className={styles.cardBack}>
-          <div>
+          <div className={styles.backBody}>
             <div className={styles.backTopLabel}>{item.zona}</div>
             <h3 className={styles.backTitle}>{item.title}</h3>
             <p className={styles.backStory}>{item.story}</p>

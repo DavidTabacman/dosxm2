@@ -97,6 +97,16 @@
   .slide {
     flex-basis: 100%;
   }
+
+  /* Reclaim vertical room on phones so the shorter card fits the story. */
+  .cardBack {
+    padding: 1.1rem 1.15rem;
+    gap: 0.6rem;
+  }
+
+  .backTitle {
+    margin-bottom: 0.35rem;
+  }
 }
 
 .arrow {
@@ -251,7 +261,17 @@
   justify-content: space-between;
   gap: 1rem;
   text-align: left;
+  min-height: 0;
   box-shadow: 0 10px 30px rgba(28, 28, 28, 0.18);
+}
+
+/* Story-text region. Grows to fill the back face and scrolls within the card
+   as a safety net so very long stories on small screens are never clipped;
+   the .backOutcome pill below it stays pinned to the bottom. */
+.backBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .cardImage {
@@ -334,10 +354,11 @@
 
 .backStory {
   font-family: var(--v5-font-sans);
-  font-size: 1rem;
-  line-height: 1.55;
+  font-size: clamp(0.8125rem, 0.7rem + 1vw, 1rem);
+  line-height: 1.5;
   color: var(--v5-on-dark-primary);
   margin: 0;
+  overflow-wrap: break-word;
 }
 
 .backOutcome {
