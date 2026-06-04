@@ -75,15 +75,16 @@ describe("constants/founders — Conócenos bio copy", () => {
     expect(FOUNDER_BIOS.pablo.introLine).toBe("Yo soy Pablo");
     expect(FOUNDER_BIOS.borja.introLine).toBe("Yo soy Borja");
 
-    // Pablo waves with the standard Unicode emoji; guard against the multi-
-    // codepoint sequence getting mangled by the build pipeline.
+    // Pablo wears the unmodified Twemoji "person raising hand: light skin
+    // tone, male" SVG so the badge renders identically on every OS.
     expect(FOUNDER_BIOS.pablo.introBadge).toEqual({
-      kind: "emoji",
-      char: "🙋🏻‍♂️",
+      kind: "image",
+      src: "/v4/founders/pablo-emoji.svg",
+      alt: "",
     });
 
-    // Borja gets a custom SVG — no Unicode emoji renders bald + bearded
-    // across iOS and Android, so we ship our own glyph.
+    // Borja gets a Twemoji-derived SVG modified for bald + bearded — no
+    // Unicode emoji renders that consistently across iOS and Android.
     expect(FOUNDER_BIOS.borja.introBadge).toEqual({
       kind: "image",
       src: "/v4/founders/borja-emoji.svg",

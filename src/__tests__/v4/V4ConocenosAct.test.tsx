@@ -66,10 +66,13 @@ describe("V4 ConocenosAct — DOM & accessibility", () => {
     expect(fp).toBe("high");
   });
 
-  test("intro line (with emoji) and every bio paragraph render in order", () => {
+  test("intro line (with badge) and every bio paragraph render in order", () => {
     const { container } = render(<V4ConocenosAct {...baseProps} />);
     expect(container.textContent).toContain("Yo soy Pablo");
-    expect(container.textContent).toContain("🙋🏻‍♂️");
+    const badge = container.querySelector(
+      "img[src='/v4/founders/pablo-emoji.svg']"
+    );
+    expect(badge).not.toBeNull();
     FOUNDER_BIOS.pablo.paragraphs.forEach((p) => {
       // Match a unique fragment from each paragraph to avoid false positives
       // on short ones.

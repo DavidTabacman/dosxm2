@@ -91,15 +91,21 @@ export const CONTACTO_FOUNDERS = {
 
 /**
  * Conócenos page — client-supplied bios. Each founder gets a small badge
- * after the intro line; Pablo waves with the standard raised-hand emoji,
- * Borja uses a custom SVG because no Unicode emoji renders bald + bearded
- * consistently across iOS and Android. Do NOT strip — the badges are part
- * of the founders' voice.
+ * after the intro line. Both badges are Twemoji-derived SVGs so the
+ * artwork is byte-identical on every OS — Pablo's is the unmodified
+ * "person raising hand: light skin tone, male" glyph, Borja's is the
+ * same base modified for bald + Van Dyke (no Unicode emoji renders that
+ * consistently across iOS and Android). Do NOT strip — the badges are
+ * part of the founders' voice.
  */
 export const FOUNDER_BIOS: Record<"pablo" | "borja", FounderBio> = {
   pablo: {
     introLine: "Yo soy Pablo",
-    introBadge: { kind: "emoji", char: "🙋🏻‍♂️" },
+    introBadge: {
+      kind: "image",
+      src: "/v4/founders/pablo-emoji.svg",
+      alt: "",
+    },
     paragraphs: [
       "Nací en Banfield, un barrio de la zona sur de Gran Buenos Aires, Argentina.",
       "Hace ya varios años decidí venir a vivir a Madrid, y aquí encontré no solo una oportunidad profesional, sino también mi lugar.",
