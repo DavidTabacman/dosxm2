@@ -10,6 +10,10 @@ export interface V5Metric {
   value: number | null;
   /** Optional static label shown in place of the count-up (e.g. "24/7"). */
   staticValue?: string;
+  /** Inline accent-colored tail rendered tight against the value (no margin).
+   * Use for cases like the "10" in "9/10" where the qualifier shouldn't break
+   * the visual flow of a fraction. */
+  staticValueAccent?: string;
   /** Prefix rendered before the number (e.g. "+"). */
   prefix?: string;
   /** Suffix rendered after the number (e.g. "%", "días"). */
@@ -30,8 +34,16 @@ export interface V5MetricsProps {
 }
 
 function Tile({ metric, animate }: { metric: V5Metric; animate: boolean }) {
-  const { value, staticValue, prefix, suffix, label, caption, decimals = 0 } =
-    metric;
+  const {
+    value,
+    staticValue,
+    staticValueAccent,
+    prefix,
+    suffix,
+    label,
+    caption,
+    decimals = 0,
+  } = metric;
 
   // replay=true so the count-up restarts every time the grid re-enters
   // the viewport. Requested behavior: counters animate on every scroll-in.
@@ -54,6 +66,9 @@ function Tile({ metric, animate }: { metric: V5Metric; animate: boolean }) {
       <div className={styles.value}>
         {prefix}
         {displayValue}
+        {staticValueAccent ? (
+          <span className={styles.valueAccentInline}>{staticValueAccent}</span>
+        ) : null}
         {suffix ? <span className={styles.valueSuffix}>{suffix}</span> : null}
       </div>
       <div className={styles.label}>{label}</div>

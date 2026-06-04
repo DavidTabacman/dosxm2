@@ -58,7 +58,8 @@ const METRICS = [
   },
   {
     value: null,
-    staticValue: "9/10",
+    staticValue: "9/",
+    staticValueAccent: "10",
     label: "Clientes nos recomiendan",
     caption: "De quienes han firmado con nosotros en los últimos 12 meses.",
   },

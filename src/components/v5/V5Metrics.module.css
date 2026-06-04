@@ -105,6 +105,10 @@
   margin-left: 0.125em;
 }
 
+.valueAccentInline {
+  color: var(--v5-accent);
+}
+
 .label {
   font-family: var(--v5-font-sans);
   font-size: clamp(0.8125rem, 1.4vw, 0.95rem);
