@@ -62,7 +62,7 @@ const METRICS = [
     divider: "/",
     staticValueAccent: "10",
     label: "Clientes nos recomiendan",
-    caption: "De quienes nos han elegido en los últimos 12 meses",
+    caption: "De quienes han trabajado con nosotros en los últimos 12 meses",
   },
 ] as const;
 
