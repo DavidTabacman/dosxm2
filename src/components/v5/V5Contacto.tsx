@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { trackFormSubmit } from "@/lib/analytics";
 import { useSectionReveal } from "../shared/useSectionReveal";
 import V5FounderLinks from "./V5FounderLinks";
 import styles from "./V5Contacto.module.css";
@@ -98,6 +99,7 @@ export default function V5Contacto({
       if (onSubmit) await onSubmit(payload);
       setSubmitted(true);
       setSubmitError(null);
+      trackFormSubmit(); // GA4 conversion (no-op unless NEXT_PUBLIC_GA_ID set)
     } catch (err) {
       const msg =
         err instanceof Error

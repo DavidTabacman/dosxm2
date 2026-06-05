@@ -1,3 +1,4 @@
+import { trackPhoneClick } from "@/lib/analytics";
 import { InstagramIcon, TikTokIcon } from "../shared/SocialIcons";
 import { V4_NAV_LINKS, V4_SOCIAL_URLS } from "./V4StickyHeader";
 import styles from "./V4Footer.module.css";
@@ -66,7 +67,12 @@ export default function V4Footer({
                     <a href={`mailto:${f.email}`}>{f.email}</a>
                   </li>
                   <li>
-                    <a href={`tel:+${f.phone}`}>{formatEsPhone(f.phone)}</a>
+                    <a
+                      href={`tel:+${f.phone}`}
+                      onClick={() => trackPhoneClick(f.name)}
+                    >
+                      {formatEsPhone(f.phone)}
+                    </a>
                   </li>
                 </ul>
               </li>

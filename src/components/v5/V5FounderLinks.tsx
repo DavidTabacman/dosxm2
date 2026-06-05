@@ -1,3 +1,4 @@
+import { trackWhatsAppClick } from "@/lib/analytics";
 import { buildWhatsAppUrl } from "../shared/whatsApp";
 import styles from "./V5FounderLinks.module.css";
 
@@ -49,6 +50,7 @@ export default function V5FounderLinks({
         rel="noopener noreferrer"
         tabIndex={tabIndex}
         aria-label={`Escribir a ${founderAName} por WhatsApp`}
+        onClick={() => trackWhatsAppClick(founderAName)}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -76,6 +78,7 @@ export default function V5FounderLinks({
         rel="noopener noreferrer"
         tabIndex={tabIndex}
         aria-label={`Escribir a ${founderBName} por WhatsApp`}
+        onClick={() => trackWhatsAppClick(founderBName)}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

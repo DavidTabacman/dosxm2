@@ -1,5 +1,6 @@
-import Head from "next/head";
 import { Fraunces, Inter } from "next/font/google";
+import Seo from "@/components/Seo";
+import { conocenosGraph } from "@/lib/jsonld";
 import V4Layout from "@/components/v4/V4Layout";
 import V4StickyHeader from "@/components/v4/V4StickyHeader";
 import V4Conocenos from "@/components/v4/V4Conocenos";
@@ -23,34 +24,15 @@ const inter = Inter({
 export default function V4ConocenosPage() {
   return (
     <>
-      <Head>
-        <title>Conócenos — DOSXM2</title>
-        <meta
-          name="description"
-          content="Pablo y Borja, los dos fundadores de DOSXM2. Desde Banfield y Getafe, una década en multinacionales y un mismo objetivo: vender tu casa en Madrid como si fuese la nuestra."
-        />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, viewport-fit=cover"
-        />
-        <meta httpEquiv="content-language" content="es" />
-        <link rel="canonical" href="/conocenos" />
-        <meta property="og:title" content="Conócenos — DOSXM2" />
-        <meta
-          property="og:description"
-          content="Pablo y Borja, los dos fundadores de DOSXM2 — la historia detrás del equipo que vende tu casa en Madrid."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
-        <meta property="og:image" content="/v4/founders/together.webp" />
-        <link
-          rel="preload"
-          as="image"
-          href={FOUNDER_PABLO.portraitUrl}
-          type="image/webp"
-          fetchPriority="high"
-        />
-      </Head>
+      <Seo
+        title="Conócenos — Pablo y Borja · DOSXM2 Madrid"
+        description="Pablo y Borja, fundadores de DOSXM2. De Banfield y Getafe a Madrid, una década en multinacionales y un objetivo: vender tu casa como si fuese la nuestra."
+        path="/conocenos"
+        ogImage="/v4/founders/together.webp"
+        ogImageAlt="Pablo y Borja, los dos fundadores de DOSXM2"
+        preloadImage={{ href: FOUNDER_PABLO.portraitUrl, type: "image/webp" }}
+        jsonLd={conocenosGraph()}
+      />
       <V4Layout fontClassName={`${fraunces.variable} ${inter.variable}`}>
         <V4StickyHeader alwaysSolid />
         <V4Conocenos />

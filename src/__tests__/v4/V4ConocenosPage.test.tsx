@@ -115,15 +115,19 @@ describe("V4 ConocenosPage — integration", () => {
       document.querySelector("meta[name='description']");
     expect(description?.getAttribute("content")).toContain("Pablo");
     expect(description?.getAttribute("content")).toContain("Borja");
+    // SEO audit §4.2: canonical and OG image must be ABSOLUTE URLs (relative
+    // ones are ignored by Google). The <Seo> component prefixes SITE_ORIGIN.
     const canonical =
       document.head.querySelector("link[rel='canonical']") ??
       document.querySelector("link[rel='canonical']");
-    expect(canonical?.getAttribute("href")).toBe("/conocenos");
+    expect(canonical?.getAttribute("href")).toMatch(
+      /^https?:\/\/.+\/conocenos$/
+    );
     const ogImage =
       document.head.querySelector("meta[property='og:image']") ??
       document.querySelector("meta[property='og:image']");
-    expect(ogImage?.getAttribute("content")).toBe(
-      "/v4/founders/together.webp"
+    expect(ogImage?.getAttribute("content")).toMatch(
+      /^https?:\/\/.+\/v4\/founders\/together\.webp$/
     );
   });
 

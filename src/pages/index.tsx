@@ -1,5 +1,6 @@
-import Head from "next/head";
 import { Fraunces, Inter } from "next/font/google";
+import Seo from "@/components/Seo";
+import { homepageGraph } from "@/lib/jsonld";
 import V5Layout from "@/components/v5/V5Layout";
 import V5StickyHeader from "@/components/v5/V5StickyHeader";
 import V5HeroSplit from "@/components/v5/V5HeroSplit";
@@ -75,26 +76,13 @@ export default function V5Page() {
 
   return (
     <>
-      <Head>
-        <title>DOSXM2 — Inmobiliaria en Madrid que vende tu casa como si fuese la nuestra</title>
-        <meta
-          name="description"
-          content="DOSXM2: dos expertos que venden tu casa en Madrid con trato personal, doble compromiso y resultados demostrables."
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-        <meta httpEquiv="content-language" content="es" />
-        <meta property="og:title" content="DOSXM2 — Inmobiliaria en Madrid · Elegancia cinematográfica con empatía conversacional" />
-        <meta
-          property="og:description"
-          content="Detrás de cada casa hay una historia. Vendemos la tuya como si fuese la nuestra."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="es_ES" />
-        <link rel="canonical" href="/" />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-      </Head>
+      <Seo
+        title="DOSXM2 · Inmobiliaria en Madrid que vende tu casa"
+        description="DOSXM2: dos expertos que venden tu casa en Madrid con trato personal, doble compromiso y resultados demostrables."
+        path="/"
+        ogImageAlt="DOSXM2 — Pablo y Borja, inmobiliaria en Madrid"
+        jsonLd={homepageGraph()}
+      />
       <V5Layout fontClassName={`${fraunces.variable} ${inter.variable}`}>
         <V5StickyHeader />
         <V5HeroSplit />
