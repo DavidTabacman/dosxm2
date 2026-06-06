@@ -77,8 +77,8 @@ export default function V5Page() {
   return (
     <>
       <Seo
-        title="DOSXM2 · Inmobiliaria en Madrid que vende tu casa"
-        description="DOSXM2: dos expertos que venden tu casa en Madrid con trato personal, doble compromiso y resultados demostrables."
+        title="DOSXM2 - Dos por metro cuadrado - Inmobiliaria"
+        description="Vendemos tu casa como si fuese la nuestra. En un sector donde la mayoría trabaja solo, nosotros somos un equipo consolidado. Varios años de experiencia avalan nuestro trabajo, demostrando un compromiso innegociable, trato personal a tope y resultados 100% demostrables en Madrid, que hacen que nuestros clientes nos recomienden siempre. Cada casa tiene su historia, y nosotros trabajaremos hasta que la tuya esté contada."
         path="/"
         ogImageAlt="DOSXM2 — Pablo y Borja, inmobiliaria en Madrid"
         jsonLd={homepageGraph()}
