@@ -234,14 +234,22 @@ export default function V4StickyHeader({
 
   const handleLogoClick = useCallback(() => {
     if (typeof window === "undefined") return;
+    setMenuOpen(false);
+
+    // From any non-homepage route (e.g. /conocenos), navigate to the homepage.
+    if (router.pathname !== "/") {
+      router.push("/");
+      return;
+    }
+
+    // Already on the homepage: strip any #hash and smooth-scroll to top.
     if (typeof history !== "undefined") {
       history.replaceState(null, "", window.location.pathname);
     }
-    setMenuOpen(false);
     scrollAfterDrawerCloses(() =>
       window.scrollTo({ top: 0, behavior: "smooth" })
     );
-  }, [scrollAfterDrawerCloses]);
+  }, [router, scrollAfterDrawerCloses]);
 
   return (
     <>
