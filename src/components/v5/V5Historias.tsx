@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { useSectionReveal } from "../shared/useSectionReveal";
 import { HISTORIAS, type HistoriaItem } from "./historiasData";
@@ -51,13 +52,13 @@ function FlipCard({ item }: { item: HistoriaItem }) {
     >
       <div className={styles.cardInner} onAnimationEnd={handleAnimationEnd}>
         <div className={styles.cardFront}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             className={styles.cardImage}
             src={item.imageUrl}
             alt={item.alt}
             data-asset-type="property-story"
-            loading="lazy"
+            fill
+            sizes="(max-width: 600px) 80vw, (max-width: 1024px) 45vw, 30vw"
             onError={(e) => {
               const img = e.currentTarget;
               console.error(

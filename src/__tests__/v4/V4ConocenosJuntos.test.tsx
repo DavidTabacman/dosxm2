@@ -57,25 +57,29 @@ describe("V4 ConocenosJuntos — DOM & accessibility", () => {
       expect(img?.getAttribute("alt")).toBe("");
       expect(img?.getAttribute("loading")).toBe("lazy");
     });
-    // Pablo first, Borja second — matches the convergence narrative
-    expect(slots[0].querySelector("img")?.getAttribute("src")).toBe(
-      FOUNDER_PABLO.portraitUrl
-    );
-    expect(slots[1].querySelector("img")?.getAttribute("src")).toBe(
-      FOUNDER_BORJA.portraitUrl
-    );
+    // Pablo first, Borja second — matches the convergence narrative.
+    // next/image rewrites src to the optimizer URL; assert it wraps the source.
+    expect(
+      decodeURIComponent(slots[0].querySelector("img")!.getAttribute("src")!)
+    ).toContain(FOUNDER_PABLO.portraitUrl);
+    expect(
+      decodeURIComponent(slots[1].querySelector("img")!.getAttribute("src")!)
+    ).toContain(FOUNDER_BORJA.portraitUrl);
   });
 
-  test("together image is a <picture> with webp source + jpg fallback", () => {
+  test("together image is a single optimized <img> (next/image auto-negotiates AVIF/WebP)", () => {
     const { container } = render(<V4ConocenosJuntos />);
-    const picture = container.querySelector("picture");
-    expect(picture).not.toBeNull();
-    const source = picture!.querySelector("source");
-    expect(source?.getAttribute("type")).toBe("image/webp");
-    expect(source?.getAttribute("srcset")).toBe(TOGETHER_IMAGE.webp);
-    const img = picture!.querySelector("img");
-    expect(img?.getAttribute("src")).toBe(TOGETHER_IMAGE.jpgFallback);
-    expect(img?.getAttribute("alt")).toBe(TOGETHER_IMAGE.alt);
+    // The manual <picture>/<source webp> tree was dropped in favour of
+    // next/image, which serves AVIF/WebP via the optimizer's Accept negotiation.
+    expect(container.querySelector("picture")).toBeNull();
+    const img = container.querySelector<HTMLImageElement>(
+      "img[data-asset-type='together']"
+    );
+    expect(img).not.toBeNull();
+    expect(decodeURIComponent(img!.getAttribute("src")!)).toContain(
+      TOGETHER_IMAGE.jpgFallback
+    );
+    expect(img!.getAttribute("alt")).toBe(TOGETHER_IMAGE.alt);
   });
 
   test("all 4 BRD §6 paragraphs render in the copy block", () => {

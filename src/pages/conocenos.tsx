@@ -5,7 +5,7 @@ import V4Layout from "@/components/v4/V4Layout";
 import V4StickyHeader from "@/components/v4/V4StickyHeader";
 import V4Conocenos from "@/components/v4/V4Conocenos";
 import V4Footer from "@/components/v4/V4Footer";
-import { FOUNDERS, FOUNDER_PABLO } from "@/constants/founders";
+import { FOUNDERS } from "@/constants/founders";
 
 const fraunces = Fraunces({
   variable: "--font-v4-serif",
@@ -30,7 +30,6 @@ export default function V4ConocenosPage() {
         path="/conocenos"
         ogImage="/v4/founders/together.webp"
         ogImageAlt="Pablo y Borja, los dos fundadores de DOSXM2"
-        preloadImage={{ href: FOUNDER_PABLO.portraitUrl, type: "image/webp" }}
         jsonLd={conocenosGraph()}
       />
       <V4Layout fontClassName={`${fraunces.variable} ${inter.variable}`}>

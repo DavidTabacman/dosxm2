@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { trackWhatsAppClick } from "@/lib/analytics";
 import { buildWhatsAppUrl } from "../shared/whatsApp";
 import styles from "./V5FounderLinks.module.css";
@@ -52,13 +53,13 @@ export default function V5FounderLinks({
         aria-label={`Escribir a ${founderAName} por WhatsApp`}
         onClick={() => trackWhatsAppClick(founderAName)}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           className={styles.portrait}
           src={portraitAUrl}
           alt={portraitAAlt}
           data-asset-type="founder-portrait"
-          loading="lazy"
+          width={56}
+          height={56}
           onError={(e) => {
             console.error(
               `[V5-FounderLinks] ❌ Portrait A load FAILED — src: ${e.currentTarget.src}. ` +
@@ -80,13 +81,13 @@ export default function V5FounderLinks({
         aria-label={`Escribir a ${founderBName} por WhatsApp`}
         onClick={() => trackWhatsAppClick(founderBName)}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           className={styles.portrait}
           src={portraitBUrl}
           alt={portraitBAlt}
           data-asset-type="founder-portrait"
-          loading="lazy"
+          width={56}
+          height={56}
           onError={(e) => {
             console.error(
               `[V5-FounderLinks] ❌ Portrait B load FAILED — src: ${e.currentTarget.src}. ` +

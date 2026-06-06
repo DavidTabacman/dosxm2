@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { useCallback, useEffect, useRef } from "react";
 import { useSectionReveal } from "../shared/useSectionReveal";
 import { useReducedMotion } from "../shared/useReducedMotion";
@@ -294,13 +295,13 @@ export default function V5Diferencial({
                     <source src={founder.loopVideo.mp4} type="video/mp4" />
                   </video>
                 ) : (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
+                  <Image
                     className={styles.portrait}
                     src={founder.portraitUrl}
                     alt={founder.alt}
                     data-asset-type="founder-portrait"
-                    loading="lazy"
+                    fill
+                    sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 33vw"
                     onError={(e) => {
                       const img = e.currentTarget;
                       console.error(

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useSectionReveal } from "../shared/useSectionReveal";
 import type { Founder, FounderBio } from "@/constants/founders";
 import styles from "./V4ConocenosAct.module.css";
@@ -46,15 +47,15 @@ export default function V4ConocenosAct({
               }`}
             >
               <div className={styles.portraitFrame}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   className={styles.portrait}
                   src={founder.portraitUrl}
                   alt={founder.alt}
                   data-asset-type="founder-portrait"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1100px) 45vw, 40vw"
                   loading={isLcp ? "eager" : "lazy"}
-                  fetchPriority={isLcp ? "high" : "auto"}
-                  decoding={isLcp ? "sync" : "async"}
+                  fetchPriority={isLcp ? "high" : undefined}
                   onError={(e) => {
                     const img = e.currentTarget;
                     console.error(

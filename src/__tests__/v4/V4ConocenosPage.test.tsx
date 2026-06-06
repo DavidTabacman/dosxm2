@@ -86,22 +86,24 @@ describe("V4 ConocenosPage — integration", () => {
     expect(footer?.textContent).toContain("DOSXM2");
   });
 
-  test("Pablo's portrait is preloaded as an LCP candidate", () => {
-    render(<V4ConocenosPage />);
-    // React 19 hoists <link rel="preload"> into document.head; the next/head
-    // mock renders children as a fragment, so they land there too. Match
-    // by href directly to avoid picking up Next.js framework preloads (which
-    // also use as="image" but for routing thumbnails).
-    const preloads = [
-      ...document.head.querySelectorAll("link[rel='preload']"),
-      ...document.querySelectorAll("link[rel='preload']"),
-    ];
-    const pabloPreload = preloads.find(
-      (link) => link.getAttribute("href") === "/v4/founders/founder_pablo.webp"
+  test("Pablo's portrait is prioritized as an LCP candidate", () => {
+    const { container } = render(<V4ConocenosPage />);
+    // The portrait now flows through next/image (no manual <link rel=preload>).
+    // The first founder portrait (Pablo, isLcp) loads eagerly with a high
+    // fetchpriority so it stays the prioritized LCP candidate.
+    const portrait = container.querySelector<HTMLImageElement>(
+      "img[data-asset-type='founder-portrait']"
     );
-    expect(pabloPreload).toBeDefined();
-    expect(pabloPreload?.getAttribute("as")).toBe("image");
-    expect(pabloPreload?.getAttribute("type")).toBe("image/webp");
+    expect(portrait).not.toBeNull();
+    expect(decodeURIComponent(portrait!.getAttribute("src")!)).toContain(
+      "/v4/founders/founder_pablo.webp"
+    );
+    expect(portrait!.getAttribute("loading")).toBe("eager");
+    // React 19 lowercases the attribute when rendered to DOM.
+    const fp =
+      portrait!.getAttribute("fetchpriority") ??
+      portrait!.getAttribute("fetchPriority");
+    expect(fp).toBe("high");
   });
 
   test("page metadata: title, description, canonical, OG image", () => {

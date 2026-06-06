@@ -1,14 +1,41 @@
 import type { NextConfig } from "next";
 
 /**
+ * Content-Security-Policy (audit report §5 item 10). Pragmatic, enforced.
+ *
+ * - `script-src`/`style-src` keep `'unsafe-inline'`: the JSON-LD block
+ *   (components/Seo.tsx) and GA4 init (components/Analytics.tsx) are inline
+ *   scripts whose content varies per page (hashes impractical), and next/image
+ *   `fill`/`width` emit inline `style` attributes that nonces don't cover.
+ * - All images, fonts (self-hosted via next/font), and Next runtime load from
+ *   `'self'`; GA4 (googletagmanager.com + GA endpoints) is allowlisted for
+ *   when NEXT_PUBLIC_GA_ID is set. Lystos/IG/TikTok/Maps are `target="_blank"`
+ *   links, not embeds, so no `frame-src` is needed (`default-src 'self'`).
+ * - Dev only: `'unsafe-eval'` + `ws:` so React Refresh / HMR aren't blocked.
+ *   Production stays strict.
+ */
+const isDev = process.env.NODE_ENV === "development";
+const csp = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'self'",
+  "form-action 'self'",
+  "img-src 'self' data:",
+  "font-src 'self'",
+  "style-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com`,
+  `connect-src 'self'${isDev ? " ws:" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com`,
+  "upgrade-insecure-requests",
+].join("; ");
+
+/**
  * Baseline security headers applied to every response (audit §4.9). HSTS,
- * nosniff, referrer policy, anti-clickjacking, and a conservative
- * Permissions-Policy. A full Content-Security-Policy is intentionally NOT set
- * here yet — it needs to be validated against the live site (next/font, the
- * external Lystos valorador, GA4, Instagram/TikTok) to avoid silently breaking
- * resources, and is tracked as a follow-up in the audit report.
+ * nosniff, referrer policy, anti-clickjacking, a conservative
+ * Permissions-Policy, and the Content-Security-Policy defined above.
  */
 const securityHeaders = [
+  { key: "Content-Security-Policy", value: csp },
   {
     // 1-year HSTS with subdomains. Deliberately NO `preload` — that's a
     // hard-to-reverse browser-preload-list enrollment that should be an
@@ -27,13 +54,12 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // NOTE: no `images` config block on purpose. next/image optimization is
-  // already Next's default and only the two header logos use it today (the
-  // raw-<img> migration is deferred — audit report §5 item 8). Adding an explicit
-  // `images: { unoptimized: false, formats: [...] }` here yields ~no benefit at
-  // 2 logos and is better landed WITH that migration so both are verified on a
-  // live App Hosting deploy at once (App Hosting's optimizer behavior differs
-  // from `next start` and must be confirmed there).
+  // All site imagery now flows through next/image (audit report §5 item 8).
+  // Prefer AVIF, falling back to WebP, then the original format. Every source
+  // is a local /public asset, so no `remotePatterns` are required.
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
   async headers() {
     return [
       {

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { useIntersectionObserver } from "../shared/useIntersectionObserver";
 import { useVideoPlayback } from "../shared/useVideoPlayback";
 import VideoPlayPause from "../shared/VideoPlayPause";
@@ -141,13 +142,14 @@ export default function V5HeroSplit() {
          inset:0 containing block, preserving the overlay. */}
       <div className={styles.panelLeft}>
         {skipLeftVideo ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             className={styles.panelBg}
             src={isMobile ? MOBILE_POSTER : LEFT_POSTER}
             alt=""
             aria-hidden="true"
             data-asset-type="hero-bg-fallback"
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
         ) : (
           // `key` forces a remount when isMobile flips, so useVideoPlayback's
@@ -210,13 +212,14 @@ export default function V5HeroSplit() {
       {!isMobile && (
         <div className={styles.panelRight}>
           {skipRightVideo ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               className={styles.panelBg}
               src={RIGHT_POSTER}
               alt=""
               aria-hidden="true"
               data-asset-type="hero-bg-fallback"
+              fill
+              sizes="50vw"
             />
           ) : (
             <video

@@ -49,7 +49,10 @@ describe("V4 ConocenosAct — DOM & accessibility", () => {
       "img[data-asset-type='founder-portrait']"
     );
     expect(img).not.toBeNull();
-    expect(img!.getAttribute("src")).toBe(FOUNDER_PABLO.portraitUrl);
+    // next/image rewrites src to the optimizer URL; assert it wraps the source.
+    expect(decodeURIComponent(img!.getAttribute("src")!)).toContain(
+      FOUNDER_PABLO.portraitUrl
+    );
     expect(img!.getAttribute("alt")).toBe(FOUNDER_PABLO.alt);
     expect(img!.getAttribute("loading")).toBe("lazy");
   });

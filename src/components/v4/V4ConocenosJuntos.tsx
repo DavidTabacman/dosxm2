@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useSectionReveal } from "../shared/useSectionReveal";
 import {
   FOUNDER_BORJA,
@@ -51,23 +52,23 @@ export default function V4ConocenosJuntos({
             data-slot-index="0"
             aria-hidden="true"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={FOUNDER_PABLO.portraitUrl}
               alt=""
-              loading="lazy"
-              decoding="async"
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
             />
           </div>
 
-          <picture className={styles.togetherFrame}>
-            <source srcSet={TOGETHER_IMAGE.webp} type="image/webp" />
-            <img
+          {/* next/image auto-negotiates AVIF/WebP from the optimizer, so the
+              manual <picture>/<source webp> tree is no longer needed. */}
+          <div className={styles.togetherFrame}>
+            <Image
               src={TOGETHER_IMAGE.jpgFallback}
               alt={TOGETHER_IMAGE.alt}
               data-asset-type="together"
-              loading="lazy"
-              decoding="async"
+              fill
+              sizes="(max-width: 768px) 60vw, 33vw"
               onError={(e) => {
                 const img = e.currentTarget;
                 console.error(
@@ -77,19 +78,18 @@ export default function V4ConocenosJuntos({
                 img.style.visibility = "hidden";
               }}
             />
-          </picture>
+          </div>
 
           <div
             className={styles.diptychSlot}
             data-slot-index="1"
             aria-hidden="true"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={FOUNDER_BORJA.portraitUrl}
               alt=""
-              loading="lazy"
-              decoding="async"
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
             />
           </div>
         </div>
